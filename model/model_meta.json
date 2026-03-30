@@ -1,0 +1,40 @@
+{
+  "features": [
+    "area_sqft",
+    "floors",
+    "building_type",
+    "quality",
+    "total_area_sqft"
+  ],
+  "targets": [
+    "cement_bags",
+    "sand_cft",
+    "bricks",
+    "aggregate_cft",
+    "steel_kg"
+  ],
+  "train_samples": 4000,
+  "test_samples": 1000,
+  "metrics": {
+    "cement_bags": {
+      "mae": 132.37,
+      "r2": 0.9973
+    },
+    "sand_cft": {
+      "mae": 228.0,
+      "r2": 0.9988
+    },
+    "bricks": {
+      "mae": 1281.32,
+      "r2": 0.9991
+    },
+    "aggregate_cft": {
+      "mae": 190.97,
+      "r2": 0.9966
+    },
+    "steel_kg": {
+      "mae": 956.43,
+      "r2": 0.9963
+    }
+  }
+}

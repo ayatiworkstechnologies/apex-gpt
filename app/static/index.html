@@ -1,0 +1,1013 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Material Estimator | Ayatiworks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+            colors: {
+              brand: {
+                50: "#fff7ed",
+                100: "#ffedd5",
+                200: "#fed7aa",
+                300: "#fdba74",
+                400: "#fb923c",
+                500: "#f97316",
+                600: "#ea580c",
+                700: "#c2410c",
+                800: "#9a3412",
+                900: "#7c2d12",
+                950: "#431407",
+              },
+            },
+            animation: {
+              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background-color: #0c0c0c;
+        color: #e5e7eb;
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .glass-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.2s;
+      }
+      .glass-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+      }
+      .prompt-ring {
+        box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+      }
+      input:focus {
+        outline: none;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col font-sans selection:bg-brand-500/30">
+    <!-- background blobs -->
+    <div class="fixed inset-0 overflow-hidden -z-10 pointer-events-none">
+      <div
+        class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-brand-500/10 rounded-full blur-[120px] animate-pulse-slow"
+      ></div>
+      <div
+        class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[120px] animate-pulse-slow"
+      ></div>
+    </div>
+
+    <!-- main wrapper -->
+    <div class="flex-1 max-w-5xl mx-auto w-full px-6 py-12 flex flex-col">
+      <!-- header -->
+      <header
+        class="flex items-center justify-between mb-16 animate-in fade-in slide-in-from-top-4 duration-700"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/20"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 3v19" />
+              <path d="m5 8 14 8" />
+              <path d="m19 8-14 8" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-xl font-semibold tracking-tight">Ayatiworks</h1>
+            <p
+              class="text-xs text-zinc-500 uppercase tracking-widest font-medium"
+            >
+              Material Estimator v2.0
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <a
+            href="/docs"
+            target="_blank"
+            class="text-sm text-zinc-400 hover:text-white transition-colors"
+            >API Docs</a
+          >
+          <button id="themeToggle" class="glass-btn p-2 rounded-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-zinc-400"
+            >
+              <path d="M12 3v1" />
+              <path d="M12 20v1" />
+              <path d="M3 12h1" />
+              <path d="M20 12h1" />
+              <path d="m18.364 5.636-.707.707" />
+              <path d="m6.343 17.657-.707.707" />
+              <path d="m5.636 5.636.707.707" />
+              <path d="m17.657 17.657.707.707" />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- hero / welcome -->
+      <div
+        class="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150"
+      >
+        <h2
+          class="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-zinc-500"
+        >
+          Good afternoon, Ayati.
+        </h2>
+        <p class="text-zinc-400 text-lg max-w-xl mx-auto">
+          What are we building today? Describe your project below or use the
+          form for precise details.
+        </p>
+      </div>
+
+      <!-- tab switcher -->
+      <div class="flex justify-center mb-8">
+        <div class="glass p-1 rounded-2xl flex gap-1">
+          <button
+            id="tabNLP"
+            class="px-6 py-2.5 rounded-xl text-sm font-medium transition-all bg-brand-500 text-white shadow-lg shadow-brand-500/10"
+          >
+            Smart Prompt
+          </button>
+          <button
+            id="tabForm"
+            class="px-6 py-2.5 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-white"
+          >
+            Detailed Form
+          </button>
+        </div>
+      </div>
+
+      <!-- input container -->
+      <div class="mb-12 relative">
+        <!-- NLP Section -->
+        <div
+          id="sectionNLP"
+          class="block animate-in fade-in slide-in-from-bottom-2 duration-300"
+        >
+          <div
+            class="glass rounded-3xl p-4 md:p-6 shadow-2xl relative overflow-hidden"
+          >
+            <div class="flex flex-col md:flex-row gap-4">
+              <div class="flex-1 relative group">
+                <input
+                  id="promptInput"
+                  type="text"
+                  placeholder="Explain your project (e.g., '3 BHK house on 1200 sqft G+1')"
+                  class="w-full bg-white/5 border border-white/10 rounded-2xl py-5 pl-6 pr-16 text-lg placeholder:text-zinc-600 focus:border-brand-500/50 transition-all focus:ring-4 focus:ring-brand-500/10 active:scale-[0.99] origin-center duration-200"
+                />
+                <div
+                  class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2"
+                >
+                  <kbd
+                    class="hidden md:inline-flex h-6 items-center gap-1 rounded border border-white/10 bg-white/5 px-2 text-[10px] font-medium text-zinc-500 opacity-100"
+                  >
+                    <span class="text-xs">⌘</span>K
+                  </kbd>
+                </div>
+              </div>
+              <button
+                id="btnNLP"
+                class="bg-brand-500 hover:bg-brand-600 text-white font-semibold py-5 px-10 rounded-2xl shadow-xl shadow-brand-500/20 active:scale-95 transition-all flex items-center justify-center gap-2"
+              >
+                <span>Estimate</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <span class="text-xs text-zinc-500 mr-2">Quick tags:</span>
+              <button
+                class="suggestion-tag px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-zinc-400 hover:border-brand-500/50 hover:text-white transition-all"
+              >
+                3 BHK Villa
+              </button>
+              <button
+                class="suggestion-tag px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-zinc-400 hover:border-brand-500/50 hover:text-white transition-all"
+              >
+                600 sqft House
+              </button>
+              <button
+                class="suggestion-tag px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-zinc-400 hover:border-brand-500/50 hover:text-white transition-all"
+              >
+                Industrial Shed
+              </button>
+              <button
+                class="suggestion-tag px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-zinc-400 hover:border-brand-500/50 hover:text-white transition-all"
+              >
+                Office Space
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Section (Hidden by default) -->
+        <div
+          id="sectionForm"
+          class="hidden animate-in fade-in slide-in-from-bottom-2 duration-300"
+        >
+          <div class="glass rounded-3xl p-8 shadow-2xl">
+            <form
+              id="detailsForm"
+              class="grid grid-cols-1 md:grid-cols-2 gap-8"
+            >
+              <div>
+                <label class="block text-sm font-medium text-zinc-400 mb-3"
+                  >Built-up Area</label
+                >
+                <div class="flex gap-2">
+                  <input
+                    type="number"
+                    id="formArea"
+                    placeholder="1200"
+                    required
+                    min="0.1"
+                    step="0.1"
+                    class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-brand-500/50 transition-all"
+                  />
+                  <select
+                    id="formUnit"
+                    class="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-brand-500/50"
+                  >
+                    <option value="sqft">Sqft</option>
+                    <option value="sqm">Sqm</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-zinc-400 mb-3"
+                  >Number of Floors</label
+                >
+                <input
+                  type="number"
+                  id="formFloors"
+                  min="1"
+                  max="10"
+                  value="1"
+                  required
+                  class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-brand-500/50 transition-all"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-zinc-400 mb-3"
+                  >Building Type</label
+                >
+                <div class="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    data-val="0"
+                    class="btn-type py-3 rounded-xl border border-white/10 bg-brand-500 text-white font-medium"
+                  >
+                    Residential
+                  </button>
+                  <button
+                    type="button"
+                    data-val="1"
+                    class="btn-type py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium hover:text-white transition-all"
+                  >
+                    Commercial
+                  </button>
+                  <button
+                    type="button"
+                    data-val="2"
+                    class="btn-type py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium hover:text-white transition-all"
+                  >
+                    Industrial
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-zinc-400 mb-3"
+                  >Quality Grade</label
+                >
+                <div class="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    data-val="0"
+                    class="btn-quality py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium"
+                  >
+                    Economy
+                  </button>
+                  <button
+                    type="button"
+                    data-val="1"
+                    class="btn-quality py-3 rounded-xl border border-white/10 bg-brand-500 text-white font-medium"
+                  >
+                    Standard
+                  </button>
+                  <button
+                    type="button"
+                    data-val="2"
+                    class="btn-quality py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium"
+                  >
+                    Premium
+                  </button>
+                </div>
+              </div>
+              <div class="md:col-span-2 pt-4">
+                <button
+                  type="submit"
+                  class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-5 rounded-2xl shadow-xl shadow-brand-500/10 active:scale-[0.98] transition-all"
+                >
+                  Generate Detailed Estimate
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- loader -->
+      <div id="loader" class="hidden text-center py-20">
+        <div
+          class="inline-block w-12 h-12 border-4 border-brand-500/20 border-t-brand-500 rounded-full animate-spin"
+        ></div>
+        <p class="mt-4 text-zinc-500 font-medium">
+          Calculating with AI Model...
+        </p>
+      </div>
+
+      <!-- error state -->
+      <div
+        id="errorState"
+        class="hidden glass border-red-500/30 p-6 rounded-2xl mb-12 flex items-center gap-4 text-red-400"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <p id="errorMsg" class="font-medium"></p>
+      </div>
+
+      <!-- results (Hidden by default) -->
+      <div id="results" class="hidden">
+        <div
+          class="flex flex-col md:flex-row items-end justify-between gap-4 mb-8"
+        >
+          <div>
+            <h3 class="text-2xl font-bold tracking-tight">
+              Estimated Quantities
+            </h3>
+            <p id="resDescription" class="text-zinc-500 text-sm mt-1"></p>
+          </div>
+          <div
+            id="resParsedBadge"
+            class="hidden bg-brand-500/10 border border-brand-500/20 px-4 py-2 rounded-full text-brand-400 text-xs font-semibold uppercase tracking-wider"
+          >
+            AI Parsed
+          </div>
+        </div>
+
+        <!-- Result Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
+          <!-- Cement -->
+          <div
+            class="glass p-6 rounded-2xl border-b-4 border-brand-500/50 hover:bg-white/5 transition-colors group"
+          >
+            <div
+              class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 text-brand-500 group-hover:scale-110 transition-transform"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+            <div class="text-3xl font-bold mb-1" id="resCement">--</div>
+            <div
+              class="text-xs text-zinc-500 font-medium uppercase tracking-wider"
+            >
+              Cement (Bags)
+            </div>
+            <div
+              class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden"
+            >
+              <div class="h-full bg-brand-500 w-[70%]"></div>
+            </div>
+          </div>
+
+          <!-- Sand -->
+          <div
+            class="glass p-6 rounded-2xl border-b-4 border-blue-500/50 hover:bg-white/5 transition-colors group"
+          >
+            <div
+              class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 text-blue-500 group-hover:scale-110 transition-transform"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="m16.19 2.81 5 5c.78.78.78 2.05 0 2.83l-10 10c-.78.78-2.05.78-2.83 0l-5-5a2 2 0 0 1 0-2.83l10-10c.78-.78 2.05-.78 2.83 0Z"
+                />
+                <path d="m9 9 1.5 1.5" />
+                <path d="m14 14 1.5 1.5" />
+                <path d="m11 11 1.5 1.5" />
+              </svg>
+            </div>
+            <div class="text-3xl font-bold mb-1" id="resSand">--</div>
+            <div
+              class="text-xs text-zinc-500 font-medium uppercase tracking-wider"
+            >
+              Sand (CFT)
+            </div>
+            <div
+              class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden"
+            >
+              <div class="h-full bg-blue-500 w-[60%]"></div>
+            </div>
+          </div>
+
+          <!-- Bricks -->
+          <div
+            class="glass p-6 rounded-2xl border-b-4 border-red-500/50 hover:bg-white/5 transition-colors group"
+          >
+            <div
+              class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 text-red-500 group-hover:scale-110 transition-transform"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="1" y="1" width="22" height="11" />
+                <rect x="1" y="12" width="22" height="11" />
+              </svg>
+            </div>
+            <div class="text-3xl font-bold mb-1" id="resBricks">--</div>
+            <div
+              class="text-xs text-zinc-500 font-medium uppercase tracking-wider"
+            >
+              Bricks (Nos)
+            </div>
+            <div
+              class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden"
+            >
+              <div class="h-full bg-red-500 w-[85%]"></div>
+            </div>
+          </div>
+
+          <!-- Aggregate -->
+          <div
+            class="glass p-6 rounded-2xl border-b-4 border-emerald-500/50 hover:bg-white/5 transition-colors group"
+          >
+            <div
+              class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 text-emerald-500 group-hover:scale-110 transition-transform"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M12 2L2 7l10 5 10-5-10-5Z" />
+                <path d="m2 17 10 5 10-5" />
+                <path d="m2 12 10 5 10-5" />
+              </svg>
+            </div>
+            <div class="text-3xl font-bold mb-1" id="resAggregate">--</div>
+            <div
+              class="text-xs text-zinc-500 font-medium uppercase tracking-wider"
+            >
+              Aggregate (CFT)
+            </div>
+            <div
+              class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden"
+            >
+              <div class="h-full bg-emerald-500 w-[55%]"></div>
+            </div>
+          </div>
+
+          <!-- Steel -->
+          <div
+            class="glass p-6 rounded-2xl border-b-4 border-amber-300/50 hover:bg-white/5 transition-colors group"
+          >
+            <div
+              class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 text-amber-300 group-hover:scale-110 transition-transform"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M7.7 20H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3.7"
+                />
+                <path d="m21 8.5-5 5" />
+                <path d="m16 8.5 5 5" />
+                <circle cx="16" cy="16" r="6" />
+              </svg>
+            </div>
+            <div class="text-3xl font-bold mb-1" id="resSteel">--</div>
+            <div
+              class="text-xs text-zinc-500 font-medium uppercase tracking-wider"
+            >
+              Steel (KG)
+            </div>
+            <div
+              class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden"
+            >
+              <div class="h-full bg-amber-300 w-[45%]"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Model Meta / Analysis -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          <div class="lg:col-span-2 glass p-8 rounded-3xl">
+            <div class="flex items-center justify-between mb-6">
+              <h4
+                class="text-sm font-semibold uppercase tracking-widest text-zinc-500"
+              >
+                Analysis Breakdown
+              </h4>
+              <div
+                class="text-xs text-brand-500 font-medium px-2 py-1 bg-brand-500/10 rounded"
+              >
+                Smart Insights
+              </div>
+            </div>
+            <div id="notesContainer" class="space-y-3">
+              <!-- notes will be injected here -->
+            </div>
+          </div>
+          <div class="glass p-8 rounded-3xl">
+            <h4
+              class="text-sm font-semibold uppercase tracking-widest text-zinc-500 mb-6"
+            >
+              Confidence Score
+            </h4>
+            <div class="flex items-end justify-between mb-2">
+              <div class="text-4xl font-bold" id="avgR2">--</div>
+              <div
+                class="text-emerald-400 text-sm font-medium flex items-center gap-1 mb-1"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m5 12 5 5L20 7" />
+                </svg>
+                Excellent
+              </div>
+            </div>
+            <p class="text-zinc-500 text-xs">
+              Based on R² scores from 5,000 synthetic training samples.
+            </p>
+            <div class="mt-6 space-y-3" id="r2List">
+              <!-- R2 bars will be injected here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- footer -->
+      <footer
+        class="mt-auto pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 animate-in fade-in duration-700 delay-500"
+      >
+        <div class="flex items-center gap-6">
+          <span class="text-sm text-zinc-500">Powered by Ayatiworks AI</span>
+          <span class="text-sm text-zinc-500">Built with FastAPI 2.0</span>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="#" class="text-zinc-500 hover:text-white transition-colors"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg
+          ></a>
+          <a href="#" class="text-zinc-500 hover:text-white transition-colors"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"
+              /></svg
+          ></a>
+          <a href="#" class="text-zinc-500 hover:text-white transition-colors"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+              /></svg
+          ></a>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      // Theme Logic
+      const html = document.documentElement;
+      const btnTheme = document.getElementById("themeToggle");
+
+      if (localStorage.theme === "light") {
+        html.classList.remove("dark");
+      }
+
+      btnTheme.onclick = () => {
+        if (html.classList.contains("dark")) {
+          html.classList.remove("dark");
+          localStorage.theme = "light";
+        } else {
+          html.classList.add("dark");
+          localStorage.theme = "dark";
+        }
+      };
+
+      // State
+      let currentBuildingType = 0;
+      let currentQuality = 1;
+
+      // Elements
+      const tabNLP = document.getElementById("tabNLP");
+      const tabForm = document.getElementById("tabForm");
+      const sectionNLP = document.getElementById("sectionNLP");
+      const sectionForm = document.getElementById("sectionForm");
+      const promptInput = document.getElementById("promptInput");
+      const btnNLP = document.getElementById("btnNLP");
+      const loader = document.getElementById("loader");
+      const results = document.getElementById("results");
+      const errorState = document.getElementById("errorState");
+      const errorMsg = document.getElementById("errorMsg");
+      const tags = document.querySelectorAll(".suggestion-tag");
+
+      // Tab Logic
+      tabNLP.onclick = () => {
+        tabNLP.className =
+          "px-6 py-2.5 rounded-xl text-sm font-medium transition-all bg-brand-500 text-white shadow-lg shadow-brand-500/10";
+        tabForm.className =
+          "px-6 py-2.5 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-white";
+        sectionNLP.classList.remove("hidden");
+        sectionForm.classList.add("hidden");
+      };
+
+      tabForm.onclick = () => {
+        tabForm.className =
+          "px-6 py-2.5 rounded-xl text-sm font-medium transition-all bg-brand-500 text-white shadow-lg shadow-brand-500/10";
+        tabNLP.className =
+          "px-6 py-2.5 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-white";
+        sectionForm.classList.remove("hidden");
+        sectionNLP.classList.add("hidden");
+      };
+
+      // Form Select Buttons
+      const btnsType = document.querySelectorAll(".btn-type");
+      btnsType.forEach((btn) => {
+        btn.onclick = () => {
+          btnsType.forEach(
+            (b) =>
+              (b.className =
+                "btn-type py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium hover:text-white transition-all"),
+          );
+          btn.className =
+            "btn-type py-3 rounded-xl border border-white/10 bg-brand-500 text-white font-medium";
+          currentBuildingType = parseInt(btn.dataset.val);
+        };
+      });
+
+      const btnsQuality = document.querySelectorAll(".btn-quality");
+      btnsQuality.forEach((btn) => {
+        btn.onclick = () => {
+          btnsQuality.forEach(
+            (b) =>
+              (b.className =
+                "btn-quality py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium hover:text-white transition-all"),
+          );
+          btn.className =
+            "btn-quality py-3 rounded-xl border border-white/10 bg-brand-500 text-white font-medium";
+          currentQuality = parseInt(btn.dataset.val);
+        };
+      });
+
+      // Tag Logic
+      tags.forEach((tag) => {
+        tag.onclick = () => {
+          promptInput.value = tag.innerText;
+          handleNLP();
+        };
+      });
+
+      // Handle NLP
+      async function handleNLP() {
+        const prompt = promptInput.value.trim();
+        if (!prompt) return;
+
+        showLoading(true);
+        try {
+          const response = await fetch("/estimate-from-prompt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt }),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            let errMsg = "Server error";
+            if (Array.isArray(data.detail)) {
+              errMsg = data.detail
+                .map((e) => `${e.loc[e.loc.length - 1]}: ${e.msg}`)
+                .join(", ");
+            } else if (data.detail) {
+              errMsg = data.detail;
+            }
+            throw new Error(errMsg);
+          }
+          displayResults(data, true);
+        } catch (err) {
+          console.error("Frontend Error (NLP):", err);
+          showError(err.message);
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      // Handle Form
+      document.getElementById("detailsForm").onsubmit = async (e) => {
+        e.preventDefault();
+        const payload = {
+          area: parseFloat(document.getElementById("formArea").value),
+          unit: document.getElementById("formUnit").value,
+          floors: parseInt(document.getElementById("formFloors").value),
+          building_type: currentBuildingType,
+          quality: currentQuality,
+        };
+
+        showLoading(true);
+        try {
+          const response = await fetch("/estimate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            let errMsg = "Server error";
+            if (Array.isArray(data.detail)) {
+              errMsg = data.detail
+                .map((e) => `${e.loc[e.loc.length - 1]}: ${e.msg}`)
+                .join(", ");
+            } else if (data.detail) {
+              errMsg = data.detail;
+            }
+            throw new Error(errMsg);
+          }
+          displayResults(data, false);
+        } catch (err) {
+          console.error("Frontend Error (Form):", err);
+          showError(err.message);
+        } finally {
+          showLoading(false);
+        }
+      };
+
+      function showLoading(show) {
+        if (show) {
+          loader.classList.remove("hidden");
+          results.classList.add("hidden");
+          errorState.classList.add("hidden");
+          results.scrollIntoView({ behavior: "smooth" });
+        } else {
+          loader.classList.add("hidden");
+        }
+      }
+
+      function showError(msg) {
+        errorMsg.innerText = msg;
+        errorState.classList.remove("hidden");
+        results.classList.add("hidden");
+      }
+
+      function displayResults(data, isNLP) {
+        console.log("Rendering data:", data);
+        results.classList.remove("hidden");
+        document
+          .getElementById("resParsedBadge")
+          .classList.toggle("hidden", !isNLP);
+
+        // Description
+        const areaValue = data.total_area_sqft
+          ? data.total_area_sqft.toLocaleString()
+          : "N/A";
+        const typeText = isNLP
+          ? data.parsed?.building_label || "Unknown"
+          : data.building_label || data.building_type || "Unknown";
+        const qualText = isNLP
+          ? data.parsed?.quality_label || "Unknown"
+          : data.quality_label || data.quality || "Unknown";
+        document.getElementById("resDescription").innerText =
+          `${areaValue} sqft | ${typeText} | ${qualText} Grade`;
+
+        // Quantities
+        const mats = data.materials || {};
+        document.getElementById("resCement").innerText = mats.cement_bags
+          ? mats.cement_bags.toLocaleString()
+          : "N/A";
+        document.getElementById("resSand").innerText = mats.sand_cft
+          ? mats.sand_cft.toLocaleString()
+          : "N/A";
+        document.getElementById("resBricks").innerText = mats.bricks
+          ? mats.bricks.toLocaleString()
+          : "N/A";
+        document.getElementById("resAggregate").innerText = mats.aggregate_cft
+          ? mats.aggregate_cft.toLocaleString()
+          : "N/A";
+        document.getElementById("resSteel").innerText = mats.steel_kg
+          ? mats.steel_kg.toLocaleString()
+          : "N/A";
+
+        // Notes / Breakdown
+        const notesArray = isNLP
+          ? data.parsed?.parsed_notes || []
+          : [
+              "Structured request processed.",
+              `Building Type: ${typeText}`,
+              `Quality Grade: ${qualText}`,
+            ];
+        const container = document.getElementById("notesContainer");
+        container.innerHTML = notesArray
+          .map(
+            (n) => `
+                <div class="flex items-start gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
+                    <div class="mt-1 w-1.5 h-1.5 rounded-full bg-brand-500"></div>
+                    <p class="text-sm text-zinc-300">${n}</p>
+                </div>
+            `,
+          )
+          .join("");
+
+        // R2 Visualization
+        const r2List = document.getElementById("r2List");
+        const scores = data.model_r2_scores || {};
+        let sum = 0;
+        let count = 0;
+        r2List.innerHTML = Object.entries(scores)
+          .map(([k, v]) => {
+            sum += v;
+            count++;
+            return `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] uppercase tracking-wider text-zinc-500 font-bold">
+                            <span>${k.replace("_", " ")}</span>
+                            <span>${(v * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-500" style="width: ${v * 100}%"></div>
+                        </div>
+                    </div>
+                `;
+          })
+          .join("");
+
+        document.getElementById("avgR2").innerText =
+          count > 0 ? `${((sum / count) * 100).toFixed(1)}%` : "N/A";
+
+        results.scrollIntoView({ behavior: "smooth" });
+      }
+
+      btnNLP.onclick = handleNLP;
+      promptInput.onkeydown = (e) => {
+        if (e.key === "Enter") handleNLP();
+      };
+
+      // Keyboard Shortcut ⌘K
+      window.onkeydown = (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+          e.preventDefault();
+          if (sectionNLP.classList.contains("hidden")) tabNLP.onclick();
+          promptInput.focus();
+        }
+      };
+    </script>
+  </body>
+</html>
