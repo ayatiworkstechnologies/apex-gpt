@@ -1,9 +1,9 @@
 """
-Pydantic schemas for request / response validation
+Pydantic schemas — v3 with city/state cost estimation
 """
 
 from enum import IntEnum
-from typing import Optional
+from typing import Optional, List, Dict
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -19,78 +19,101 @@ class QualityGrade(IntEnum):
     premium  = 2
 
 
+# ── Structured Request ─────────────────────────────────────────────────────────
 class EstimateRequest(BaseModel):
-    """
-    Prompting guide
-    ───────────────
-    area          : Built-up area per floor (numeric > 0)
-    unit          : "sqft" or "sqm"
-    floors        : 1–10
-    building_type : 0=Residential | 1=Commercial | 2=Industrial   (default 0)
-    quality       : 0=Economy     | 1=Standard   | 2=Premium      (default 1)
-    """
-    area: float = Field(
-        ...,
-        gt=0,
-        description="Built-up area of the project (must be > 0).",
-        examples=[1200.0],
-    )
-    unit: str = Field(
-        "sqft",
-        description="Unit of area: 'sqft' or 'sqm'.",
-        examples=["sqft", "sqm"],
-    )
-    floors: int = Field(
-        1,
-        ge=1,
-        le=10,
-        description="Number of floors (1–10).",
-        examples=[2],
-    )
-    building_type: BuildingType = Field(
-        BuildingType.residential,
-        description="0=Residential, 1=Commercial, 2=Industrial.",
-    )
-    quality: QualityGrade = Field(
-        QualityGrade.standard,
-        description="0=Economy, 1=Standard, 2=Premium.",
-    )
+    area:          float        = Field(..., gt=0, examples=[1200.0])
+    unit:          str          = Field("sqft", examples=["sqft", "sqm"])
+    floors:        int          = Field(1, ge=1, le=15)
+    building_type: BuildingType = Field(BuildingType.residential)
+    quality:       QualityGrade = Field(QualityGrade.standard)
+    city:          Optional[str]= Field(None, examples=["Chennai", "Mumbai"])
 
     @field_validator("unit")
     @classmethod
-    def validate_unit(cls, v: str) -> str:
+    def validate_unit(cls, v):
         v = v.lower().strip()
         if v not in ("sqft", "sqm"):
             raise ValueError("unit must be 'sqft' or 'sqm'")
         return v
 
-    model_config = {
-        "json_schema_extra": {
-            "examples": [
-                {
-                    "area": 1200,
-                    "unit": "sqft",
-                    "floors": 2,
-                    "building_type": 0,
-                    "quality": 1,
-                }
-            ]
-        }
-    }
+    model_config = {"json_schema_extra": {"examples": [
+        {"area":1200,"unit":"sqft","floors":3,"building_type":0,"quality":1,"city":"Chennai"}
+    ]}}
 
 
+# ── NLP Prompt Request ─────────────────────────────────────────────────────────
+class PromptRequest(BaseModel):
+    prompt: str = Field(..., min_length=5,
+        examples=["3 BHK 3 floor residential house in Chennai"])
+
+    model_config = {"json_schema_extra": {"examples": [
+        {"prompt": "3 BHK 3 floor residential house in Chennai"},
+        {"prompt": "2BHK house 1200 sqft G+1 Coimbatore standard"},
+        {"prompt": "commercial 5 floors 250 sqm Mumbai premium"},
+        {"prompt": "4 BHK luxury villa G+2 Bangalore 2400 sqft"},
+        {"prompt": "industrial warehouse 5000 sqft 2 floors Pune"},
+        {"prompt": "3 cents house coimbatore 2 floors standard"},
+    ]}}
+
+
+# ── Sub-models ─────────────────────────────────────────────────────────────────
 class MaterialQuantities(BaseModel):
-    cement_bags:   int = Field(..., description="Number of 50 kg cement bags.")
-    sand_cft:      int = Field(..., description="Sand in cubic feet.")
-    bricks:        int = Field(..., description="Number of bricks.")
-    aggregate_cft: int = Field(..., description="Stone aggregate in cubic feet.")
-    steel_kg:      int = Field(..., description="Reinforcement steel in kg.")
+    cement_bags:   int = Field(..., description="50 kg bags")
+    sand_cft:      int = Field(..., description="Cubic feet")
+    bricks:        int = Field(..., description="Nos")
+    aggregate_cft: int = Field(..., description="Cubic feet")
+    steel_kg:      int = Field(..., description="Kilograms")
 
 
+class CostBreakdown(BaseModel):
+    cement:    int
+    sand:      int
+    bricks:    int
+    aggregate: int
+    steel:     int
+
+
+class CostEstimate(BaseModel):
+    city:             str
+    state:            str
+    tier:             int
+    rates_used:       Dict[str, float]
+    cost_breakdown:   CostBreakdown
+    material_total:   int
+    labour_cost:      int
+    total_cost_inr:   int
+    cost_per_sqft:    float
+
+
+class ParsedDetails(BaseModel):
+    area:           float
+    unit:           str
+    floors:         int
+    building_type:  int
+    building_label: str
+    quality:        int
+    quality_label:  str
+    bhk:            Optional[int] = None
+    city:           str
+    state:          str
+    parsed_notes:   List[str]
+
+
+# ── Responses ──────────────────────────────────────────────────────────────────
 class EstimateResponse(BaseModel):
     input_area_sqft: float
     total_area_sqft: float
     building_type:   str
     quality:         str
     materials:       MaterialQuantities
-    model_r2_scores: Optional[dict] = None
+    cost:            CostEstimate
+    model_r2_scores: Optional[Dict[str, float]] = None
+
+
+class PromptResponse(BaseModel):
+    raw_prompt:      str
+    parsed:          ParsedDetails
+    total_area_sqft: float
+    materials:       MaterialQuantities
+    cost:            CostEstimate
+    model_r2_scores: Optional[Dict[str, float]] = None

@@ -1,7 +1,7 @@
 """
 Construction Material Estimator - Model Training
 =================================================
-Model  : MultiOutputRegressor wrapping RandomForestRegressor
+Model: MultiOutputRegressor wrapping RandomForestRegressor
 Targets: cement_bags, sand_cft, bricks, aggregate_cft, steel_kg
 Features: area_sqft, floors, building_type, quality, total_area_sqft
 """
@@ -12,31 +12,41 @@ import joblib
 import numpy as np
 import pandas as pd
 
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.multioutput import MultiOutputRegressor
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error, r2_score
 
-# ── Config ─────────────────────────────────────────────────────────────────────
-DATA_PATH  = os.path.join(os.path.dirname(__file__), "../data/training_data.csv")
-MODEL_DIR  = os.path.join(os.path.dirname(__file__), "../model")
-MODEL_PATH = os.path.join(MODEL_DIR, "estimator_model.pkl")
-META_PATH  = os.path.join(MODEL_DIR, "model_meta.json")
+# ─── Config ────────────────────────────────────────────────────────────────────
+
+DATA_PATH   = os.path.join(os.path.dirname(__file__), "../data/training_data.csv")
+MODEL_DIR   = os.path.join(os.path.dirname(__file__), "../model")
+MODEL_PATH  = os.path.join(MODEL_DIR, "estimator_model.pkl")
+META_PATH   = os.path.join(MODEL_DIR, "model_meta.json")
 
 FEATURES = ["area_sqft", "floors", "building_type", "quality", "total_area_sqft"]
 TARGETS  = ["cement_bags", "sand_cft", "bricks", "aggregate_cft", "steel_kg"]
 
 os.makedirs(MODEL_DIR, exist_ok=True)
 
-# ── Load Data ──────────────────────────────────────────────────────────────────
+# ─── Load Data ─────────────────────────────────────────────────────────────────
+
 def load_data(path=DATA_PATH):
     df = pd.read_csv(path)
-    return df[FEATURES], df[TARGETS]
+    X = df[FEATURES]
+    y = df[TARGETS]
+    return X, y
 
-# ── Build Pipeline ─────────────────────────────────────────────────────────────
+# ─── Build Pipeline ────────────────────────────────────────────────────────────
+
 def build_pipeline():
+    """
+    Pipeline:
+      1. StandardScaler  — normalise numeric features
+      2. MultiOutputRegressor(RandomForestRegressor) — predict all 5 targets at once
+    """
     rf = RandomForestRegressor(
         n_estimators=200,
         max_depth=12,
@@ -45,14 +55,16 @@ def build_pipeline():
         n_jobs=-1,
         random_state=42,
     )
-    return Pipeline([
+    pipeline = Pipeline([
         ("scaler", StandardScaler()),
         ("model",  MultiOutputRegressor(rf, n_jobs=-1)),
     ])
+    return pipeline
 
-# ── Evaluate ───────────────────────────────────────────────────────────────────
+# ─── Evaluate ──────────────────────────────────────────────────────────────────
+
 def evaluate(pipeline, X_test, y_test):
-    y_pred  = pipeline.predict(X_test)
+    y_pred = pipeline.predict(X_test)
     results = {}
     for i, target in enumerate(TARGETS):
         mae = mean_absolute_error(y_test.iloc[:, i], y_pred[:, i])
@@ -61,7 +73,8 @@ def evaluate(pipeline, X_test, y_test):
         print(f"  {target:<22} MAE={mae:>8.1f}   R²={r2:.4f}")
     return results
 
-# ── Train ──────────────────────────────────────────────────────────────────────
+# ─── Train ─────────────────────────────────────────────────────────────────────
+
 def train():
     print("Loading data …")
     X, y = load_data()
@@ -71,31 +84,37 @@ def train():
     )
     print(f"Train: {len(X_train)}  |  Test: {len(X_test)}")
 
+    print("\nBuilding pipeline …")
     pipeline = build_pipeline()
+
     print("Training …")
     pipeline.fit(X_train, y_train)
 
     print("\n── Evaluation on held-out test set ──")
     metrics = evaluate(pipeline, X_test, y_test)
 
+    # Save model
     joblib.dump(pipeline, MODEL_PATH)
     print(f"\nModel saved → {MODEL_PATH}")
 
+    # Save metadata
     meta = {
-        "features":      FEATURES,
-        "targets":       TARGETS,
+        "features": FEATURES,
+        "targets":  TARGETS,
         "train_samples": len(X_train),
         "test_samples":  len(X_test),
-        "metrics":       metrics,
+        "metrics": metrics,
     }
     with open(META_PATH, "w") as f:
         json.dump(meta, f, indent=2)
-    print(f"Meta  saved → {META_PATH}")
+    print(f"Meta saved  → {META_PATH}")
 
     return pipeline, metrics
 
-# ── Quick CLI test ─────────────────────────────────────────────────────────────
-def predict_single(pipeline, area_sqft, floors, building_type=0, quality=1):
+# ─── Predict helper (for quick CLI testing) ────────────────────────────────────
+
+def predict_single(pipeline, area_sqft: float, floors: int,
+                   building_type: int = 0, quality: int = 1):
     X = pd.DataFrame([{
         "area_sqft":       area_sqft,
         "floors":          floors,
@@ -108,7 +127,8 @@ def predict_single(pipeline, area_sqft, floors, building_type=0, quality=1):
 
 
 if __name__ == "__main__":
-    pipeline, _ = train()
+    pipeline, metrics = train()
+
     print("\n── Sample Prediction ──")
     sample = predict_single(pipeline, area_sqft=1200, floors=2,
                             building_type=0, quality=1)

@@ -1,6 +1,6 @@
 """
-Model loader & prediction service.
-Loads the trained sklearn pipeline once at startup (LRU-cached).
+Model loader & prediction service
+Loads the trained pipeline once at startup and exposes predict().
 """
 
 import os
@@ -22,12 +22,13 @@ QUALITY_LABELS  = {0: "Economy",     1: "Standard",   2: "Premium"}
 @lru_cache(maxsize=1)
 def load_model():
     """Load and cache the trained sklearn pipeline."""
-    return joblib.load(MODEL_PATH)
+    pipeline = joblib.load(MODEL_PATH)
+    return pipeline
 
 
 @lru_cache(maxsize=1)
 def load_meta() -> dict:
-    """Load model metadata — R² scores, feature list, sample counts."""
+    """Load model metadata (R² scores, feature list etc.)."""
     with open(META_PATH) as f:
         return json.load(f)
 
@@ -48,17 +49,17 @@ def predict(
 
     Parameters
     ----------
-    area          : Raw area value entered by user.
-    unit          : 'sqft' or 'sqm'  (auto-converts sqm → sqft).
+    area          : Raw area entered by user.
+    unit          : 'sqft' or 'sqm'.
     floors        : Number of floors.
-    building_type : 0=Residential, 1=Commercial, 2=Industrial.
-    quality       : 0=Economy, 1=Standard, 2=Premium.
+    building_type : 0/1/2  (residential / commercial / industrial).
+    quality       : 0/1/2  (economy / standard / premium).
 
     Returns
     -------
-    dict with material quantities + metadata.
+    dict with prediction and metadata.
     """
-    area_sqft  = sqm_to_sqft(area) if unit == "sqm" else area
+    area_sqft = sqm_to_sqft(area) if unit == "sqm" else area
     total_area = area_sqft * floors
 
     X = pd.DataFrame([{
@@ -69,9 +70,15 @@ def predict(
         "total_area_sqft": total_area,
     }])
 
-    preds     = load_model().predict(X)[0]
-    materials = {t: max(0, int(round(v))) for t, v in zip(TARGETS, preds)}
-    meta      = load_meta()
+    pipeline = load_model()
+    preds    = pipeline.predict(X)[0]
+
+    materials = {
+        t: max(0, int(round(v)))
+        for t, v in zip(TARGETS, preds)
+    }
+
+    meta = load_meta()
 
     return {
         "input_area_sqft": round(area_sqft, 2),
@@ -79,5 +86,7 @@ def predict(
         "building_type":   BUILDING_LABELS[building_type],
         "quality":         QUALITY_LABELS[quality],
         "materials":       materials,
-        "model_r2_scores": {t: meta["metrics"][t]["r2"] for t in TARGETS},
+        "model_r2_scores": {
+            t: meta["metrics"][t]["r2"] for t in TARGETS
+        },
     }

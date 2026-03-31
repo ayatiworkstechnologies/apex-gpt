@@ -1,13 +1,13 @@
 """
-Construction Material Estimator API
-=====================================
-FastAPI app — ML-powered material quantity predictions.
-
+Construction Material Estimator API — v3
+=========================================
 Endpoints:
-  POST /estimate              — structured JSON input
-  POST /estimate-from-prompt  — plain English input
+  POST /estimate              — structured JSON (with optional city)
+  POST /estimate-from-prompt  — plain English (city auto-detected)
+  GET  /cities                — list all supported cities
   GET  /health
   GET  /model/info
+  GET  /                      — serve frontend SPA
 
 Run  : uvicorn app.main:app --reload
 Docs : http://localhost:8000/docs
@@ -19,35 +19,40 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
 
-from app.schemas import EstimateRequest, EstimateResponse, MaterialQuantities
-from app.prompt_schemas import PromptRequest, PromptResponse, ParsedDetails
+from app.schemas import (
+    EstimateRequest, EstimateResponse,
+    PromptRequest, PromptResponse,
+    MaterialQuantities, CostEstimate, CostBreakdown, ParsedDetails,
+)
 from app.nlp_parser import parse_prompt
+from app.city_rates import resolve_city, get_cost_estimate, get_all_cities
 from app import predictor
 
 app = FastAPI(
-    title="Construction Material Estimator",
+    title="KSI Construction Estimator v3",
     description="""
-## M/S. Khayti Steel Industries Limited
+## M/S. Khayti Steel Industries Limited — v3
 
-ML-powered construction material quantity estimator.
+**City-aware** ML-powered construction material + cost estimator.
 
-### Two ways to call:
+### New in v3:
+- **City/State based cost estimation** — 50+ Indian cities
+- **Deep NLP** — auto-detects city from prompt ("in Chennai", "at Mumbai")
+- **Full ₹ cost breakdown** — materials + labour
+- **South Indian units** — supports cents, grounds
+- **Cost per sqft** calculation
 
-**1. Structured input** → `POST /estimate`
+### Endpoints:
+- `POST /estimate-from-prompt` → plain English description
+- `POST /estimate`             → structured JSON
+- `GET  /cities`               → all supported cities
+
+### Example prompt:
 ```json
-{"area": 1200, "unit": "sqft", "floors": 3, "building_type": 0, "quality": 1}
+{"prompt": "3 BHK 3 floor residential house in Chennai"}
 ```
-
-**2. Plain English prompt** → `POST /estimate-from-prompt`
-```json
-{"prompt": "3 BHK 3 floor residential house"}
-```
-
-**building_type:** 0=Residential | 1=Commercial | 2=Industrial
-
-**quality:** 0=Economy | 1=Standard | 2=Premium
 """,
-    version="2.0.0",
+    version="3.0.0",
 )
 
 app.add_middleware(
@@ -57,11 +62,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ─── Static Files & Templates ──────────────────────────────────────────────────
-
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
-
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
@@ -69,16 +71,15 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 async def startup_event():
     predictor.load_model()
     predictor.load_meta()
-    print("Model loaded and ready.")
+    print("✅ Model loaded. KSI Estimator v3 ready.")
 
 
 @app.get("/", tags=["Frontend"])
 def root():
-    """Return the main frontend SPA."""
     index_path = os.path.join(STATIC_DIR, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path, media_type="text/html")
-    return {"status": "ok", "message": "Static frontend not found yet. Please wait."}
+    return {"status": "ok", "version": "3.0.0", "docs": "/docs"}
 
 
 @app.get("/health", tags=["Health"])
@@ -86,27 +87,71 @@ def health():
     meta = predictor.load_meta()
     return {
         "status":        "healthy",
+        "version":       "3.0.0",
         "model":         "MultiOutputRegressor(RandomForestRegressor)",
         "train_samples": meta["train_samples"],
-        "targets":       meta["targets"],
+        "cities":        len(get_all_cities()),
     }
 
 
+@app.get("/cities", tags=["Reference"])
+def cities():
+    """List all supported cities with their cost multipliers."""
+    from app.city_rates import CITY_DB
+    return {
+        "total": len(CITY_DB),
+        "cities": [
+            {
+                "city":        k.title(),
+                "state":       v["state"],
+                "tier":        v["tier"],
+                "cost_mult":   v["cost_mult"],
+                "cement_rate": v["cement"],
+                "steel_rate":  v["steel"],
+            }
+            for k, v in sorted(CITY_DB.items(), key=lambda x: x[1]["state"])
+        ]
+    }
+
+
+def _build_cost(materials: dict, city_input, total_sqft: float) -> CostEstimate:
+    raw = get_cost_estimate(materials, city_input)
+    raw["cost_per_sqft"] = round(raw["total_cost_inr"] / total_sqft, 0) if total_sqft else 0
+    return CostEstimate(
+        city=raw["city"],
+        state=raw["state"],
+        tier=raw["tier"],
+        rates_used=raw["rates_used"],
+        cost_breakdown=CostBreakdown(**raw["cost_breakdown"]),
+        material_total=raw["material_total"],
+        labour_cost=raw["labour_cost"],
+        total_cost_inr=raw["total_cost_inr"],
+        cost_per_sqft=raw["cost_per_sqft"],
+    )
+
+
 @app.post("/estimate", response_model=EstimateResponse,
-          tags=["Estimation — structured"],
-          summary="Estimate via structured JSON fields")
+          tags=["Estimation"], summary="Structured estimate with optional city")
 def estimate(request: EstimateRequest):
-    """Submit structured fields and get material quantities."""
+    """
+    Structured estimate. Add `city` field for local cost rates.
+
+    ```json
+    {
+      "area": 1200, "unit": "sqft", "floors": 3,
+      "building_type": 0, "quality": 1, "city": "Chennai"
+    }
+    ```
+    """
     try:
         result = predictor.predict(
-            area=request.area,
-            unit=request.unit,
-            floors=request.floors,
-            building_type=int(request.building_type),
-            quality=int(request.quality),
+            area=request.area, unit=request.unit, floors=request.floors,
+            building_type=int(request.building_type), quality=int(request.quality),
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+    cost = _build_cost(result["materials"], request.city, result["total_area_sqft"])
 
     return EstimateResponse(
         input_area_sqft=result["input_area_sqft"],
@@ -114,97 +159,90 @@ def estimate(request: EstimateRequest):
         building_type=result["building_type"],
         quality=result["quality"],
         materials=MaterialQuantities(**result["materials"]),
+        cost=cost,
         model_r2_scores=result["model_r2_scores"],
     )
 
 
 @app.post("/estimate-from-prompt", response_model=PromptResponse,
-          tags=["Estimation — NLP prompt"],
-          summary="Estimate via plain English description")
+          tags=["Estimation"], summary="Natural language estimate — city auto-detected")
 def estimate_from_prompt(request: PromptRequest):
     """
-    ## Estimate from a Natural Language Prompt
+    ## Plain English → Full Estimate with City Costs
 
-    Describe your project in plain English — the API extracts details automatically.
+    ### Examples:
 
-    ### Prompt examples
-
-    **3 BHK house (your exact use case):**
+    **Basic (city auto-detected):**
     ```json
-    {"prompt": "3 BHK 3 floor residential house"}
+    {"prompt": "3 BHK 3 floor residential house in Chennai"}
     ```
 
-    **With explicit area:**
+    **With area:**
     ```json
-    {"prompt": "2BHK house 1200 sqft G+1 standard quality"}
+    {"prompt": "2BHK house 1200 sqft G+1 Coimbatore standard"}
     ```
 
-    **Commercial in sqm:**
+    **South Indian units:**
     ```json
-    {"prompt": "commercial building 5 floors 250 sqm premium"}
+    {"prompt": "3 cents house coimbatore 2 floors standard"}
     ```
 
-    **Economy home:**
+    **Premium commercial:**
     ```json
-    {"prompt": "small economy house 600 sqft"}
-    ```
-
-    **Luxury villa:**
-    ```json
-    {"prompt": "4 BHK luxury villa G+2"}
+    {"prompt": "commercial 5 floors 250 sqm Mumbai premium"}
     ```
 
     **Industrial:**
     ```json
-    {"prompt": "industrial warehouse 5000 sqft 2 floors"}
+    {"prompt": "factory shed 5000 sqft 2 floors Pune"}
     ```
 
-    ### What gets auto-detected:
-    - BHK count → area per floor (1BHK=500, 2BHK=850, 3BHK=1200, 4BHK=1800 sqft)
-    - Number of floors (1-10, G+N notation)
-    - Area + unit (sqft / sqm)
-    - Building type (residential / commercial / industrial)
-    - Quality grade (economy / standard / premium)
+    **State level:**
+    ```json
+    {"prompt": "3 BHK 1500 sqft house Tamil Nadu G+1 economy"}
+    ```
     """
     try:
         parsed = parse_prompt(request.prompt)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=422, detail=f"Parse error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Parse error: {e}")
 
     try:
         result = predictor.predict(
-            area=parsed["area"],
-            unit=parsed["unit"],
-            floors=parsed["floors"],
-            building_type=parsed["building_type"],
-            quality=parsed["quality"],
+            area=parsed["area"], unit=parsed["unit"], floors=parsed["floors"],
+            building_type=parsed["building_type"], quality=parsed["quality"],
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Model error: {e}")
 
-    BUILDING_LABELS = {0: "Residential", 1: "Commercial", 2: "Industrial"}
-    QUALITY_LABELS  = {0: "Economy",     1: "Standard",   2: "Premium"}
+    BLBL = {0:"Residential",1:"Commercial",2:"Industrial"}
+    QLBL = {0:"Economy",1:"Standard",2:"Premium"}
+
+    cost = _build_cost(result["materials"], parsed.get("city_data", {}).get("city"),
+                       result["total_area_sqft"])
 
     return PromptResponse(
         raw_prompt=parsed["raw_prompt"],
         parsed=ParsedDetails(
-            area=parsed["area"],
-            unit=parsed["unit"],
-            floors=parsed["floors"],
+            area=parsed["area"], unit=parsed["unit"], floors=parsed["floors"],
             building_type=parsed["building_type"],
-            building_label=BUILDING_LABELS[parsed["building_type"]],
+            building_label=BLBL[parsed["building_type"]],
             quality=parsed["quality"],
-            quality_label=QUALITY_LABELS[parsed["quality"]],
+            quality_label=QLBL[parsed["quality"]],
             bhk=parsed["bhk"],
+            city=parsed["city"],
+            state=parsed["state"],
             parsed_notes=parsed["parsed_notes"],
         ),
         total_area_sqft=result["total_area_sqft"],
         materials=MaterialQuantities(**result["materials"]),
+        cost=cost,
         model_r2_scores=result["model_r2_scores"],
     )
 
 
 @app.get("/model/info", tags=["Model"])
 def model_info():
-    """Returns training metadata and R2 / MAE scores per target."""
     return predictor.load_meta()
