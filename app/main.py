@@ -114,8 +114,8 @@ def cities():
     }
 
 
-def _build_cost(materials: dict, city_input, total_sqft: float) -> CostEstimate:
-    raw = get_cost_estimate(materials, city_input)
+def _build_cost(materials: dict, city_input, total_sqft: float, quality: int = 1) -> CostEstimate:
+    raw = get_cost_estimate(materials, city_input, total_sqft=total_sqft, quality=quality)
     raw["cost_per_sqft"] = round(raw["total_cost_inr"] / total_sqft, 0) if total_sqft else 0
     return CostEstimate(
         city=raw["city"],
@@ -125,6 +125,8 @@ def _build_cost(materials: dict, city_input, total_sqft: float) -> CostEstimate:
         cost_breakdown=CostBreakdown(**raw["cost_breakdown"]),
         material_total=raw["material_total"],
         labour_cost=raw["labour_cost"],
+        finishing_cost=raw["finishing_cost"],
+        overhead_cost=raw["overhead_cost"],
         total_cost_inr=raw["total_cost_inr"],
         cost_per_sqft=raw["cost_per_sqft"],
     )
@@ -151,7 +153,8 @@ def estimate(request: EstimateRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    cost = _build_cost(result["materials"], request.city, result["total_area_sqft"])
+    cost = _build_cost(result["materials"], request.city, result["total_area_sqft"],
+                       quality=int(request.quality))
 
     return EstimateResponse(
         input_area_sqft=result["input_area_sqft"],
@@ -221,7 +224,7 @@ def estimate_from_prompt(request: PromptRequest):
     QLBL = {0:"Economy",1:"Standard",2:"Premium"}
 
     cost = _build_cost(result["materials"], parsed.get("city_data", {}).get("city"),
-                       result["total_area_sqft"])
+                       result["total_area_sqft"], quality=parsed["quality"])
 
     return PromptResponse(
         raw_prompt=parsed["raw_prompt"],

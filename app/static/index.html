@@ -1,1013 +1,885 @@
 <!doctype html>
-<html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Material Estimator | Ayatiworks</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            fontFamily: { sans: ["Inter", "sans-serif"] },
-            colors: {
-              brand: {
-                50: "#fff7ed",
-                100: "#ffedd5",
-                200: "#fed7aa",
-                300: "#fdba74",
-                400: "#fb923c",
-                500: "#f97316",
-                600: "#ea580c",
-                700: "#c2410c",
-                800: "#9a3412",
-                900: "#7c2d12",
-                950: "#431407",
-              },
-            },
-            animation: {
-              "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-            },
-          },
-        },
-      };
-    </script>
-    <style>
-      body {
-        background-color: #0c0c0c;
-        color: #e5e7eb;
-      }
-      .glass {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-      }
-      .glass-btn {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.2s;
-      }
-      .glass-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-1px);
-      }
-      .prompt-ring {
-        box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
-      }
-      input:focus {
-        outline: none;
-      }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
-      }
-    </style>
-  </head>
-  <body class="min-h-screen flex flex-col font-sans selection:bg-brand-500/30">
-    <!-- background blobs -->
-    <div class="fixed inset-0 overflow-hidden -z-10 pointer-events-none">
-      <div
-        class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-brand-500/10 rounded-full blur-[120px] animate-pulse-slow"
-      ></div>
-      <div
-        class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[120px] animate-pulse-slow"
-      ></div>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="description" content="AI-powered construction material and cost estimator for 50+ Indian cities. Get instant estimates for cement, sand, bricks, aggregate, and steel."/>
+  <title>Construction Estimator | Ayatiworks AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+/* ── CSS Design System ──────────────────────────────────────────── */
+:root {
+  --bg-primary: #060a13;
+  --bg-secondary: #0d1321;
+  --bg-card: rgba(255,255,255,0.03);
+  --bg-card-hover: rgba(255,255,255,0.06);
+  --bg-input: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.12);
+  --text-primary: #f1f3f7;
+  --text-secondary: #8b95a8;
+  --text-muted: #4a5568;
+  --accent: #f97316;
+  --accent-glow: rgba(249,115,22,0.15);
+  --accent-dark: #c2410c;
+  --emerald: #10b981;
+  --blue: #3b82f6;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --violet: #8b5cf6;
+  --glass-bg: rgba(255,255,255,0.03);
+  --glass-border: rgba(255,255,255,0.06);
+  --glass-blur: 16px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.5);
+  --shadow-accent: 0 4px 30px rgba(249,115,22,0.15);
+  --font-sans: 'Inter',system-ui,-apple-system,sans-serif;
+  --font-display: 'Outfit','Inter',sans-serif;
+  --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: rgba(0,0,0,0.02);
+  --bg-card-hover: rgba(0,0,0,0.04);
+  --bg-input: rgba(0,0,0,0.03);
+  --border: rgba(0,0,0,0.08);
+  --border-hover: rgba(0,0,0,0.15);
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --glass-bg: rgba(255,255,255,0.7);
+  --glass-border: rgba(0,0,0,0.06);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+/* ── Reset & Base ───────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);min-height:100vh;display:flex;flex-direction:column;transition:background var(--transition),color var(--transition)}
+::selection{background:var(--accent);color:#fff;opacity:0.9}
+input,select,button,textarea{font-family:inherit;font-size:inherit}
+a{color:inherit;text-decoration:none}
+
+/* ── Utility ────────────────────────────────────────────────────── */
+.glass{background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));border:1px solid var(--glass-border)}
+.hidden{display:none!important}
+.container{max-width:1120px;margin:0 auto;width:100%;padding:0 24px}
+.fade-up{opacity:0;transform:translateY(12px);animation:fadeUp 0.5s ease forwards}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse-glow{0%,100%{opacity:0.4}50%{opacity:0.7}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Background Orbs ────────────────────────────────────────────── */
+.bg-orbs{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.bg-orbs .orb{position:absolute;border-radius:50%;filter:blur(100px);animation:pulse-glow 6s ease-in-out infinite}
+.bg-orbs .orb-1{width:35vw;height:35vw;top:-10%;left:-5%;background:rgba(249,115,22,0.06)}
+.bg-orbs .orb-2{width:30vw;height:30vw;bottom:-10%;right:-5%;background:rgba(59,130,246,0.04)}
+.bg-orbs .orb-3{width:20vw;height:20vw;top:40%;left:50%;background:rgba(139,92,246,0.03);animation-delay:2s}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+.header{padding:20px 0;position:sticky;top:0;z-index:50;background:rgba(6,10,19,0.7);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:background var(--transition)}
+[data-theme="light"] .header{background:rgba(248,250,252,0.85)}
+.header-inner{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;box-shadow:var(--shadow-accent)}
+.logo-text h1{font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:-0.02em}
+.logo-text span{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;font-weight:500}
+.header-actions{display:flex;align-items:center;gap:12px}
+.btn-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;transition:all var(--transition)}
+.btn-icon:hover{background:var(--bg-card-hover);color:var(--text-primary);transform:translateY(-1px)}
+.link-subtle{font-size:13px;color:var(--text-secondary);transition:color var(--transition);font-weight:500}
+.link-subtle:hover{color:var(--accent)}
+
+/* ── Hero ───────────────────────────────────────────────────────── */
+.hero{text-align:center;padding:56px 0 32px}
+.hero h2{font-family:var(--font-display);font-size:clamp(28px,5vw,48px);font-weight:800;letter-spacing:-0.03em;line-height:1.15;background:linear-gradient(180deg,var(--text-primary) 40%,var(--text-muted));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
+.hero p{color:var(--text-secondary);font-size:17px;max-width:520px;margin:0 auto;line-height:1.6}
+
+/* ── Tabs ───────────────────────────────────────────────────────── */
+.tabs{display:flex;justify-content:center;margin-bottom:28px}
+.tab-group{display:flex;gap:4px;padding:4px;border-radius:var(--radius-lg);background:var(--bg-card);border:1px solid var(--border)}
+.tab-btn{padding:10px 24px;border-radius:var(--radius-md);font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all var(--transition);background:transparent;color:var(--text-secondary)}
+.tab-btn:hover{color:var(--text-primary)}
+.tab-btn.active{background:var(--accent);color:#fff;box-shadow:var(--shadow-accent)}
+
+/* ── Input Sections ─────────────────────────────────────────────── */
+.input-wrap{margin-bottom:40px}
+.input-card{border-radius:var(--radius-2xl);padding:24px;box-shadow:var(--shadow-md)}
+.prompt-row{display:flex;gap:12px}
+.prompt-input{flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;font-size:16px;color:var(--text-primary);transition:all var(--transition)}
+.prompt-input::placeholder{color:var(--text-muted)}
+.prompt-input:focus{outline:none;border-color:rgba(249,115,22,0.4);box-shadow:0 0 0 4px var(--accent-glow)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;font-weight:700;padding:18px 32px;border-radius:var(--radius-lg);border:none;cursor:pointer;transition:all var(--transition);box-shadow:var(--shadow-accent);display:flex;align-items:center;gap:8px;font-size:15px;white-space:nowrap}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 35px rgba(249,115,22,0.25)}
+.btn-primary:active{transform:scale(0.97)}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.quick-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.quick-tags label{font-size:12px;color:var(--text-muted);font-weight:500;margin-right:4px}
+.tag{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;color:var(--text-secondary);background:var(--bg-input);border:1px solid var(--border);cursor:pointer;transition:all var(--transition);font-weight:500}
+.tag:hover{border-color:rgba(249,115,22,0.4);color:var(--text-primary);background:var(--accent-glow)}
+
+/* ── Form ───────────────────────────────────────────────────────── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em}
+.form-row{display:flex;gap:8px}
+.form-input{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px;color:var(--text-primary);transition:all var(--transition)}
+.form-input:focus{outline:none;border-color:rgba(249,115,22,0.4);box-shadow:0 0 0 3px var(--accent-glow)}
+.form-select{background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px;color:var(--text-primary);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95a8' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.form-select:focus{outline:none;border-color:rgba(249,115,22,0.4)}
+.btn-group{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.btn-select{padding:12px 8px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-input);color:var(--text-secondary);font-weight:600;font-size:13px;cursor:pointer;transition:all var(--transition);text-align:center}
+.btn-select:hover{border-color:var(--border-hover);color:var(--text-primary)}
+.btn-select.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.form-full{grid-column:1/-1}
+.btn-submit{width:100%;padding:18px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;font-weight:700;font-size:16px;border:none;cursor:pointer;transition:all var(--transition);box-shadow:var(--shadow-accent)}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 6px 35px rgba(249,115,22,0.25)}
+.btn-submit:active{transform:scale(0.98)}
+
+/* City Autocomplete */
+.city-wrap{position:relative}
+.city-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:240px;overflow-y:auto;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);z-index:100;animation:slideDown 0.15s ease}
+.city-dropdown::-webkit-scrollbar{width:6px}
+.city-dropdown::-webkit-scrollbar-track{background:transparent}
+.city-dropdown::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.city-state-header{padding:8px 14px;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;position:sticky;top:0;background:var(--bg-secondary)}
+.city-option{padding:10px 14px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background var(--transition)}
+.city-option:hover{background:var(--accent-glow)}
+.city-option .tier{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;background:var(--bg-card);color:var(--text-muted)}
+
+/* ── Loader ─────────────────────────────────────────────────────── */
+.loader-wrap{text-align:center;padding:60px 0}
+.spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px}
+.loader-wrap p{color:var(--text-muted);font-weight:500;font-size:14px}
+
+/* ── Error ──────────────────────────────────────────────────────── */
+.error-bar{padding:16px 20px;border-radius:var(--radius-lg);background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);color:var(--red);display:flex;align-items:center;gap:12px;margin-bottom:24px;font-size:14px;font-weight:500}
+
+/* ── Results ────────────────────────────────────────────────────── */
+.results{animation:fadeUp 0.4s ease}
+.results-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.results-header h3{font-family:var(--font-display);font-size:22px;font-weight:700}
+.results-header .desc{font-size:13px;color:var(--text-secondary);margin-top:4px}
+.badge{font-size:11px;padding:5px 14px;border-radius:20px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em}
+.badge-ai{background:var(--accent-glow);color:var(--accent);border:1px solid rgba(249,115,22,0.2)}
+.badge-city{background:rgba(59,130,246,0.08);color:var(--blue);border:1px solid rgba(59,130,246,0.15)}
+
+/* Cost Overview Cards */
+.cost-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.cost-card{border-radius:var(--radius-xl);padding:24px;text-align:center;position:relative;overflow:hidden}
+.cost-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,rgba(255,255,255,0.08),transparent);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.cost-card .label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:8px}
+.cost-card .value{font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-0.02em}
+.cost-card .sub{font-size:12px;color:var(--text-secondary);margin-top:4px}
+.cost-card.total{background:linear-gradient(135deg,rgba(249,115,22,0.08),rgba(249,115,22,0.02))}
+.cost-card.total .value{color:var(--accent)}
+.cost-card.sqft{background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(16,185,129,0.02))}
+.cost-card.sqft .value{color:var(--emerald)}
+.cost-card.labour{background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(139,92,246,0.02))}
+.cost-card.labour .value{color:var(--violet)}
+
+/* Material Cards */
+.materials-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.mat-card{border-radius:var(--radius-lg);padding:20px 16px;transition:all var(--transition);position:relative;overflow:hidden}
+.mat-card:hover{background:var(--bg-card-hover);transform:translateY(-2px)}
+.mat-card .mat-icon{width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px}
+.mat-card .mat-val{font-family:var(--font-display);font-size:24px;font-weight:800;margin-bottom:2px;letter-spacing:-0.01em}
+.mat-card .mat-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}
+.mat-card .mat-cost{font-size:12px;color:var(--text-secondary);margin-top:8px;font-weight:500}
+.mat-bar{height:3px;width:100%;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden}
+.mat-bar-fill{height:100%;border-radius:2px;transition:width 0.8s ease;width:0}
+.cement-color{color:#f97316}.cement-bg{background:rgba(249,115,22,0.1)}.cement-fill{background:var(--accent)}
+.sand-color{color:#3b82f6}.sand-bg{background:rgba(59,130,246,0.1)}.sand-fill{background:var(--blue)}
+.brick-color{color:#ef4444}.brick-bg{background:rgba(239,68,68,0.1)}.brick-fill{background:var(--red)}
+.agg-color{color:#10b981}.agg-bg{background:rgba(16,185,129,0.1)}.agg-fill{background:var(--emerald)}
+.steel-color{color:#f59e0b}.steel-bg{background:rgba(245,158,11,0.1)}.steel-fill{background:var(--amber)}
+
+/* Bottom Grid: Rates + Analysis + Confidence */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px}
+.panel{border-radius:var(--radius-xl);padding:24px}
+.panel-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.panel-title .chip{font-size:10px;padding:3px 10px;border-radius:10px;background:var(--accent-glow);color:var(--accent);font-weight:600}
+.rate-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.rate-row:last-child{border-bottom:none}
+.rate-row .rate-name{color:var(--text-secondary)}
+.rate-row .rate-val{font-weight:600;color:var(--text-primary)}
+.note-item{display:flex;gap:10px;padding:8px 12px;background:var(--bg-input);border-radius:var(--radius-sm);margin-bottom:6px;border:1px solid var(--border)}
+.note-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);margin-top:6px;flex-shrink:0}
+.note-text{font-size:13px;color:var(--text-secondary);line-height:1.5}
+.r2-avg{font-family:var(--font-display);font-size:36px;font-weight:800;margin-bottom:2px}
+.r2-label{font-size:12px;color:var(--emerald);font-weight:600;display:flex;align-items:center;gap:4px;margin-bottom:16px}
+.r2-item{margin-bottom:8px}
+.r2-header{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.r2-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.r2-bar-fill{height:100%;background:var(--emerald);border-radius:2px;transition:width 0.8s ease}
+
+/* Action Buttons */
+.action-row{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap}
+.btn-action{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius-md);font-size:13px;font-weight:600;cursor:pointer;transition:all var(--transition);border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary)}
+.btn-action:hover{background:var(--bg-card-hover);color:var(--text-primary);transform:translateY(-1px)}
+.btn-action svg{width:16px;height:16px}
+
+/* History */
+.history-section{margin-bottom:32px}
+.history-title{font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.history-list{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px}
+.history-list::-webkit-scrollbar{height:4px}
+.history-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.history-card{flex-shrink:0;padding:12px 16px;border-radius:var(--radius-md);background:var(--bg-card);border:1px solid var(--border);cursor:pointer;transition:all var(--transition);min-width:180px}
+.history-card:hover{border-color:var(--accent);background:var(--accent-glow)}
+.history-card .hc-prompt{font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+.history-card .hc-meta{font-size:11px;color:var(--text-muted)}
+.btn-clear-history{font-size:11px;color:var(--text-muted);cursor:pointer;background:none;border:none;font-weight:600;transition:color var(--transition)}
+.btn-clear-history:hover{color:var(--red)}
+
+/* ── Footer ─────────────────────────────────────────────────────── */
+.footer{margin-top:auto;padding:24px 0;border-top:1px solid var(--border)}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer span{font-size:12px;color:var(--text-muted)}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media(max-width:1024px){
+  .materials-grid{grid-template-columns:repeat(3,1fr)}
+  .bottom-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .container{padding:0 16px}
+  .hero{padding:36px 0 20px}
+  .prompt-row{flex-direction:column}
+  .form-grid{grid-template-columns:1fr}
+  .cost-row{grid-template-columns:1fr}
+  .materials-grid{grid-template-columns:repeat(2,1fr)}
+  .bottom-grid{grid-template-columns:1fr}
+  .cost-card .value{font-size:22px}
+  .action-row{flex-direction:column}
+}
+@media(max-width:480px){
+  .materials-grid{grid-template-columns:1fr 1fr}
+  .header-inner{gap:8px}
+  .link-subtle{display:none}
+}
+
+/* ── Print ──────────────────────────────────────────────────────── */
+@media print{
+  .header,.hero,.tabs,.input-wrap,.bg-orbs,.footer,.action-row,.history-section,.btn-icon{display:none!important}
+  body{background:#fff;color:#000}
+  .glass{background:#f8f9fa;border:1px solid #ddd;backdrop-filter:none}
+  .results{display:block!important}
+  .cost-card .value,.mat-card .mat-val{color:#000!important}
+  .mat-bar,.r2-bar{background:#e5e7eb}
+}
+  </style>
+</head>
+<body>
+  <div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-inner">
+      <div class="logo">
+        <div class="logo-icon">A</div>
+        <div class="logo-text">
+          <h1>Ayatiworks</h1>
+          <span>Construction Estimator v3.0</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/docs" target="_blank" class="link-subtle">API Docs</a>
+        <button id="themeToggle" class="btn-icon" title="Toggle theme">
+          <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v1"/><path d="M12 20v1"/><path d="M3 12h1"/><path d="M20 12h1"/><path d="m18.364 5.636-.707.707"/><path d="m6.343 17.657-.707.707"/><path d="m5.636 5.636.707.707"/><path d="m17.657 17.657.707.707"/><circle cx="12" cy="12" r="4"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="flex:1;display:flex;flex-direction:column">
+    <!-- Hero -->
+    <section class="hero fade-up">
+      <h2 id="heroGreeting">What are we building today?</h2>
+      <p>Describe your project in plain English or use the detailed form. AI-powered estimates for 50+ Indian cities.</p>
+    </section>
+
+    <!-- Tabs -->
+    <div class="tabs fade-up" style="animation-delay:0.1s">
+      <div class="tab-group">
+        <button id="tabNLP" class="tab-btn active">Smart Prompt</button>
+        <button id="tabForm" class="tab-btn">Detailed Form</button>
+      </div>
     </div>
 
-    <!-- main wrapper -->
-    <div class="flex-1 max-w-5xl mx-auto w-full px-6 py-12 flex flex-col">
-      <!-- header -->
-      <header
-        class="flex items-center justify-between mb-16 animate-in fade-in slide-in-from-top-4 duration-700"
-      >
-        <div class="flex items-center gap-3">
-          <div
-            class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/20"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 3v19" />
-              <path d="m5 8 14 8" />
-              <path d="m19 8-14 8" />
-            </svg>
+    <!-- Input -->
+    <div class="input-wrap fade-up" style="animation-delay:0.15s">
+      <!-- NLP Section -->
+      <div id="sectionNLP">
+        <div class="input-card glass">
+          <div class="prompt-row">
+            <input id="promptInput" type="text" class="prompt-input" placeholder="e.g. '3 BHK house 1200 sqft G+2 in Chennai premium'" autocomplete="off"/>
+            <button id="btnNLP" class="btn-primary">
+              <span>Estimate</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
           </div>
-          <div>
-            <h1 class="text-xl font-semibold tracking-tight">Ayatiworks</h1>
-            <p
-              class="text-xs text-zinc-500 uppercase tracking-widest font-medium"
-            >
-              Material Estimator v2.0
-            </p>
-          </div>
-        </div>
-        <div class="flex items-center gap-4">
-          <a
-            href="/docs"
-            target="_blank"
-            class="text-sm text-zinc-400 hover:text-white transition-colors"
-            >API Docs</a
-          >
-          <button id="themeToggle" class="glass-btn p-2 rounded-full">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="text-zinc-400"
-            >
-              <path d="M12 3v1" />
-              <path d="M12 20v1" />
-              <path d="M3 12h1" />
-              <path d="M20 12h1" />
-              <path d="m18.364 5.636-.707.707" />
-              <path d="m6.343 17.657-.707.707" />
-              <path d="m5.636 5.636.707.707" />
-              <path d="m17.657 17.657.707.707" />
-              <circle cx="12" cy="12" r="4" />
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      <!-- hero / welcome -->
-      <div
-        class="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150"
-      >
-        <h2
-          class="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-zinc-500"
-        >
-          Good afternoon, Ayati.
-        </h2>
-        <p class="text-zinc-400 text-lg max-w-xl mx-auto">
-          What are we building today? Describe your project below or use the
-          form for precise details.
-        </p>
-      </div>
-
-      <!-- tab switcher -->
-      <div class="flex justify-center mb-8">
-        <div class="glass p-1 rounded-2xl flex gap-1">
-          <button
-            id="tabNLP"
-            class="px-6 py-2.5 rounded-xl text-sm font-medium transition-all bg-brand-500 text-white shadow-lg shadow-brand-500/10"
-          >
-            Smart Prompt
-          </button>
-          <button
-            id="tabForm"
-            class="px-6 py-2.5 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-white"
-          >
-            Detailed Form
-          </button>
-        </div>
-      </div>
-
-      <!-- input container -->
-      <div class="mb-12 relative">
-        <!-- NLP Section -->
-        <div
-          id="sectionNLP"
-          class="block animate-in fade-in slide-in-from-bottom-2 duration-300"
-        >
-          <div
-            class="glass rounded-3xl p-4 md:p-6 shadow-2xl relative overflow-hidden"
-          >
-            <div class="flex flex-col md:flex-row gap-4">
-              <div class="flex-1 relative group">
-                <input
-                  id="promptInput"
-                  type="text"
-                  placeholder="Explain your project (e.g., '3 BHK house on 1200 sqft G+1')"
-                  class="w-full bg-white/5 border border-white/10 rounded-2xl py-5 pl-6 pr-16 text-lg placeholder:text-zinc-600 focus:border-brand-500/50 transition-all focus:ring-4 focus:ring-brand-500/10 active:scale-[0.99] origin-center duration-200"
-                />
-                <div
-                  class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2"
-                >
-                  <kbd
-                    class="hidden md:inline-flex h-6 items-center gap-1 rounded border border-white/10 bg-white/5 px-2 text-[10px] font-medium text-zinc-500 opacity-100"
-                  >
-                    <span class="text-xs">⌘</span>K
-                  </kbd>
-                </div>
-              </div>
-              <button
-                id="btnNLP"
-                class="bg-brand-500 hover:bg-brand-600 text-white font-semibold py-5 px-10 rounded-2xl shadow-xl shadow-brand-500/20 active:scale-95 transition-all flex items-center justify-center gap-2"
-              >
-                <span>Estimate</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M5 12h14" />
-                  <path d="m12 5 7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-            <div class="mt-4 flex flex-wrap gap-2">
-              <span class="text-xs text-zinc-500 mr-2">Quick tags:</span>
-              <button
-                class="suggestion-tag px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-zinc-400 hover:border-brand-500/50 hover:text-white transition-all"
-              >
-                3 BHK Villa
-              </button>
-              <button
-                class="suggestion-tag px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-zinc-400 hover:border-brand-500/50 hover:text-white transition-all"
-              >
-                600 sqft House
-              </button>
-              <button
-                class="suggestion-tag px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-zinc-400 hover:border-brand-500/50 hover:text-white transition-all"
-              >
-                Industrial Shed
-              </button>
-              <button
-                class="suggestion-tag px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-zinc-400 hover:border-brand-500/50 hover:text-white transition-all"
-              >
-                Office Space
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Form Section (Hidden by default) -->
-        <div
-          id="sectionForm"
-          class="hidden animate-in fade-in slide-in-from-bottom-2 duration-300"
-        >
-          <div class="glass rounded-3xl p-8 shadow-2xl">
-            <form
-              id="detailsForm"
-              class="grid grid-cols-1 md:grid-cols-2 gap-8"
-            >
-              <div>
-                <label class="block text-sm font-medium text-zinc-400 mb-3"
-                  >Built-up Area</label
-                >
-                <div class="flex gap-2">
-                  <input
-                    type="number"
-                    id="formArea"
-                    placeholder="1200"
-                    required
-                    min="0.1"
-                    step="0.1"
-                    class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-brand-500/50 transition-all"
-                  />
-                  <select
-                    id="formUnit"
-                    class="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-brand-500/50"
-                  >
-                    <option value="sqft">Sqft</option>
-                    <option value="sqm">Sqm</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-zinc-400 mb-3"
-                  >Number of Floors</label
-                >
-                <input
-                  type="number"
-                  id="formFloors"
-                  min="1"
-                  max="10"
-                  value="1"
-                  required
-                  class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-brand-500/50 transition-all"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-zinc-400 mb-3"
-                  >Building Type</label
-                >
-                <div class="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    data-val="0"
-                    class="btn-type py-3 rounded-xl border border-white/10 bg-brand-500 text-white font-medium"
-                  >
-                    Residential
-                  </button>
-                  <button
-                    type="button"
-                    data-val="1"
-                    class="btn-type py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium hover:text-white transition-all"
-                  >
-                    Commercial
-                  </button>
-                  <button
-                    type="button"
-                    data-val="2"
-                    class="btn-type py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium hover:text-white transition-all"
-                  >
-                    Industrial
-                  </button>
-                </div>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-zinc-400 mb-3"
-                  >Quality Grade</label
-                >
-                <div class="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    data-val="0"
-                    class="btn-quality py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium"
-                  >
-                    Economy
-                  </button>
-                  <button
-                    type="button"
-                    data-val="1"
-                    class="btn-quality py-3 rounded-xl border border-white/10 bg-brand-500 text-white font-medium"
-                  >
-                    Standard
-                  </button>
-                  <button
-                    type="button"
-                    data-val="2"
-                    class="btn-quality py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium"
-                  >
-                    Premium
-                  </button>
-                </div>
-              </div>
-              <div class="md:col-span-2 pt-4">
-                <button
-                  type="submit"
-                  class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-5 rounded-2xl shadow-xl shadow-brand-500/10 active:scale-[0.98] transition-all"
-                >
-                  Generate Detailed Estimate
-                </button>
-              </div>
-            </form>
+          <div class="quick-tags">
+            <label>Try:</label>
+            <button class="tag" data-prompt="3 BHK house 1200 sqft G+2 Chennai">3BHK Chennai</button>
+            <button class="tag" data-prompt="2 BHK flat 850 sqft Mumbai standard">2BHK Mumbai</button>
+            <button class="tag" data-prompt="commercial office 5 floors 250 sqm Bangalore premium">Office Bangalore</button>
+            <button class="tag" data-prompt="industrial warehouse 5000 sqft 2 floors Pune">Warehouse Pune</button>
+            <button class="tag" data-prompt="4 BHK luxury villa G+2 Hyderabad 2400 sqft">Villa Hyderabad</button>
           </div>
         </div>
       </div>
 
-      <!-- loader -->
-      <div id="loader" class="hidden text-center py-20">
-        <div
-          class="inline-block w-12 h-12 border-4 border-brand-500/20 border-t-brand-500 rounded-full animate-spin"
-        ></div>
-        <p class="mt-4 text-zinc-500 font-medium">
-          Calculating with AI Model...
-        </p>
-      </div>
-
-      <!-- error state -->
-      <div
-        id="errorState"
-        class="hidden glass border-red-500/30 p-6 rounded-2xl mb-12 flex items-center gap-4 text-red-400"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="8" x2="12" y2="12" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
-        </svg>
-        <p id="errorMsg" class="font-medium"></p>
-      </div>
-
-      <!-- results (Hidden by default) -->
-      <div id="results" class="hidden">
-        <div
-          class="flex flex-col md:flex-row items-end justify-between gap-4 mb-8"
-        >
-          <div>
-            <h3 class="text-2xl font-bold tracking-tight">
-              Estimated Quantities
-            </h3>
-            <p id="resDescription" class="text-zinc-500 text-sm mt-1"></p>
-          </div>
-          <div
-            id="resParsedBadge"
-            class="hidden bg-brand-500/10 border border-brand-500/20 px-4 py-2 rounded-full text-brand-400 text-xs font-semibold uppercase tracking-wider"
-          >
-            AI Parsed
-          </div>
-        </div>
-
-        <!-- Result Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
-          <!-- Cement -->
-          <div
-            class="glass p-6 rounded-2xl border-b-4 border-brand-500/50 hover:bg-white/5 transition-colors group"
-          >
-            <div
-              class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 text-brand-500 group-hover:scale-110 transition-transform"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-            </div>
-            <div class="text-3xl font-bold mb-1" id="resCement">--</div>
-            <div
-              class="text-xs text-zinc-500 font-medium uppercase tracking-wider"
-            >
-              Cement (Bags)
-            </div>
-            <div
-              class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden"
-            >
-              <div class="h-full bg-brand-500 w-[70%]"></div>
-            </div>
-          </div>
-
-          <!-- Sand -->
-          <div
-            class="glass p-6 rounded-2xl border-b-4 border-blue-500/50 hover:bg-white/5 transition-colors group"
-          >
-            <div
-              class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 text-blue-500 group-hover:scale-110 transition-transform"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="m16.19 2.81 5 5c.78.78.78 2.05 0 2.83l-10 10c-.78.78-2.05.78-2.83 0l-5-5a2 2 0 0 1 0-2.83l10-10c.78-.78 2.05-.78 2.83 0Z"
-                />
-                <path d="m9 9 1.5 1.5" />
-                <path d="m14 14 1.5 1.5" />
-                <path d="m11 11 1.5 1.5" />
-              </svg>
-            </div>
-            <div class="text-3xl font-bold mb-1" id="resSand">--</div>
-            <div
-              class="text-xs text-zinc-500 font-medium uppercase tracking-wider"
-            >
-              Sand (CFT)
-            </div>
-            <div
-              class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden"
-            >
-              <div class="h-full bg-blue-500 w-[60%]"></div>
-            </div>
-          </div>
-
-          <!-- Bricks -->
-          <div
-            class="glass p-6 rounded-2xl border-b-4 border-red-500/50 hover:bg-white/5 transition-colors group"
-          >
-            <div
-              class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 text-red-500 group-hover:scale-110 transition-transform"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="1" y="1" width="22" height="11" />
-                <rect x="1" y="12" width="22" height="11" />
-              </svg>
-            </div>
-            <div class="text-3xl font-bold mb-1" id="resBricks">--</div>
-            <div
-              class="text-xs text-zinc-500 font-medium uppercase tracking-wider"
-            >
-              Bricks (Nos)
-            </div>
-            <div
-              class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden"
-            >
-              <div class="h-full bg-red-500 w-[85%]"></div>
-            </div>
-          </div>
-
-          <!-- Aggregate -->
-          <div
-            class="glass p-6 rounded-2xl border-b-4 border-emerald-500/50 hover:bg-white/5 transition-colors group"
-          >
-            <div
-              class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 text-emerald-500 group-hover:scale-110 transition-transform"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M12 2L2 7l10 5 10-5-10-5Z" />
-                <path d="m2 17 10 5 10-5" />
-                <path d="m2 12 10 5 10-5" />
-              </svg>
-            </div>
-            <div class="text-3xl font-bold mb-1" id="resAggregate">--</div>
-            <div
-              class="text-xs text-zinc-500 font-medium uppercase tracking-wider"
-            >
-              Aggregate (CFT)
-            </div>
-            <div
-              class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden"
-            >
-              <div class="h-full bg-emerald-500 w-[55%]"></div>
-            </div>
-          </div>
-
-          <!-- Steel -->
-          <div
-            class="glass p-6 rounded-2xl border-b-4 border-amber-300/50 hover:bg-white/5 transition-colors group"
-          >
-            <div
-              class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 text-amber-300 group-hover:scale-110 transition-transform"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="M7.7 20H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3.7"
-                />
-                <path d="m21 8.5-5 5" />
-                <path d="m16 8.5 5 5" />
-                <circle cx="16" cy="16" r="6" />
-              </svg>
-            </div>
-            <div class="text-3xl font-bold mb-1" id="resSteel">--</div>
-            <div
-              class="text-xs text-zinc-500 font-medium uppercase tracking-wider"
-            >
-              Steel (KG)
-            </div>
-            <div
-              class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden"
-            >
-              <div class="h-full bg-amber-300 w-[45%]"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Model Meta / Analysis -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          <div class="lg:col-span-2 glass p-8 rounded-3xl">
-            <div class="flex items-center justify-between mb-6">
-              <h4
-                class="text-sm font-semibold uppercase tracking-widest text-zinc-500"
-              >
-                Analysis Breakdown
-              </h4>
-              <div
-                class="text-xs text-brand-500 font-medium px-2 py-1 bg-brand-500/10 rounded"
-              >
-                Smart Insights
+      <!-- Form Section -->
+      <div id="sectionForm" class="hidden">
+        <div class="input-card glass">
+          <form id="detailsForm" class="form-grid">
+            <div class="form-group">
+              <label>Built-up Area</label>
+              <div class="form-row">
+                <input type="number" id="formArea" class="form-input" placeholder="1200" required min="1" step="0.1" style="flex:1"/>
+                <select id="formUnit" class="form-select" style="width:100px">
+                  <option value="sqft">Sqft</option>
+                  <option value="sqm">Sqm</option>
+                </select>
               </div>
             </div>
-            <div id="notesContainer" class="space-y-3">
-              <!-- notes will be injected here -->
+            <div class="form-group">
+              <label>Number of Floors</label>
+              <input type="number" id="formFloors" class="form-input" min="1" max="15" value="1" required/>
             </div>
-          </div>
-          <div class="glass p-8 rounded-3xl">
-            <h4
-              class="text-sm font-semibold uppercase tracking-widest text-zinc-500 mb-6"
-            >
-              Confidence Score
-            </h4>
-            <div class="flex items-end justify-between mb-2">
-              <div class="text-4xl font-bold" id="avgR2">--</div>
-              <div
-                class="text-emerald-400 text-sm font-medium flex items-center gap-1 mb-1"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="m5 12 5 5L20 7" />
-                </svg>
-                Excellent
+            <div class="form-group">
+              <label>Building Type</label>
+              <div class="btn-group">
+                <button type="button" data-val="0" class="btn-select btn-type active">Residential</button>
+                <button type="button" data-val="1" class="btn-select btn-type">Commercial</button>
+                <button type="button" data-val="2" class="btn-select btn-type">Industrial</button>
               </div>
             </div>
-            <p class="text-zinc-500 text-xs">
-              Based on R² scores from 5,000 synthetic training samples.
-            </p>
-            <div class="mt-6 space-y-3" id="r2List">
-              <!-- R2 bars will be injected here -->
+            <div class="form-group">
+              <label>Quality Grade</label>
+              <div class="btn-group">
+                <button type="button" data-val="0" class="btn-select btn-quality">Economy</button>
+                <button type="button" data-val="1" class="btn-select btn-quality active">Standard</button>
+                <button type="button" data-val="2" class="btn-select btn-quality">Premium</button>
+              </div>
             </div>
-          </div>
+            <div class="form-group form-full">
+              <label>City (optional)</label>
+              <div class="city-wrap">
+                <input type="text" id="formCity" class="form-input" placeholder="Search city… (e.g. Chennai, Mumbai)" autocomplete="off"/>
+                <div id="cityDropdown" class="city-dropdown hidden"></div>
+              </div>
+            </div>
+            <div class="form-full">
+              <button type="submit" class="btn-submit">Generate Estimate</button>
+            </div>
+          </form>
         </div>
       </div>
-
-      <!-- footer -->
-      <footer
-        class="mt-auto pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8 animate-in fade-in duration-700 delay-500"
-      >
-        <div class="flex items-center gap-6">
-          <span class="text-sm text-zinc-500">Powered by Ayatiworks AI</span>
-          <span class="text-sm text-zinc-500">Built with FastAPI 2.0</span>
-        </div>
-        <div class="flex items-center gap-6">
-          <a href="#" class="text-zinc-500 hover:text-white transition-colors"
-            ><svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg
-          ></a>
-          <a href="#" class="text-zinc-500 hover:text-white transition-colors"
-            ><svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"
-              /></svg
-          ></a>
-          <a href="#" class="text-zinc-500 hover:text-white transition-colors"
-            ><svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
-              /></svg
-          ></a>
-        </div>
-      </footer>
     </div>
 
-    <script>
-      // Theme Logic
-      const html = document.documentElement;
-      const btnTheme = document.getElementById("themeToggle");
+    <!-- Loader -->
+    <div id="loader" class="loader-wrap hidden">
+      <div class="spinner"></div>
+      <p>Calculating with AI model…</p>
+    </div>
 
-      if (localStorage.theme === "light") {
-        html.classList.remove("dark");
-      }
+    <!-- Error -->
+    <div id="errorState" class="error-bar hidden">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="errorMsg"></span>
+    </div>
 
-      btnTheme.onclick = () => {
-        if (html.classList.contains("dark")) {
-          html.classList.remove("dark");
-          localStorage.theme = "light";
-        } else {
-          html.classList.add("dark");
-          localStorage.theme = "dark";
-        }
-      };
+    <!-- History -->
+    <div id="historySection" class="history-section hidden">
+      <div class="history-title">
+        <span>Recent Estimates</span>
+        <button id="clearHistory" class="btn-clear-history">Clear all</button>
+      </div>
+      <div id="historyList" class="history-list"></div>
+    </div>
 
-      // State
-      let currentBuildingType = 0;
-      let currentQuality = 1;
+    <!-- Results -->
+    <div id="results" class="results hidden">
+      <!-- Header -->
+      <div class="results-header">
+        <div>
+          <h3>Estimation Results</h3>
+          <p class="desc" id="resDescription"></p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span id="resCityBadge" class="badge badge-city hidden"></span>
+          <span id="resParsedBadge" class="badge badge-ai hidden">AI Parsed</span>
+        </div>
+      </div>
 
-      // Elements
-      const tabNLP = document.getElementById("tabNLP");
-      const tabForm = document.getElementById("tabForm");
-      const sectionNLP = document.getElementById("sectionNLP");
-      const sectionForm = document.getElementById("sectionForm");
-      const promptInput = document.getElementById("promptInput");
-      const btnNLP = document.getElementById("btnNLP");
-      const loader = document.getElementById("loader");
-      const results = document.getElementById("results");
-      const errorState = document.getElementById("errorState");
-      const errorMsg = document.getElementById("errorMsg");
-      const tags = document.querySelectorAll(".suggestion-tag");
+      <!-- Cost Overview -->
+      <div class="cost-row" id="costRow" style="grid-template-columns:repeat(5,1fr)">
+        <div class="cost-card total glass">
+          <div class="label">Total Cost</div>
+          <div class="value" id="costTotal">--</div>
+          <div class="sub">All inclusive</div>
+        </div>
+        <div class="cost-card sqft glass">
+          <div class="label">Cost per Sqft</div>
+          <div class="value" id="costSqft">--</div>
+          <div class="sub" id="costArea">--</div>
+        </div>
+        <div class="cost-card glass" style="background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(59,130,246,0.02))">
+          <div class="label">Structural Material</div>
+          <div class="value" id="costMaterialVal" style="color:var(--blue)">--</div>
+          <div class="sub" id="costMaterialPct"></div>
+        </div>
+        <div class="cost-card labour glass">
+          <div class="label">Labour Cost</div>
+          <div class="value" id="costLabour">--</div>
+          <div class="sub" id="costLabourPct"></div>
+        </div>
+        <div class="cost-card glass" style="background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.02))">
+          <div class="label">Finishing & MEP</div>
+          <div class="value" id="costFinishing" style="color:var(--amber)">--</div>
+          <div class="sub" id="costOverhead">Overhead: --</div>
+        </div>
+      </div>
 
-      // Tab Logic
-      tabNLP.onclick = () => {
-        tabNLP.className =
-          "px-6 py-2.5 rounded-xl text-sm font-medium transition-all bg-brand-500 text-white shadow-lg shadow-brand-500/10";
-        tabForm.className =
-          "px-6 py-2.5 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-white";
-        sectionNLP.classList.remove("hidden");
-        sectionForm.classList.add("hidden");
-      };
+      <!-- Materials -->
+      <div class="materials-grid" id="matsGrid">
+        <div class="mat-card glass">
+          <div class="mat-icon cement-bg cement-color">🧱</div>
+          <div class="mat-val" id="resCement">--</div>
+          <div class="mat-label">Cement (Bags)</div>
+          <div class="mat-cost" id="costCement"></div>
+          <div class="mat-bar"><div class="mat-bar-fill cement-fill" id="barCement"></div></div>
+        </div>
+        <div class="mat-card glass">
+          <div class="mat-icon sand-bg sand-color">🏖️</div>
+          <div class="mat-val" id="resSand">--</div>
+          <div class="mat-label">Sand (CFT)</div>
+          <div class="mat-cost" id="costSand"></div>
+          <div class="mat-bar"><div class="mat-bar-fill sand-fill" id="barSand"></div></div>
+        </div>
+        <div class="mat-card glass">
+          <div class="mat-icon brick-bg brick-color">🧱</div>
+          <div class="mat-val" id="resBricks">--</div>
+          <div class="mat-label">Bricks (Nos)</div>
+          <div class="mat-cost" id="costBricks"></div>
+          <div class="mat-bar"><div class="mat-bar-fill brick-fill" id="barBricks"></div></div>
+        </div>
+        <div class="mat-card glass">
+          <div class="mat-icon agg-bg agg-color">🪨</div>
+          <div class="mat-val" id="resAggregate">--</div>
+          <div class="mat-label">Aggregate (CFT)</div>
+          <div class="mat-cost" id="costAggregate"></div>
+          <div class="mat-bar"><div class="mat-bar-fill agg-fill" id="barAggregate"></div></div>
+        </div>
+        <div class="mat-card glass">
+          <div class="mat-icon steel-bg steel-color">🔩</div>
+          <div class="mat-val" id="resSteel">--</div>
+          <div class="mat-label">Steel (KG)</div>
+          <div class="mat-cost" id="costSteel"></div>
+          <div class="mat-bar"><div class="mat-bar-fill steel-fill" id="barSteel"></div></div>
+        </div>
+      </div>
 
-      tabForm.onclick = () => {
-        tabForm.className =
-          "px-6 py-2.5 rounded-xl text-sm font-medium transition-all bg-brand-500 text-white shadow-lg shadow-brand-500/10";
-        tabNLP.className =
-          "px-6 py-2.5 rounded-xl text-sm font-medium transition-all text-zinc-400 hover:text-white";
-        sectionForm.classList.remove("hidden");
-        sectionNLP.classList.add("hidden");
-      };
+      <!-- Bottom panels -->
+      <div class="bottom-grid">
+        <div class="panel glass">
+          <div class="panel-title"><span>Rate Card</span><span class="chip" id="rateCity">--</span></div>
+          <div id="rateTable"></div>
+        </div>
+        <div class="panel glass">
+          <div class="panel-title"><span>Analysis</span><span class="chip">Smart Insights</span></div>
+          <div id="notesContainer"></div>
+        </div>
+        <div class="panel glass">
+          <div class="panel-title">Model Confidence</div>
+          <div class="r2-avg" id="avgR2">--</div>
+          <div class="r2-label" id="r2Label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5L20 7"/></svg>
+            <span>Excellent</span>
+          </div>
+          <div id="r2List"></div>
+        </div>
+      </div>
 
-      // Form Select Buttons
-      const btnsType = document.querySelectorAll(".btn-type");
-      btnsType.forEach((btn) => {
-        btn.onclick = () => {
-          btnsType.forEach(
-            (b) =>
-              (b.className =
-                "btn-type py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium hover:text-white transition-all"),
-          );
-          btn.className =
-            "btn-type py-3 rounded-xl border border-white/10 bg-brand-500 text-white font-medium";
-          currentBuildingType = parseInt(btn.dataset.val);
-        };
-      });
+      <!-- Actions -->
+      <div class="action-row">
+        <button class="btn-action" onclick="window.print()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print Estimate
+        </button>
+        <button class="btn-action" id="btnNewEstimate">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          New Estimate
+        </button>
+      </div>
+    </div>
+  </main>
 
-      const btnsQuality = document.querySelectorAll(".btn-quality");
-      btnsQuality.forEach((btn) => {
-        btn.onclick = () => {
-          btnsQuality.forEach(
-            (b) =>
-              (b.className =
-                "btn-quality py-3 rounded-xl border border-white/10 bg-white/5 text-zinc-400 font-medium hover:text-white transition-all"),
-          );
-          btn.className =
-            "btn-quality py-3 rounded-xl border border-white/10 bg-brand-500 text-white font-medium";
-          currentQuality = parseInt(btn.dataset.val);
-        };
-      });
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>Powered by Ayatiworks AI · FastAPI v3</span>
+      <span>50+ Indian cities · ML R²&gt;99%</span>
+    </div>
+  </footer>
 
-      // Tag Logic
-      tags.forEach((tag) => {
-        tag.onclick = () => {
-          promptInput.value = tag.innerText;
-          handleNLP();
-        };
-      });
+  <script>
+/* ══════════════════════════════════════════════════════════════════
+   CONSTRUCTION ESTIMATOR — Frontend v3.0
+   ══════════════════════════════════════════════════════════════════ */
 
-      // Handle NLP
-      async function handleNLP() {
-        const prompt = promptInput.value.trim();
-        if (!prompt) return;
+// ── Theme ───────────────────────────────────────────────────────
+const html = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+if (localStorage.getItem('theme') === 'light') html.dataset.theme = 'light';
+themeBtn.onclick = () => {
+  const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  html.dataset.theme = next;
+  localStorage.setItem('theme', next);
+};
 
-        showLoading(true);
-        try {
-          const response = await fetch("/estimate-from-prompt", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt }),
-          });
-          const data = await response.json();
-          if (!response.ok) {
-            let errMsg = "Server error";
-            if (Array.isArray(data.detail)) {
-              errMsg = data.detail
-                .map((e) => `${e.loc[e.loc.length - 1]}: ${e.msg}`)
-                .join(", ");
-            } else if (data.detail) {
-              errMsg = data.detail;
-            }
-            throw new Error(errMsg);
-          }
-          displayResults(data, true);
-        } catch (err) {
-          console.error("Frontend Error (NLP):", err);
-          showError(err.message);
-        } finally {
-          showLoading(false);
-        }
-      }
+// ── Greeting ────────────────────────────────────────────────────
+const h = new Date().getHours();
+const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+document.getElementById('heroGreeting').textContent = `${greet}! What are we building?`;
 
-      // Handle Form
-      document.getElementById("detailsForm").onsubmit = async (e) => {
-        e.preventDefault();
-        const payload = {
-          area: parseFloat(document.getElementById("formArea").value),
-          unit: document.getElementById("formUnit").value,
-          floors: parseInt(document.getElementById("formFloors").value),
-          building_type: currentBuildingType,
-          quality: currentQuality,
-        };
+// ── State ───────────────────────────────────────────────────────
+let currentBuildingType = 0, currentQuality = 1;
+let allCities = [];
 
-        showLoading(true);
-        try {
-          const response = await fetch("/estimate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          const data = await response.json();
-          if (!response.ok) {
-            let errMsg = "Server error";
-            if (Array.isArray(data.detail)) {
-              errMsg = data.detail
-                .map((e) => `${e.loc[e.loc.length - 1]}: ${e.msg}`)
-                .join(", ");
-            } else if (data.detail) {
-              errMsg = data.detail;
-            }
-            throw new Error(errMsg);
-          }
-          displayResults(data, false);
-        } catch (err) {
-          console.error("Frontend Error (Form):", err);
-          showError(err.message);
-        } finally {
-          showLoading(false);
-        }
-      };
+// ── Elements ────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const tabNLP = $('tabNLP'), tabForm = $('tabForm');
+const secNLP = $('sectionNLP'), secForm = $('sectionForm');
+const promptInput = $('promptInput'), btnNLP = $('btnNLP');
+const loader = $('loader'), results = $('results');
+const errorState = $('errorState'), errorMsg = $('errorMsg');
 
-      function showLoading(show) {
-        if (show) {
-          loader.classList.remove("hidden");
-          results.classList.add("hidden");
-          errorState.classList.add("hidden");
-          results.scrollIntoView({ behavior: "smooth" });
-        } else {
-          loader.classList.add("hidden");
-        }
-      }
+// ── Tabs ────────────────────────────────────────────────────────
+function setTab(isNLP) {
+  tabNLP.classList.toggle('active', isNLP);
+  tabForm.classList.toggle('active', !isNLP);
+  secNLP.classList.toggle('hidden', !isNLP);
+  secForm.classList.toggle('hidden', isNLP);
+}
+tabNLP.onclick = () => setTab(true);
+tabForm.onclick = () => setTab(false);
 
-      function showError(msg) {
-        errorMsg.innerText = msg;
-        errorState.classList.remove("hidden");
-        results.classList.add("hidden");
-      }
+// ── Form Selectors ──────────────────────────────────────────────
+document.querySelectorAll('.btn-type').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.btn-type').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentBuildingType = +btn.dataset.val;
+  };
+});
+document.querySelectorAll('.btn-quality').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.btn-quality').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentQuality = +btn.dataset.val;
+  };
+});
 
-      function displayResults(data, isNLP) {
-        console.log("Rendering data:", data);
-        results.classList.remove("hidden");
-        document
-          .getElementById("resParsedBadge")
-          .classList.toggle("hidden", !isNLP);
+// ── Quick Tags ──────────────────────────────────────────────────
+document.querySelectorAll('.tag').forEach(tag => {
+  tag.onclick = () => { promptInput.value = tag.dataset.prompt; handleNLP(); };
+});
 
-        // Description
-        const areaValue = data.total_area_sqft
-          ? data.total_area_sqft.toLocaleString()
-          : "N/A";
-        const typeText = isNLP
-          ? data.parsed?.building_label || "Unknown"
-          : data.building_label || data.building_type || "Unknown";
-        const qualText = isNLP
-          ? data.parsed?.quality_label || "Unknown"
-          : data.quality_label || data.quality || "Unknown";
-        document.getElementById("resDescription").innerText =
-          `${areaValue} sqft | ${typeText} | ${qualText} Grade`;
+// ── City Autocomplete ───────────────────────────────────────────
+const cityInput = $('formCity'), cityDrop = $('cityDropdown');
+let selectedCity = null;
 
-        // Quantities
-        const mats = data.materials || {};
-        document.getElementById("resCement").innerText = mats.cement_bags
-          ? mats.cement_bags.toLocaleString()
-          : "N/A";
-        document.getElementById("resSand").innerText = mats.sand_cft
-          ? mats.sand_cft.toLocaleString()
-          : "N/A";
-        document.getElementById("resBricks").innerText = mats.bricks
-          ? mats.bricks.toLocaleString()
-          : "N/A";
-        document.getElementById("resAggregate").innerText = mats.aggregate_cft
-          ? mats.aggregate_cft.toLocaleString()
-          : "N/A";
-        document.getElementById("resSteel").innerText = mats.steel_kg
-          ? mats.steel_kg.toLocaleString()
-          : "N/A";
+async function loadCities() {
+  try {
+    const res = await fetch('/cities');
+    const data = await res.json();
+    allCities = data.cities || [];
+  } catch(e) { console.warn('Could not load cities', e); }
+}
+loadCities();
 
-        // Notes / Breakdown
-        const notesArray = isNLP
-          ? data.parsed?.parsed_notes || []
-          : [
-              "Structured request processed.",
-              `Building Type: ${typeText}`,
-              `Quality Grade: ${qualText}`,
-            ];
-        const container = document.getElementById("notesContainer");
-        container.innerHTML = notesArray
-          .map(
-            (n) => `
-                <div class="flex items-start gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
-                    <div class="mt-1 w-1.5 h-1.5 rounded-full bg-brand-500"></div>
-                    <p class="text-sm text-zinc-300">${n}</p>
-                </div>
-            `,
-          )
-          .join("");
+cityInput.onfocus = () => renderCityDropdown(cityInput.value);
+cityInput.oninput = () => renderCityDropdown(cityInput.value);
+document.addEventListener('click', e => {
+  if (!e.target.closest('.city-wrap')) cityDrop.classList.add('hidden');
+});
 
-        // R2 Visualization
-        const r2List = document.getElementById("r2List");
-        const scores = data.model_r2_scores || {};
-        let sum = 0;
-        let count = 0;
-        r2List.innerHTML = Object.entries(scores)
-          .map(([k, v]) => {
-            sum += v;
-            count++;
-            return `
-                    <div class="space-y-1">
-                        <div class="flex justify-between text-[10px] uppercase tracking-wider text-zinc-500 font-bold">
-                            <span>${k.replace("_", " ")}</span>
-                            <span>${(v * 100).toFixed(1)}%</span>
-                        </div>
-                        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                            <div class="h-full bg-emerald-500" style="width: ${v * 100}%"></div>
-                        </div>
-                    </div>
-                `;
-          })
-          .join("");
+function renderCityDropdown(query) {
+  const q = query.toLowerCase().trim();
+  const filtered = q ? allCities.filter(c =>
+    c.city.toLowerCase().includes(q) || c.state.toLowerCase().includes(q)
+  ) : allCities;
+  if (!filtered.length) { cityDrop.classList.add('hidden'); return; }
 
-        document.getElementById("avgR2").innerText =
-          count > 0 ? `${((sum / count) * 100).toFixed(1)}%` : "N/A";
+  const grouped = {};
+  filtered.forEach(c => {
+    if (!grouped[c.state]) grouped[c.state] = [];
+    grouped[c.state].push(c);
+  });
 
-        results.scrollIntoView({ behavior: "smooth" });
-      }
+  let html = '';
+  for (const [state, cities] of Object.entries(grouped).sort()) {
+    html += `<div class="city-state-header">${state}</div>`;
+    cities.forEach(c => {
+      html += `<div class="city-option" data-city="${c.city}">
+        <span>${c.city}</span>
+        <span class="tier">Tier ${c.tier}</span>
+      </div>`;
+    });
+  }
+  cityDrop.innerHTML = html;
+  cityDrop.classList.remove('hidden');
 
-      btnNLP.onclick = handleNLP;
-      promptInput.onkeydown = (e) => {
-        if (e.key === "Enter") handleNLP();
-      };
+  cityDrop.querySelectorAll('.city-option').forEach(opt => {
+    opt.onclick = () => {
+      selectedCity = opt.dataset.city;
+      cityInput.value = selectedCity;
+      cityDrop.classList.add('hidden');
+    };
+  });
+}
 
-      // Keyboard Shortcut ⌘K
-      window.onkeydown = (e) => {
-        if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-          e.preventDefault();
-          if (sectionNLP.classList.contains("hidden")) tabNLP.onclick();
-          promptInput.focus();
-        }
-      };
-    </script>
-  </body>
+// ── Indian currency formatter ───────────────────────────────────
+function formatINR(n) {
+  if (n == null) return '--';
+  const str = Math.round(n).toString();
+  if (str.length <= 3) return '₹' + str;
+  let last3 = str.slice(-3);
+  let rest = str.slice(0, -3);
+  let formatted = '';
+  while (rest.length > 2) {
+    formatted = ',' + rest.slice(-2) + formatted;
+    rest = rest.slice(0, -2);
+  }
+  return '₹' + rest + formatted + ',' + last3;
+}
+
+function formatNum(n) {
+  return n != null ? n.toLocaleString('en-IN') : '--';
+}
+
+// ── Animated Counter ────────────────────────────────────────────
+function animateValue(el, end, prefix='', suffix='') {
+  const dur = 600;
+  const start = 0;
+  const startTime = performance.now();
+  function tick(now) {
+    const p = Math.min((now - startTime) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val = Math.round(start + (end - start) * ease);
+    el.textContent = prefix + val.toLocaleString('en-IN') + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// ── API: NLP ────────────────────────────────────────────────────
+async function handleNLP() {
+  const prompt = promptInput.value.trim();
+  if (!prompt) return;
+  showLoading(true);
+  try {
+    const res = await fetch('/estimate-from-prompt', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(Array.isArray(data.detail)
+      ? data.detail.map(e => e.msg).join(', ') : data.detail || 'Server error');
+    displayResults(data, true, prompt);
+  } catch(e) { showError(e.message); }
+  finally { showLoading(false); }
+}
+
+// ── API: Form ───────────────────────────────────────────────────
+$('detailsForm').onsubmit = async e => {
+  e.preventDefault();
+  const payload = {
+    area: parseFloat($('formArea').value),
+    unit: $('formUnit').value,
+    floors: parseInt($('formFloors').value),
+    building_type: currentBuildingType,
+    quality: currentQuality,
+    city: selectedCity || cityInput.value || null
+  };
+  showLoading(true);
+  try {
+    const res = await fetch('/estimate', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(Array.isArray(data.detail)
+      ? data.detail.map(e => e.msg).join(', ') : data.detail || 'Server error');
+    displayResults(data, false, `${payload.area} ${payload.unit} ${payload.floors}F`);
+  } catch(e) { showError(e.message); }
+  finally { showLoading(false); }
+};
+
+btnNLP.onclick = handleNLP;
+promptInput.onkeydown = e => { if (e.key === 'Enter') handleNLP(); };
+
+// ── UI helpers ──────────────────────────────────────────────────
+function showLoading(show) {
+  loader.classList.toggle('hidden', !show);
+  if (show) { results.classList.add('hidden'); errorState.classList.add('hidden'); }
+}
+function showError(msg) {
+  errorMsg.textContent = msg;
+  errorState.classList.remove('hidden');
+  results.classList.add('hidden');
+}
+
+// ── Display Results ─────────────────────────────────────────────
+function displayResults(data, isNLP, promptText) {
+  results.classList.remove('hidden');
+  $('resParsedBadge').classList.toggle('hidden', !isNLP);
+
+  const cost = data.cost || {};
+  const mats = data.materials || {};
+  const parsed = data.parsed || {};
+  const r2 = data.model_r2_scores || {};
+
+  // City badge
+  const cityBadge = $('resCityBadge');
+  if (cost.city) {
+    cityBadge.textContent = `📍 ${cost.city}, ${cost.state || ''} (Tier ${cost.tier || '?'})`;
+    cityBadge.classList.remove('hidden');
+  } else { cityBadge.classList.add('hidden'); }
+
+  // Description
+  const area = data.total_area_sqft ? formatNum(Math.round(data.total_area_sqft)) : 'N/A';
+  const bType = isNLP ? (parsed.building_label||'') : (data.building_type||'');
+  const qType = isNLP ? (parsed.quality_label||'') : (data.quality||'');
+  $('resDescription').textContent = `${area} sqft total · ${bType} · ${qType}`;
+
+  // Cost cards
+  const total = cost.total_cost_inr || 0;
+  $('costTotal').textContent = total ? formatINR(total) : '--';
+  $('costSqft').textContent = cost.cost_per_sqft ? formatINR(cost.cost_per_sqft) : '--';
+  $('costArea').textContent = data.total_area_sqft ? `${formatNum(Math.round(data.total_area_sqft))} sqft total` : '';
+  $('costMaterialVal').textContent = cost.material_total ? formatINR(cost.material_total) : '--';
+  $('costMaterialPct').textContent = total ? `${Math.round(cost.material_total/total*100)}% of total` : '';
+  $('costLabour').textContent = cost.labour_cost ? formatINR(cost.labour_cost) : '--';
+  $('costLabourPct').textContent = total ? `${Math.round(cost.labour_cost/total*100)}% of total` : '';
+  $('costFinishing').textContent = cost.finishing_cost ? formatINR(cost.finishing_cost) : '--';
+  $('costOverhead').textContent = cost.overhead_cost ? `Overhead: ${formatINR(cost.overhead_cost)}` : '';
+
+  // Materials
+  const maxQty = Math.max(mats.cement_bags||0, mats.sand_cft||0, mats.bricks||0, mats.aggregate_cft||0, mats.steel_kg||0, 1);
+  const cb = cost.cost_breakdown || {};
+
+  function setMat(id, barId, costId, qty, barColor, costVal) {
+    $(id).textContent = formatNum(qty);
+    setTimeout(() => { $(barId).style.width = Math.max(5, (qty/maxQty)*100) + '%'; }, 100);
+    $(costId).textContent = costVal ? formatINR(costVal) : '';
+  }
+  setMat('resCement','barCement','costCement', mats.cement_bags, 'cement', cb.cement);
+  setMat('resSand','barSand','costSand', mats.sand_cft, 'sand', cb.sand);
+  setMat('resBricks','barBricks','costBricks', mats.bricks, 'brick', cb.bricks);
+  setMat('resAggregate','barAggregate','costAggregate', mats.aggregate_cft, 'agg', cb.aggregate);
+  setMat('resSteel','barSteel','costSteel', mats.steel_kg, 'steel', cb.steel);
+
+  // Rate card
+  const rates = cost.rates_used || {};
+  $('rateCity').textContent = cost.city || 'Default';
+  $('rateTable').innerHTML = [
+    ['Cement', rates.cement_per_bag, '/bag'],
+    ['Sand', rates.sand_per_cft, '/cft'],
+    ['Brick', rates.brick_per_nos, '/nos'],
+    ['Aggregate', rates.aggregate_per_cft, '/cft'],
+    ['Steel', rates.steel_per_kg, '/kg'],
+  ].map(([n,v,u]) => `<div class="rate-row"><span class="rate-name">${n}</span><span class="rate-val">${v ? '₹'+v+u : '--'}</span></div>`).join('');
+
+  // Notes
+  const notes = isNLP ? (parsed.parsed_notes || []) : [`Building: ${bType}`, `Quality: ${qType}`, `Area: ${area} sqft`];
+  $('notesContainer').innerHTML = notes.map(n =>
+    `<div class="note-item"><div class="note-dot"></div><div class="note-text">${n}</div></div>`
+  ).join('');
+
+  // R2
+  let sum=0, cnt=0;
+  $('r2List').innerHTML = Object.entries(r2).map(([k,v]) => {
+    sum+=v; cnt++;
+    return `<div class="r2-item"><div class="r2-header"><span>${k.replace(/_/g,' ')}</span><span>${(v*100).toFixed(1)}%</span></div><div class="r2-bar"><div class="r2-bar-fill" style="width:${v*100}%"></div></div></div>`;
+  }).join('');
+  const avg = cnt ? ((sum/cnt)*100).toFixed(1) : '--';
+  $('avgR2').textContent = avg + '%';
+
+  // Scroll
+  results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Save history
+  saveHistory(promptText, data);
+}
+
+// ── History ─────────────────────────────────────────────────────
+function getHistory() {
+  try { return JSON.parse(localStorage.getItem('est_history') || '[]'); } catch { return []; }
+}
+function saveHistory(prompt, data) {
+  const history = getHistory().slice(0, 9);
+  history.unshift({
+    prompt: prompt || 'Estimate',
+    total: data.cost?.total_cost_inr || 0,
+    city: data.cost?.city || '',
+    time: new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),
+    data: data
+  });
+  localStorage.setItem('est_history', JSON.stringify(history));
+  renderHistory();
+}
+function renderHistory() {
+  const list = getHistory();
+  const sec = $('historySection');
+  if (!list.length) { sec.classList.add('hidden'); return; }
+  sec.classList.remove('hidden');
+  $('historyList').innerHTML = list.map((h,i) =>
+    `<div class="history-card" data-idx="${i}">
+      <div class="hc-prompt">${h.prompt}</div>
+      <div class="hc-meta">${h.city ? h.city+' · ' : ''}${h.total ? formatINR(h.total) : ''} · ${h.time}</div>
+    </div>`
+  ).join('');
+  $('historyList').querySelectorAll('.history-card').forEach(card => {
+    card.onclick = () => {
+      const item = list[+card.dataset.idx];
+      if (item?.data) displayResults(item.data, !!item.data.parsed, item.prompt);
+    };
+  });
+}
+$('clearHistory').onclick = () => { localStorage.removeItem('est_history'); renderHistory(); };
+renderHistory();
+
+// ── New Estimate ────────────────────────────────────────────────
+$('btnNewEstimate').onclick = () => {
+  results.classList.add('hidden');
+  promptInput.value = '';
+  promptInput.focus();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// ── Keyboard shortcut ───────────────────────────────────────────
+window.onkeydown = e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    setTab(true);
+    promptInput.focus();
+  }
+};
+  </script>
+</body>
 </html>

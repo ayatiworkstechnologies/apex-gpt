@@ -422,11 +422,27 @@ def get_all_cities() -> list:
     return sorted(CITY_DB.keys())
 
 
-def get_cost_estimate(materials: dict, city_key: str = "chennai") -> dict:
+def get_cost_estimate(materials: dict, city_key: str = "chennai",
+                      total_sqft: float = 0, quality: int = 1) -> dict:
     """
-    Given material quantities and a city, return ₹ cost breakdown.
+    Given material quantities, city, area, and quality — return full ₹ cost estimate.
+
+    Real Indian construction cost breakdown (2026):
+      Structural materials : ~28-32% of total
+      Labour (all trades)  : ~28-32% of total
+      Finishing & MEP      : ~25-30% of total  (flooring, paint, plumbing,
+                             electrical, doors, windows, waterproofing)
+      Overhead & misc      : ~8-12% of total   (scaffolding, permits,
+                             transport, water, supervision)
+
+    Target cost/sqft (Chennai baseline):
+      Economy  : ₹1,700 – ₹2,000 / sqft
+      Standard : ₹2,000 – ₹2,500 / sqft
+      Premium  : ₹2,500 – ₹3,500 / sqft
     """
     city = resolve_city(city_key)
+
+    # ── 1. Structural material cost ────────────────────────────────────────
     breakdown = {
         "cement":    materials["cement_bags"]   * city["cement"],
         "sand":      materials["sand_cft"]       * city["sand"],
@@ -434,10 +450,33 @@ def get_cost_estimate(materials: dict, city_key: str = "chennai") -> dict:
         "aggregate": materials["aggregate_cft"]  * city["aggregate"],
         "steel":     materials["steel_kg"]       * city["steel"],
     }
-    # Labour cost ~ 30-40% of material cost, varies by city
     material_total = sum(breakdown.values())
-    labour_cost = int(material_total * 0.35 * city["labour_mult"])
-    total = material_total + labour_cost
+
+    # ── 2. Labour cost (all trades: masonry, carpentry, bar-bending,
+    #        plumbing labour, electrical labour, painting labour) ───────────
+    # Labour ≈ 90-110% of structural material cost, varies by city
+    labour_mult_base = {0: 0.88, 1: 1.00, 2: 1.15}  # economy/standard/premium
+    labour_cost = int(material_total * labour_mult_base.get(quality, 1.0)
+                      * city["labour_mult"])
+
+    # ── 3. Finishing & MEP cost ────────────────────────────────────────────
+    # Includes: flooring/tiles, interior/exterior paint, doors & windows,
+    #           plumbing fixtures, electrical fixtures & wiring, waterproofing
+    # Rate per sqft varies by quality:
+    #   Economy  : ₹350–450 / sqft
+    #   Standard : ₹500–650 / sqft
+    #   Premium  : ₹800–1100 / sqft
+    finishing_rate = {0: 400, 1: 575, 2: 950}
+    finishing_cost = int(total_sqft * finishing_rate.get(quality, 575)
+                        * city["cost_mult"]) if total_sqft else 0
+
+    # ── 4. Overhead & miscellaneous ────────────────────────────────────────
+    # Scaffolding, transport, water supply, permits, supervision, contingency
+    # ~10% of (material + labour + finishing)
+    subtotal = material_total + labour_cost + finishing_cost
+    overhead_cost = int(subtotal * 0.10)
+
+    total = material_total + labour_cost + finishing_cost + overhead_cost
 
     return {
         "city":           city["city"],
@@ -453,6 +492,8 @@ def get_cost_estimate(materials: dict, city_key: str = "chennai") -> dict:
         "cost_breakdown":  {k: int(v) for k, v in breakdown.items()},
         "material_total":  int(material_total),
         "labour_cost":     labour_cost,
+        "finishing_cost":  finishing_cost,
+        "overhead_cost":   overhead_cost,
         "total_cost_inr":  int(total),
         "cost_per_sqft":   0,   # filled by caller after total_sqft is known
     }

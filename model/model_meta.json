@@ -13,28 +13,28 @@
     "aggregate_cft",
     "steel_kg"
   ],
-  "train_samples": 4000,
-  "test_samples": 1000,
+  "train_samples": 8000,
+  "test_samples": 2000,
   "metrics": {
     "cement_bags": {
-      "mae": 132.37,
-      "r2": 0.9973
+      "mae": 564.83,
+      "r2": 0.9881
     },
     "sand_cft": {
-      "mae": 228.0,
-      "r2": 0.9988
+      "mae": 1267.73,
+      "r2": 0.9936
     },
     "bricks": {
-      "mae": 1281.32,
-      "r2": 0.9991
+      "mae": 4928.53,
+      "r2": 0.994
     },
     "aggregate_cft": {
-      "mae": 190.97,
-      "r2": 0.9966
+      "mae": 1220.58,
+      "r2": 0.9929
     },
     "steel_kg": {
-      "mae": 956.43,
-      "r2": 0.9963
+      "mae": 4154.38,
+      "r2": 0.993
     }
   }
 }

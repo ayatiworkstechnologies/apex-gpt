@@ -81,6 +81,8 @@ class CostEstimate(BaseModel):
     cost_breakdown:   CostBreakdown
     material_total:   int
     labour_cost:      int
+    finishing_cost:   int = 0
+    overhead_cost:    int = 0
     total_cost_inr:   int
     cost_per_sqft:    float
 
