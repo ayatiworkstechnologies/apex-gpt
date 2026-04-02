@@ -605,7 +605,8 @@ let selectedCity = null;
 
 async function loadCities() {
   try {
-    const res = await fetch('/cities');
+    const res = await fetch('api/cities');
+    if (!res.ok) throw new Error(`Status ${res.status}: ${res.statusText}`);
     const data = await res.json();
     allCities = data.cities || [];
   } catch(e) { console.warn('Could not load cities', e); }
@@ -693,15 +694,20 @@ async function handleNLP() {
   if (!prompt) return;
   showLoading(true);
   try {
-    const res = await fetch('/estimate-from-prompt', {
+    const res = await fetch('api/estimate-from-prompt', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ prompt })
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(Array.isArray(data.detail)
-      ? data.detail.map(e => e.msg).join(', ') : data.detail || 'Server error');
+    if (!res.ok) {
+      const err = Array.isArray(data.detail) ? data.detail.map(e => e.msg).join(', ') : data.detail || res.statusText;
+      throw new Error(`API Error (${res.status}): ${err}`);
+    }
     displayResults(data, true, prompt);
-  } catch(e) { showError(e.message); }
+  } catch(e) { 
+    console.error('NLP Error:', e);
+    showError(e.message.includes('fetch') ? 'Network error: Please check if the server is running.' : e.message); 
+  }
   finally { showLoading(false); }
 }
 
@@ -718,15 +724,20 @@ $('detailsForm').onsubmit = async e => {
   };
   showLoading(true);
   try {
-    const res = await fetch('/estimate', {
+    const res = await fetch('api/estimate', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(Array.isArray(data.detail)
-      ? data.detail.map(e => e.msg).join(', ') : data.detail || 'Server error');
+    if (!res.ok) {
+      const err = Array.isArray(data.detail) ? data.detail.map(e => e.msg).join(', ') : data.detail || res.statusText;
+      throw new Error(`API Error (${res.status}): ${err}`);
+    }
     displayResults(data, false, `${payload.area} ${payload.unit} ${payload.floors}F`);
-  } catch(e) { showError(e.message); }
+  } catch(e) { 
+    console.error('Form Error:', e);
+    showError(e.message.includes('fetch') ? 'Network error: Please check server connectivity.' : e.message); 
+  }
   finally { showLoading(false); }
 };
 
