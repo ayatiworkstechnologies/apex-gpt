@@ -74,16 +74,16 @@ def build_pipeline():
         ]
     )
     rf = RandomForestRegressor(
-        n_estimators=350,
-        max_depth=16,
+        n_estimators=150,
+        max_depth=10,
         min_samples_split=2,
         min_samples_leaf=1,
-        n_jobs=-1,
+        n_jobs=1,
         random_state=42,
     )
     return Pipeline([
         ("preprocessor", preprocessor),
-        ("model", MultiOutputRegressor(rf, n_jobs=-1)),
+        ("model", MultiOutputRegressor(rf, n_jobs=1)),
     ])
 
 
