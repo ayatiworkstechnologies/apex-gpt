@@ -30,6 +30,7 @@ from app import predictor
 
 app = FastAPI(
     title="Apex Construction Estimator v3",
+    root_path="/stagingapex",
     description="""
 ## Apex Estimator — v3
 
@@ -43,9 +44,9 @@ app = FastAPI(
 - **Cost per sqft** calculation
 
 ### Endpoints:
-- `POST /estimate-from-prompt` → plain English description
-- `POST /estimate`             → structured JSON
-- `GET  /cities`               → all supported cities
+- `POST /api/estimate-from-prompt` → plain English description
+- `POST /api/estimate`             → structured JSON
+- `GET  /api/cities`               → all supported cities
 
 ### Example prompt:
 ```json
@@ -82,7 +83,7 @@ def root():
     return {"status": "ok", "version": "3.0.0", "docs": "/docs"}
 
 
-@app.get("/health", tags=["Health"])
+@app.get("/api/health", tags=["Health"])
 def health():
     meta = predictor.load_meta()
     rate_stats = get_city_rate_stats()
@@ -97,7 +98,7 @@ def health():
     }
 
 
-@app.get("/cities", tags=["Reference"])
+@app.get("/api/cities", tags=["Reference"])
 def cities():
     """List all supported cities with rates and verification metadata."""
     from app.city_rates import CITY_DB
@@ -149,7 +150,7 @@ def _build_cost(materials: dict, city_input, total_sqft: float, quality: int = 1
     )
 
 
-@app.post("/estimate", response_model=EstimateResponse,
+@app.post("/api/estimate", response_model=EstimateResponse,
           tags=["Estimation"], summary="Structured estimate with optional city")
 def estimate(request: EstimateRequest):
     """
@@ -185,7 +186,7 @@ def estimate(request: EstimateRequest):
     )
 
 
-@app.post("/estimate-from-prompt", response_model=PromptResponse,
+@app.post("/api/estimate-from-prompt", response_model=PromptResponse,
           tags=["Estimation"], summary="Natural language estimate — city auto-detected")
 def estimate_from_prompt(request: PromptRequest):
     """
@@ -265,6 +266,6 @@ def estimate_from_prompt(request: PromptRequest):
     )
 
 
-@app.get("/model/info", tags=["Model"])
+@app.get("/api/model/info", tags=["Model"])
 def model_info():
     return predictor.load_meta()

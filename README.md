@@ -85,61 +85,39 @@ Swagger UI at **http://localhost:8000/docs**
 
 ---
 
-## 🚀 API Endpoints
+## 🚀 API Endpoints (v3)
 
-| Method | Path          | Description                            |
-|--------|---------------|----------------------------------------|
-| GET    | `/`           | Health check                           |
-| GET    | `/health`     | Service health + model info            |
-| POST   | `/estimate`   | **Main endpoint** — predict materials  |
-| GET    | `/model/info` | Training metrics (R², MAE per target)  |
+| Method | Path                       | Description                                  |
+|--------|----------------------------|----------------------------------------------|
+| GET    | `/`                        | Serve Frontend SPA                           |
+| GET    | `/api/health`              | Service health + model info                  |
+| GET    | `/api/cities`              | **New** — List 50+ cities with local rates   |
+| POST   | `/api/estimate-from-prompt`| **New** — AI NLP estimate (auto-detect city) |
+| POST   | `/api/estimate`            | Structured JSON estimate                     |
+| GET    | `/api/model/info`          | Training metrics (R², MAE per target)        |
 
 ---
 
-## 📤 Prompting — Request Examples
+## 📤 Request Examples
 
-### Minimal request (defaults apply)
+### AI Prompt (NLP)
 ```json
-POST /estimate
+POST /api/estimate-from-prompt
 {
-  "area": 1000,
-  "unit": "sqft"
+  "prompt": "3 BHK house 1500 sqft in Chennai standard"
 }
 ```
 
-### Full residential (2 floors, standard quality)
+### Structured Request (Manual)
 ```json
-POST /estimate
+POST /api/estimate
 {
   "area": 1200,
   "unit": "sqft",
   "floors": 2,
   "building_type": 0,
-  "quality": 1
-}
-```
-
-### Commercial in metric (sqm → sqft conversion auto-applied)
-```json
-POST /estimate
-{
-  "area": 250,
-  "unit": "sqm",
-  "floors": 3,
-  "building_type": 1,
-  "quality": 2
-}
-```
-
-### Economy ground floor
-```json
-POST /estimate
-{
-  "area": 600,
-  "unit": "sqft",
-  "floors": 1,
-  "building_type": 0,
-  "quality": 0
+  "quality": 1,
+  "city": "Chennai"
 }
 ```
 

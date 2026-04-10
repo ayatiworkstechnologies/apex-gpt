@@ -272,13 +272,44 @@ a{color:inherit;text-decoration:none}
 }
 
 /* ── Print ──────────────────────────────────────────────────────── */
-@media print{
-  .header,.hero,.tabs,.input-wrap,.bg-orbs,.footer,.action-row,.history-section,.btn-icon{display:none!important}
-  body{background:#fff;color:#000}
-  .glass{background:#f8f9fa;border:1px solid #ddd;backdrop-filter:none}
-  .results{display:block!important}
-  .cost-card .value,.mat-card .mat-val{color:#000!important}
-  .mat-bar,.r2-bar{background:#e5e7eb}
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  .header, .hero, .tabs, .input-wrap, .bg-orbs, .footer, .action-row, .history-section, .btn-icon { display: none !important; }
+  body { background: #fff !important; color: #000 !important; margin: 0; padding: 0; font-size: 11px !important; }
+  
+  .glass {
+    background: #fafafa !important;
+    border: 1px solid #ccc !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    color: #000 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Force ALL text inside generated cards to be pure black for high-contrast print */
+  .glass * { color: #000 !important; }
+  .glass h1, .glass h2, .glass h3, .glass h4, .glass p, .glass span, .glass div { color: #000 !important; }
+  
+  .results { display: block !important; margin-top: 0 !important; padding: 0 !important; zoom: 0.85; }
+  
+  /* Perfect 5-column landscape grid mapping */
+  .cost-row { display: grid !important; grid-template-columns: repeat(5, 1fr) !important; gap: 8px !important; margin-bottom: 12px !important; }
+  .materials-grid { display: grid !important; grid-template-columns: repeat(5, 1fr) !important; gap: 8px !important; margin-bottom: 12px !important; }
+  .bottom-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; align-items: start !important; }
+  
+  /* Tighten padding to save vertical space and prevent 2-page print */
+  .glass { padding: 12px !important; }
+  .rate-row { padding: 4px 0 !important; font-size: 10px !important; }
+  
+  .mat-bar, .r2-bar { background: #e5e7eb !important; border: 1px solid #ccc !important; height: 4px !important; }
+  .mat-fill, .r2-fill { background: #222 !important; }
+  
+  @page { margin: 10mm; size: A4 landscape; }
 }
   </style>
 </head>
@@ -607,7 +638,8 @@ let selectedCity = null;
 
 async function loadCities() {
   try {
-    const res = await fetch('/cities');
+    const res = await fetch('api/cities');
+    if (!res.ok) throw new Error(`Status ${res.status}: ${res.statusText}`);
     const data = await res.json();
     allCities = data.cities || [];
   } catch(e) { console.warn('Could not load cities', e); }
@@ -699,15 +731,20 @@ async function handleNLP() {
   if (!prompt) return;
   showLoading(true);
   try {
-    const res = await fetch('/estimate-from-prompt', {
+    const res = await fetch('api/estimate-from-prompt', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ prompt })
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(Array.isArray(data.detail)
-      ? data.detail.map(e => e.msg).join(', ') : data.detail || 'Server error');
+    if (!res.ok) {
+      const err = Array.isArray(data.detail) ? data.detail.map(e => e.msg).join(', ') : data.detail || res.statusText;
+      throw new Error(`API Error (${res.status}): ${err}`);
+    }
     displayResults(data, true, prompt);
-  } catch(e) { showError(e.message); }
+  } catch(e) { 
+    console.error('NLP Error:', e);
+    showError(e.message.includes('fetch') ? 'Network error: Please check if the server is running.' : e.message); 
+  }
   finally { showLoading(false); }
 }
 
@@ -724,15 +761,20 @@ $('detailsForm').onsubmit = async e => {
   };
   showLoading(true);
   try {
-    const res = await fetch('/estimate', {
+    const res = await fetch('api/estimate', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(Array.isArray(data.detail)
-      ? data.detail.map(e => e.msg).join(', ') : data.detail || 'Server error');
+    if (!res.ok) {
+      const err = Array.isArray(data.detail) ? data.detail.map(e => e.msg).join(', ') : data.detail || res.statusText;
+      throw new Error(`API Error (${res.status}): ${err}`);
+    }
     displayResults(data, false, `${payload.area} ${payload.unit} ${payload.floors}F`);
-  } catch(e) { showError(e.message); }
+  } catch(e) { 
+    console.error('Form Error:', e);
+    showError(e.message.includes('fetch') ? 'Network error: Please check server connectivity.' : e.message); 
+  }
   finally { showLoading(false); }
 };
 
