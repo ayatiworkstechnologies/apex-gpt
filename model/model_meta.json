@@ -24,7 +24,7 @@
     "aggregate_cft",
     "steel_kg"
   ],
-  "data_source": "D:\\2026\\apex-gpt\\model\\../data/data.csv",
+  "data_source": "d:\\2026\\apex-gpt\\model\\../data/data.csv",
   "cities_seen": [
     "agra",
     "ahmedabad",
@@ -93,24 +93,24 @@
   "test_samples": 5400,
   "metrics": {
     "cement_bags": {
-      "mae": 758.8,
-      "r2": 0.9779
+      "mae": 742.06,
+      "r2": 0.9787
     },
     "sand_cft": {
-      "mae": 1336.06,
-      "r2": 0.9908
+      "mae": 1295.57,
+      "r2": 0.9913
     },
     "bricks": {
-      "mae": 4583.81,
-      "r2": 0.9928
+      "mae": 4447.04,
+      "r2": 0.9932
     },
     "aggregate_cft": {
-      "mae": 1260.18,
-      "r2": 0.992
+      "mae": 1229.78,
+      "r2": 0.9923
     },
     "steel_kg": {
-      "mae": 4714.35,
-      "r2": 0.994
+      "mae": 4685.21,
+      "r2": 0.9942
     }
   }
 }
