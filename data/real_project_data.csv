@@ -1,0 +1,5 @@
+area_sqft,floors,building_type,quality,city,cement_price,sand_price,brick_price,aggregate_price,steel_price,cement_bags,sand_cft,bricks,aggregate_cft,steel_kg,total_cost
+1200,2,0,1,chennai,420,55,9,60,72,1010,2480,19100,1260,10700,1503000
+1800,3,0,2,bangalore,460,80,13,85,76,2800,6800,43000,3500,26500,6400000
+2500,2,1,1,mumbai,480,90,14,95,78,2450,6200,30000,3200,24500,7200000
+5000,1,2,1,pune,455,75,12,80,76,2550,7200,21000,6100,29500,10100000

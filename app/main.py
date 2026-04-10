@@ -25,13 +25,13 @@ from app.schemas import (
     MaterialQuantities, CostEstimate, CostBreakdown, ParsedDetails,
 )
 from app.nlp_parser import parse_prompt
-from app.city_rates import resolve_city, get_cost_estimate, get_all_cities
+from app.city_rates import resolve_city, get_cost_estimate, get_all_cities, get_city_rate_stats
 from app import predictor
 
 app = FastAPI(
-    title="KSI Construction Estimator v3",
+    title="Apex Construction Estimator v3",
     description="""
-## M/S. Khayti Steel Industries Limited — v3
+## Apex Estimator — v3
 
 **City-aware** ML-powered construction material + cost estimator.
 
@@ -71,7 +71,7 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 async def startup_event():
     predictor.load_model()
     predictor.load_meta()
-    print("✅ Model loaded. KSI Estimator v3 ready.")
+    print("✅ Model loaded. Apex Estimator v3 is live and blazing fast.")
 
 
 @app.get("/", tags=["Frontend"])
@@ -85,29 +85,44 @@ def root():
 @app.get("/health", tags=["Health"])
 def health():
     meta = predictor.load_meta()
+    rate_stats = get_city_rate_stats()
     return {
         "status":        "healthy",
         "version":       "3.0.0",
         "model":         "MultiOutputRegressor(RandomForestRegressor)",
         "train_samples": meta["train_samples"],
         "cities":        len(get_all_cities()),
+        "verified_city_rates": rate_stats["verified"],
+        "unverified_city_rates": rate_stats["unverified"],
     }
 
 
 @app.get("/cities", tags=["Reference"])
 def cities():
-    """List all supported cities with their cost multipliers."""
+    """List all supported cities with rates and verification metadata."""
     from app.city_rates import CITY_DB
+    stats = get_city_rate_stats()
     return {
         "total": len(CITY_DB),
+        "verified": stats["verified"],
+        "unverified": stats["unverified"],
         "cities": [
             {
                 "city":        k.title(),
                 "state":       v["state"],
                 "tier":        v["tier"],
                 "cost_mult":   v["cost_mult"],
+                "labour_mult": v["labour_mult"],
                 "cement_rate": v["cement"],
+                "sand_rate":   v["sand"],
+                "brick_rate":  v["brick"],
+                "aggregate_rate": v["aggregate"],
                 "steel_rate":  v["steel"],
+                "verified":    v.get("verified", False),
+                "last_updated": v.get("last_updated", ""),
+                "source_label": v.get("source_label", ""),
+                "source_url":  v.get("source_url", ""),
+                "notes":       v.get("notes", ""),
             }
             for k, v in sorted(CITY_DB.items(), key=lambda x: x[1]["state"])
         ]
@@ -122,6 +137,8 @@ def _build_cost(materials: dict, city_input, total_sqft: float, quality: int = 1
         state=raw["state"],
         tier=raw["tier"],
         rates_used=raw["rates_used"],
+        rate_ranges=raw.get("rate_ranges"),
+        rate_meta=raw.get("rate_meta"),
         cost_breakdown=CostBreakdown(**raw["cost_breakdown"]),
         material_total=raw["material_total"],
         labour_cost=raw["labour_cost"],
@@ -149,6 +166,7 @@ def estimate(request: EstimateRequest):
         result = predictor.predict(
             area=request.area, unit=request.unit, floors=request.floors,
             building_type=int(request.building_type), quality=int(request.quality),
+            city=request.city,
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -216,6 +234,7 @@ def estimate_from_prompt(request: PromptRequest):
         result = predictor.predict(
             area=parsed["area"], unit=parsed["unit"], floors=parsed["floors"],
             building_type=parsed["building_type"], quality=parsed["quality"],
+            city=parsed.get("city"),
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Model error: {e}")

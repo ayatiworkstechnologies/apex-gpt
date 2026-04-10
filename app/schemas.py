@@ -3,7 +3,7 @@ Pydantic schemas — v3 with city/state cost estimation
 """
 
 from enum import IntEnum
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -77,7 +77,9 @@ class CostEstimate(BaseModel):
     city:             str
     state:            str
     tier:             int
-    rates_used:       Dict[str, float]
+    rates_used:       Dict[str, Any]
+    rate_ranges:      Optional[Dict[str, str]] = None
+    rate_meta:        Optional[Dict[str, Any]] = None
     cost_breakdown:   CostBreakdown
     material_total:   int
     labour_cost:      int

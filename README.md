@@ -1,5 +1,5 @@
-# 🏗️ Construction Material Estimator API
-### M/S. Khayti Steel Industries Limited
+# 🏗️ Apex Construction Estimator API
+### M/S. Apex Steel Industries Limited
 
 ML-powered FastAPI service that predicts construction material quantities from built-up area.
 
@@ -22,7 +22,7 @@ construction_estimator/
 │
 ├── data/
 │   ├── generate_data.py ← Synthetic dataset generator
-│   └── training_data.csv     ← 5,000-row training data (auto-generated)
+│   └── data.csv         ← 27,000-row dataset across 56 cities (auto-generated)
 │
 ├── tests/
 │   └── test_predict.py  ← Direct inference tests (no server needed)
@@ -70,8 +70,8 @@ Input Features (5)
 # 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Generate training data (5,000 rows)
-python data/generate_data.py
+# 2. Generate training data (27,000 rows across 56 tiered cities)
+python data/run_generate.py
 
 # 3. Train the model
 python model/train.py
@@ -200,9 +200,7 @@ POST /estimate
 
 To retrain on new project data:
 
-1. Add rows to `data/training_data.csv` with columns:
-   `area_sqft, floors, building_type, quality, total_area_sqft, cement_bags, sand_cft, bricks, aggregate_cft, steel_kg`
-
+1. Add rows to `data/data.csv`
 2. Run: `python model/train.py`
 
 3. Restart the server — new model loads automatically on startup.
@@ -210,4 +208,4 @@ To retrain on new project data:
 ---
 
 ## 📜 License
-MIT — M/S. Khayti Steel Industries Limited
+MIT — M/S. Apex Steel Industries Limited

@@ -37,12 +37,20 @@ def sqm_to_sqft(sqm: float) -> float:
     return sqm * 10.7639
 
 
+def normalize_city_name(city: str | None) -> str:
+    text = str(city or "chennai").strip().lower()
+    if "(" in text:
+        text = text.split("(", 1)[0].strip()
+    return text or "chennai"
+
+
 def predict(
     area: float,
     unit: str,
     floors: int,
     building_type: int,
     quality: int,
+    city: str | None = None,
 ) -> dict:
     """
     Run inference on a single request.
@@ -68,6 +76,7 @@ def predict(
         "building_type":   building_type,
         "quality":         quality,
         "total_area_sqft": total_area,
+        "city":            normalize_city_name(city),
     }])
 
     pipeline = load_model()

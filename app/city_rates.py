@@ -10,7 +10,18 @@ Base rates (Standard quality, Residential, Chennai):
   Steel   : ₹72  / kg
 """
 
+import csv
+import os
 from typing import Optional
+
+
+DEFAULT_RATE_META = {
+    "verified": False,
+    "last_updated": "",
+    "source_url": "",
+    "source_label": "baseline",
+    "notes": "Default baseline rate. Replace with supplier quote or verified market data.",
+}
 
 # ── Base material rates (₹) — Chennai as baseline ─────────────────────────────
 BASE_RATES = {
@@ -26,7 +37,9 @@ BASE_RATES = {
 # labour_mult: labour cost multiplier
 # cement_rate, sand_rate, brick_rate, aggregate_rate, steel_rate: local ₹ rates
 
-CITY_DB = {
+CITY_RATES_CSV_PATH = os.path.join(os.path.dirname(__file__), "../data/city_rates.csv")
+
+DEFAULT_CITY_DB = {
     # ── Tamil Nadu ──────────────────────────────────────────────────────────
     "chennai": {
         "state": "Tamil Nadu", "tier": 1,
@@ -376,6 +389,50 @@ STATE_ALIASES = {
 }
 
 
+def _with_rate_meta(record: dict) -> dict:
+    merged = DEFAULT_RATE_META.copy()
+    merged.update(record)
+    merged["verified"] = str(merged.get("verified", False)).strip().lower() in {
+        "1", "true", "yes", "y"
+    } if not isinstance(merged.get("verified"), bool) else merged["verified"]
+    return merged
+
+
+def _load_city_rates_from_csv(default_db: dict) -> dict:
+    if not os.path.exists(CITY_RATES_CSV_PATH):
+        return {key: _with_rate_meta(value.copy()) for key, value in default_db.items()}
+
+    merged = {key: _with_rate_meta(value.copy()) for key, value in default_db.items()}
+    with open(CITY_RATES_CSV_PATH, newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            city = (row.get("city") or "").strip().lower()
+            state = (row.get("state") or "").strip()
+            if not city or not state:
+                continue
+
+            merged[city] = _with_rate_meta({
+                "state": state,
+                "tier": int(float(row.get("tier") or 2)),
+                "cost_mult": float(row.get("cost_mult") or 1.0),
+                "labour_mult": float(row.get("labour_mult") or 1.0),
+                "cement": int(float(row.get("cement") or 420)),
+                "sand": int(float(row.get("sand") or 55)),
+                "brick": int(float(row.get("brick") or 9)),
+                "aggregate": int(float(row.get("aggregate") or 60)),
+                "steel": int(float(row.get("steel") or 72)),
+                "verified": row.get("verified", ""),
+                "last_updated": (row.get("last_updated") or "").strip(),
+                "source_url": (row.get("source_url") or "").strip(),
+                "source_label": (row.get("source_label") or "").strip() or "csv",
+                "notes": (row.get("notes") or "").strip(),
+            })
+    return merged
+
+
+CITY_DB = _load_city_rates_from_csv(DEFAULT_CITY_DB)
+
+
 def resolve_city(city_raw: Optional[str]) -> dict:
     """
     Resolve raw city/state string to a city record.
@@ -420,6 +477,47 @@ def resolve_city(city_raw: Optional[str]) -> dict:
 
 def get_all_cities() -> list:
     return sorted(CITY_DB.keys())
+
+
+def get_city_rate_stats() -> dict:
+    total = len(CITY_DB)
+    verified = sum(1 for row in CITY_DB.values() if row.get("verified"))
+    return {
+        "total": total,
+        "verified": verified,
+        "unverified": total - verified,
+    }
+
+
+def _extract_ranges_from_notes(notes: str) -> dict:
+    text = notes or ""
+    patterns = {
+        "cement_per_bag": r"cement.*?\(?(\d+(?:-\d+)?)\)?",
+        "sand_per_cft": r"sand.*?\(?(\d+(?:-\d+)?)\)?",
+        "brick_per_nos": r"brick.*?\(?(\d+(?:-\d+)?)\)?",
+        "aggregate_per_cft": r"(?:aggregate|jelly).*?\(?(\d+(?:-\d+)?)\)?",
+        "steel_per_kg": r"steel.*?\(?(\d+(?:-\d+)?)\)?",
+    }
+    import re
+    ranges = {}
+    for key, pattern in patterns.items():
+        # Specifically look for (low-high) format or similar near the material mention
+        match = re.search(r"(" + key.split("_")[0] + r".*?)\((\d+-\d+)\)", text, re.IGNORECASE)
+        if match:
+            # Found (100-200) style
+            ranges[key] = match.group(2)
+        else:
+            # Fallback legacy parsing
+            match2 = re.search(pattern, text, re.IGNORECASE)
+            if match2:
+                # Discard silly 20mm matches for aggregate
+                if key == "aggregate_per_cft" and match2.group(1) == "20":
+                    match3 = re.search(r"aggregate 20mm.*?\((\d+-\d+)\)", text, re.IGNORECASE)
+                    if match3:
+                        ranges[key] = match3.group(1)
+                else:
+                    ranges[key] = match2.group(1)
+    return ranges
 
 
 def get_cost_estimate(materials: dict, city_key: str = "chennai",
@@ -488,6 +586,14 @@ def get_cost_estimate(materials: dict, city_key: str = "chennai",
             "brick_per_nos":     city["brick"],
             "aggregate_per_cft": city["aggregate"],
             "steel_per_kg":      city["steel"],
+        },
+        "rate_ranges":    _extract_ranges_from_notes(city.get("notes", "")),
+        "rate_meta":      {
+            "verified": city.get("verified", False),
+            "last_updated": city.get("last_updated", ""),
+            "source_label": city.get("source_label", ""),
+            "source_url": city.get("source_url", ""),
+            "notes": city.get("notes", ""),
         },
         "cost_breakdown":  {k: int(v) for k, v in breakdown.items()},
         "material_total":  int(material_total),

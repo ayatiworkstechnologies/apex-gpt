@@ -4,7 +4,18 @@
     "floors",
     "building_type",
     "quality",
+    "total_area_sqft",
+    "city"
+  ],
+  "numeric_features": [
+    "area_sqft",
+    "floors",
+    "building_type",
+    "quality",
     "total_area_sqft"
+  ],
+  "categorical_features": [
+    "city"
   ],
   "targets": [
     "cement_bags",
@@ -13,28 +24,93 @@
     "aggregate_cft",
     "steel_kg"
   ],
-  "train_samples": 8000,
-  "test_samples": 2000,
+  "data_source": "D:\\2026\\apex-gpt\\model\\../data/data.csv",
+  "cities_seen": [
+    "agra",
+    "ahmedabad",
+    "amritsar",
+    "aurangabad",
+    "bangalore",
+    "bhopal",
+    "bhubaneswar",
+    "chandigarh",
+    "chennai",
+    "coimbatore",
+    "cuttack",
+    "dehradun",
+    "delhi",
+    "durgapur",
+    "erode",
+    "faridabad",
+    "ghaziabad",
+    "gorakhpur",
+    "guntur",
+    "gurgaon",
+    "guwahati",
+    "howrah",
+    "hubli",
+    "hyderabad",
+    "indore",
+    "jabalpur",
+    "jaipur",
+    "jodhpur",
+    "kanpur",
+    "kochi",
+    "kolkata",
+    "kozhikode",
+    "lucknow",
+    "ludhiana",
+    "madurai",
+    "mangalore",
+    "meerut",
+    "mumbai",
+    "mysore",
+    "nagpur",
+    "nashik",
+    "noida",
+    "patna",
+    "pune",
+    "raipur",
+    "rajkot",
+    "ranchi",
+    "salem",
+    "shimla",
+    "srinagar",
+    "surat",
+    "thiruvananthapuram",
+    "thoothukudi",
+    "tirunelveli",
+    "trichy",
+    "udaipur",
+    "vadodara",
+    "varanasi",
+    "vellore",
+    "vijayawada",
+    "visakhapatnam",
+    "warangal"
+  ],
+  "train_samples": 21600,
+  "test_samples": 5400,
   "metrics": {
     "cement_bags": {
-      "mae": 564.83,
-      "r2": 0.9881
+      "mae": 758.8,
+      "r2": 0.9779
     },
     "sand_cft": {
-      "mae": 1267.73,
-      "r2": 0.9936
+      "mae": 1336.06,
+      "r2": 0.9908
     },
     "bricks": {
-      "mae": 4928.53,
-      "r2": 0.994
+      "mae": 4583.81,
+      "r2": 0.9928
     },
     "aggregate_cft": {
-      "mae": 1220.58,
-      "r2": 0.9929
+      "mae": 1260.18,
+      "r2": 0.992
     },
     "steel_kg": {
-      "mae": 4154.38,
-      "r2": 0.993
+      "mae": 4714.35,
+      "r2": 0.994
     }
   }
 }
