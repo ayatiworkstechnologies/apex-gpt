@@ -176,7 +176,7 @@ a{color:inherit;text-decoration:none}
 .badge-city{background:rgba(59,130,246,0.08);color:var(--blue);border:1px solid rgba(59,130,246,0.15)}
 
 /* Cost Overview Cards */
-.cost-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.cost-row{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px}
 .cost-card{border-radius:var(--radius-xl);padding:24px;text-align:center;position:relative;overflow:hidden}
 .cost-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,rgba(255,255,255,0.08),transparent);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 .cost-card .label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:8px}
@@ -251,6 +251,7 @@ a{color:inherit;text-decoration:none}
 
 /* ── Responsive ─────────────────────────────────────────────────── */
 @media(max-width:1024px){
+  .cost-row{grid-template-columns:repeat(3,1fr)}
   .materials-grid{grid-template-columns:repeat(3,1fr)}
   .bottom-grid{grid-template-columns:1fr 1fr}
 }
@@ -259,13 +260,14 @@ a{color:inherit;text-decoration:none}
   .hero{padding:36px 0 20px}
   .prompt-row{flex-direction:column}
   .form-grid{grid-template-columns:1fr}
-  .cost-row{grid-template-columns:1fr}
+  .cost-row{grid-template-columns:repeat(2,1fr)}
   .materials-grid{grid-template-columns:repeat(2,1fr)}
   .bottom-grid{grid-template-columns:1fr}
   .cost-card .value{font-size:22px}
   .action-row{flex-direction:column}
 }
 @media(max-width:480px){
+  .cost-row{grid-template-columns:1fr}
   .materials-grid{grid-template-columns:1fr 1fr}
   .header-inner{gap:8px}
   .link-subtle{display:none}
@@ -458,7 +460,7 @@ a{color:inherit;text-decoration:none}
       </div>
 
       <!-- Cost Overview -->
-      <div class="cost-row" id="costRow" style="grid-template-columns:repeat(5,1fr)">
+      <div class="cost-row" id="costRow">
         <div class="cost-card total glass">
           <div class="label">Total Cost</div>
           <div class="value" id="costTotal">--</div>
