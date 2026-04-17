@@ -1,947 +1,1179 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="description" content="AI-powered construction material and cost estimator for 50+ Indian cities. Get instant estimates for cement, sand, bricks, aggregate, and steel."/>
-  <title>Construction Estimator | Ayatiworks AI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet"/>
-  <style>
-/* ── CSS Design System ──────────────────────────────────────────── */
-:root {
-  --bg-primary: #060a13;
-  --bg-secondary: #0d1321;
-  --bg-card: rgba(255,255,255,0.03);
-  --bg-card-hover: rgba(255,255,255,0.06);
-  --bg-input: rgba(255,255,255,0.04);
-  --border: rgba(255,255,255,0.06);
-  --border-hover: rgba(255,255,255,0.12);
-  --text-primary: #f1f3f7;
-  --text-secondary: #8b95a8;
-  --text-muted: #4a5568;
-  --accent: #f97316;
-  --accent-glow: rgba(249,115,22,0.15);
-  --accent-dark: #c2410c;
-  --emerald: #10b981;
-  --blue: #3b82f6;
-  --red: #ef4444;
-  --amber: #f59e0b;
-  --violet: #8b5cf6;
-  --glass-bg: rgba(255,255,255,0.03);
-  --glass-border: rgba(255,255,255,0.06);
-  --glass-blur: 16px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-2xl: 24px;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
-  --shadow-lg: 0 10px 40px rgba(0,0,0,0.5);
-  --shadow-accent: 0 4px 30px rgba(249,115,22,0.15);
-  --font-sans: 'Inter',system-ui,-apple-system,sans-serif;
-  --font-display: 'Outfit','Inter',sans-serif;
-  --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
-}
-[data-theme="light"] {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --bg-card: rgba(0,0,0,0.02);
-  --bg-card-hover: rgba(0,0,0,0.04);
-  --bg-input: rgba(0,0,0,0.03);
-  --border: rgba(0,0,0,0.08);
-  --border-hover: rgba(0,0,0,0.15);
-  --text-primary: #0f172a;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
-  --glass-bg: rgba(255,255,255,0.7);
-  --glass-border: rgba(0,0,0,0.06);
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
-  --shadow-lg: 0 10px 40px rgba(0,0,0,0.1);
-}
-
-/* ── Reset & Base ───────────────────────────────────────────────── */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);min-height:100vh;display:flex;flex-direction:column;transition:background var(--transition),color var(--transition)}
-::selection{background:var(--accent);color:#fff;opacity:0.9}
-input,select,button,textarea{font-family:inherit;font-size:inherit}
-a{color:inherit;text-decoration:none}
-
-/* ── Utility ────────────────────────────────────────────────────── */
-.glass{background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));border:1px solid var(--glass-border)}
-.hidden{display:none!important}
-.container{max-width:1120px;margin:0 auto;width:100%;padding:0 24px}
-.fade-up{opacity:0;transform:translateY(12px);animation:fadeUp 0.5s ease forwards}
-@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse-glow{0%,100%{opacity:0.4}50%{opacity:0.7}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── Background Orbs ────────────────────────────────────────────── */
-.bg-orbs{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.bg-orbs .orb{position:absolute;border-radius:50%;filter:blur(100px);animation:pulse-glow 6s ease-in-out infinite}
-.bg-orbs .orb-1{width:35vw;height:35vw;top:-10%;left:-5%;background:rgba(249,115,22,0.06)}
-.bg-orbs .orb-2{width:30vw;height:30vw;bottom:-10%;right:-5%;background:rgba(59,130,246,0.04)}
-.bg-orbs .orb-3{width:20vw;height:20vw;top:40%;left:50%;background:rgba(139,92,246,0.03);animation-delay:2s}
-
-/* ── Header ─────────────────────────────────────────────────────── */
-.header{padding:20px 0;position:sticky;top:0;z-index:50;background:rgba(6,10,19,0.7);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:background var(--transition)}
-[data-theme="light"] .header{background:rgba(248,250,252,0.85)}
-.header-inner{display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:12px}
-.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;box-shadow:var(--shadow-accent)}
-.logo-text h1{font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:-0.02em}
-.logo-text span{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;font-weight:500}
-.header-actions{display:flex;align-items:center;gap:12px}
-.btn-icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);cursor:pointer;transition:all var(--transition)}
-.btn-icon:hover{background:var(--bg-card-hover);color:var(--text-primary);transform:translateY(-1px)}
-.link-subtle{font-size:13px;color:var(--text-secondary);transition:color var(--transition);font-weight:500}
-.link-subtle:hover{color:var(--accent)}
-
-/* ── Hero ───────────────────────────────────────────────────────── */
-.hero{text-align:center;padding:56px 0 32px}
-.hero h2{font-family:var(--font-display);font-size:clamp(28px,5vw,48px);font-weight:800;letter-spacing:-0.03em;line-height:1.15;background:linear-gradient(180deg,var(--text-primary) 40%,var(--text-muted));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
-.hero p{color:var(--text-secondary);font-size:17px;max-width:520px;margin:0 auto;line-height:1.6}
-
-/* ── Tabs ───────────────────────────────────────────────────────── */
-.tabs{display:flex;justify-content:center;margin-bottom:28px}
-.tab-group{display:flex;gap:4px;padding:4px;border-radius:var(--radius-lg);background:var(--bg-card);border:1px solid var(--border)}
-.tab-btn{padding:10px 24px;border-radius:var(--radius-md);font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all var(--transition);background:transparent;color:var(--text-secondary)}
-.tab-btn:hover{color:var(--text-primary)}
-.tab-btn.active{background:var(--accent);color:#fff;box-shadow:var(--shadow-accent)}
-
-/* ── Input Sections ─────────────────────────────────────────────── */
-.input-wrap{margin-bottom:40px}
-.input-card{border-radius:var(--radius-2xl);padding:24px;box-shadow:var(--shadow-md)}
-.prompt-row{display:flex;gap:12px}
-.prompt-input{flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;font-size:16px;color:var(--text-primary);transition:all var(--transition)}
-.prompt-input::placeholder{color:var(--text-muted)}
-.prompt-input:focus{outline:none;border-color:rgba(249,115,22,0.4);box-shadow:0 0 0 4px var(--accent-glow)}
-.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;font-weight:700;padding:18px 32px;border-radius:var(--radius-lg);border:none;cursor:pointer;transition:all var(--transition);box-shadow:var(--shadow-accent);display:flex;align-items:center;gap:8px;font-size:15px;white-space:nowrap}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 35px rgba(249,115,22,0.25)}
-.btn-primary:active{transform:scale(0.97)}
-.btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none}
-.quick-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
-.quick-tags label{font-size:12px;color:var(--text-muted);font-weight:500;margin-right:4px}
-.tag{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;color:var(--text-secondary);background:var(--bg-input);border:1px solid var(--border);cursor:pointer;transition:all var(--transition);font-weight:500}
-.tag:hover{border-color:rgba(249,115,22,0.4);color:var(--text-primary);background:var(--accent-glow)}
-
-/* ── Form ───────────────────────────────────────────────────────── */
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em}
-.form-row{display:flex;gap:8px}
-.form-input{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px;color:var(--text-primary);transition:all var(--transition)}
-.form-input:focus{outline:none;border-color:rgba(249,115,22,0.4);box-shadow:0 0 0 3px var(--accent-glow)}
-.form-select{background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 16px;color:var(--text-primary);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95a8' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
-.form-select:focus{outline:none;border-color:rgba(249,115,22,0.4)}
-.btn-group{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.btn-select{padding:12px 8px;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--bg-input);color:var(--text-secondary);font-weight:600;font-size:13px;cursor:pointer;transition:all var(--transition);text-align:center}
-.btn-select:hover{border-color:var(--border-hover);color:var(--text-primary)}
-.btn-select.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.form-full{grid-column:1/-1}
-.btn-submit{width:100%;padding:18px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;font-weight:700;font-size:16px;border:none;cursor:pointer;transition:all var(--transition);box-shadow:var(--shadow-accent)}
-.btn-submit:hover{transform:translateY(-1px);box-shadow:0 6px 35px rgba(249,115,22,0.25)}
-.btn-submit:active{transform:scale(0.98)}
-
-/* City Autocomplete */
-.city-wrap{position:relative}
-.city-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:240px;overflow-y:auto;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-lg);z-index:100;animation:slideDown 0.15s ease}
-.city-dropdown::-webkit-scrollbar{width:6px}
-.city-dropdown::-webkit-scrollbar-track{background:transparent}
-.city-dropdown::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-.city-state-header{padding:8px 14px;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;position:sticky;top:0;background:var(--bg-secondary)}
-.city-option{padding:10px 14px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background var(--transition)}
-.city-option:hover{background:var(--accent-glow)}
-.city-option .tier{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;background:var(--bg-card);color:var(--text-muted)}
-
-/* ── Loader ─────────────────────────────────────────────────────── */
-.loader-wrap{text-align:center;padding:60px 0}
-.spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px}
-.loader-wrap p{color:var(--text-muted);font-weight:500;font-size:14px}
-
-/* ── Error ──────────────────────────────────────────────────────── */
-.error-bar{padding:16px 20px;border-radius:var(--radius-lg);background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);color:var(--red);display:flex;align-items:center;gap:12px;margin-bottom:24px;font-size:14px;font-weight:500}
-
-/* ── Results ────────────────────────────────────────────────────── */
-.results{animation:fadeUp 0.4s ease}
-.results-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-.results-header h3{font-family:var(--font-display);font-size:22px;font-weight:700}
-.results-header .desc{font-size:13px;color:var(--text-secondary);margin-top:4px}
-.badge{font-size:11px;padding:5px 14px;border-radius:20px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em}
-.badge-ai{background:var(--accent-glow);color:var(--accent);border:1px solid rgba(249,115,22,0.2)}
-.badge-city{background:rgba(59,130,246,0.08);color:var(--blue);border:1px solid rgba(59,130,246,0.15)}
-
-/* Cost Overview Cards */
-.cost-row{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px}
-.cost-card{border-radius:var(--radius-xl);padding:24px;text-align:center;position:relative;overflow:hidden}
-.cost-card::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,rgba(255,255,255,0.08),transparent);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
-.cost-card .label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:8px}
-.cost-card .value{font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-0.02em}
-.cost-card .sub{font-size:12px;color:var(--text-secondary);margin-top:4px}
-.cost-card.total{background:linear-gradient(135deg,rgba(249,115,22,0.08),rgba(249,115,22,0.02))}
-.cost-card.total .value{color:var(--accent)}
-.cost-card.sqft{background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(16,185,129,0.02))}
-.cost-card.sqft .value{color:var(--emerald)}
-.cost-card.labour{background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(139,92,246,0.02))}
-.cost-card.labour .value{color:var(--violet)}
-
-/* Material Cards */
-.materials-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
-.mat-card{border-radius:var(--radius-lg);padding:20px 16px;transition:all var(--transition);position:relative;overflow:hidden}
-.mat-card:hover{background:var(--bg-card-hover);transform:translateY(-2px)}
-.mat-card .mat-icon{width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px}
-.mat-card .mat-val{font-family:var(--font-display);font-size:24px;font-weight:800;margin-bottom:2px;letter-spacing:-0.01em}
-.mat-card .mat-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600}
-.mat-card .mat-cost{font-size:12px;color:var(--text-secondary);margin-top:8px;font-weight:500}
-.mat-bar{height:3px;width:100%;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden}
-.mat-bar-fill{height:100%;border-radius:2px;transition:width 0.8s ease;width:0}
-.cement-color{color:#f97316}.cement-bg{background:rgba(249,115,22,0.1)}.cement-fill{background:var(--accent)}
-.sand-color{color:#3b82f6}.sand-bg{background:rgba(59,130,246,0.1)}.sand-fill{background:var(--blue)}
-.brick-color{color:#ef4444}.brick-bg{background:rgba(239,68,68,0.1)}.brick-fill{background:var(--red)}
-.agg-color{color:#10b981}.agg-bg{background:rgba(16,185,129,0.1)}.agg-fill{background:var(--emerald)}
-.steel-color{color:#f59e0b}.steel-bg{background:rgba(245,158,11,0.1)}.steel-fill{background:var(--amber)}
-
-/* Bottom Grid: Rates + Analysis + Confidence */
-.bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px}
-.panel{border-radius:var(--radius-xl);padding:24px}
-.panel-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
-.panel-title .chip{font-size:10px;padding:3px 10px;border-radius:10px;background:var(--accent-glow);color:var(--accent);font-weight:600}
-.rate-row{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;align-items:center}
-.rate-row:last-child{border-bottom:none}
-.rate-row .rate-name{color:var(--text-secondary)}
-.rate-row .rate-val{font-weight:600;color:var(--text-primary)}
-.rate-row .rate-sub{grid-column:1/-1;font-size:11px;color:var(--text-muted)}
-.note-item{display:flex;gap:10px;padding:8px 12px;background:var(--bg-input);border-radius:var(--radius-sm);margin-bottom:6px;border:1px solid var(--border)}
-.note-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);margin-top:6px;flex-shrink:0}
-.note-text{font-size:13px;color:var(--text-secondary);line-height:1.5}
-.r2-avg{font-family:var(--font-display);font-size:36px;font-weight:800;margin-bottom:2px}
-.r2-label{font-size:12px;color:var(--emerald);font-weight:600;display:flex;align-items:center;gap:4px;margin-bottom:16px}
-.r2-item{margin-bottom:8px}
-.r2-header{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
-.r2-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
-.r2-bar-fill{height:100%;background:var(--emerald);border-radius:2px;transition:width 0.8s ease}
-
-/* Action Buttons */
-.action-row{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap}
-.btn-action{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:var(--radius-md);font-size:13px;font-weight:600;cursor:pointer;transition:all var(--transition);border:1px solid var(--border);background:var(--bg-card);color:var(--text-secondary)}
-.btn-action:hover{background:var(--bg-card-hover);color:var(--text-primary);transform:translateY(-1px)}
-.btn-action svg{width:16px;height:16px}
-
-/* History */
-.history-section{margin-bottom:32px}
-.history-title{font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
-.history-list{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px}
-.history-list::-webkit-scrollbar{height:4px}
-.history-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.history-card{flex-shrink:0;padding:12px 16px;border-radius:var(--radius-md);background:var(--bg-card);border:1px solid var(--border);cursor:pointer;transition:all var(--transition);min-width:180px}
-.history-card:hover{border-color:var(--accent);background:var(--accent-glow)}
-.history-card .hc-prompt{font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
-.history-card .hc-meta{font-size:11px;color:var(--text-muted)}
-.btn-clear-history{font-size:11px;color:var(--text-muted);cursor:pointer;background:none;border:none;font-weight:600;transition:color var(--transition)}
-.btn-clear-history:hover{color:var(--red)}
-
-/* ── Footer ─────────────────────────────────────────────────────── */
-.footer{margin-top:auto;padding:24px 0;border-top:1px solid var(--border)}
-.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.footer span{font-size:12px;color:var(--text-muted)}
-
-/* ── Responsive ─────────────────────────────────────────────────── */
-@media(max-width:1024px){
-  .cost-row{grid-template-columns:repeat(3,1fr)}
-  .materials-grid{grid-template-columns:repeat(3,1fr)}
-  .bottom-grid{grid-template-columns:1fr 1fr}
-}
-@media(max-width:768px){
-  .container{padding:0 16px}
-  .hero{padding:36px 0 20px}
-  .prompt-row{flex-direction:column}
-  .form-grid{grid-template-columns:1fr}
-  .cost-row{grid-template-columns:repeat(2,1fr)}
-  .materials-grid{grid-template-columns:repeat(2,1fr)}
-  .bottom-grid{grid-template-columns:1fr}
-  .cost-card .value{font-size:22px}
-  .action-row{flex-direction:column}
-}
-@media(max-width:480px){
-  .cost-row{grid-template-columns:1fr}
-  .materials-grid{grid-template-columns:1fr 1fr}
-  .header-inner{gap:8px}
-  .link-subtle{display:none}
-}
-
-/* ── Print ──────────────────────────────────────────────────────── */
-@media print {
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    color-adjust: exact !important;
-  }
-  .header, .hero, .tabs, .input-wrap, .bg-orbs, .footer, .action-row, .history-section, .btn-icon { display: none !important; }
-  body { background: #fff !important; color: #000 !important; margin: 0; padding: 0; font-size: 11px !important; }
-  
-  .glass {
-    background: #fafafa !important;
-    border: 1px solid #ccc !important;
-    backdrop-filter: none !important;
-    box-shadow: none !important;
-    color: #000 !important;
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-  
-  /* Force ALL text inside generated cards to be pure black for high-contrast print */
-  .glass * { color: #000 !important; }
-  .glass h1, .glass h2, .glass h3, .glass h4, .glass p, .glass span, .glass div { color: #000 !important; }
-  
-  .results { display: block !important; margin-top: 0 !important; padding: 0 !important; zoom: 0.85; }
-  
-  /* Perfect 5-column landscape grid mapping */
-  .cost-row { display: grid !important; grid-template-columns: repeat(5, 1fr) !important; gap: 8px !important; margin-bottom: 12px !important; }
-  .materials-grid { display: grid !important; grid-template-columns: repeat(5, 1fr) !important; gap: 8px !important; margin-bottom: 12px !important; }
-  .bottom-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; align-items: start !important; }
-  
-  /* Tighten padding to save vertical space and prevent 2-page print */
-  .glass { padding: 12px !important; }
-  .rate-row { padding: 4px 0 !important; font-size: 10px !important; }
-  
-  .mat-bar, .r2-bar { background: #e5e7eb !important; border: 1px solid #ccc !important; height: 4px !important; }
-  .mat-fill, .r2-fill { background: #222 !important; }
-  
-  @page { margin: 10mm; size: A4 landscape; }
-}
-  </style>
-</head>
-<body>
-  <div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
-
-  <!-- Header -->
-  <header class="header">
-    <div class="container header-inner">
-      <div class="logo">
-        <div class="logo-icon">A</div>
-        <div class="logo-text">
-          <h1>Ayatiworks</h1>
-          <span>Construction Estimator v3.0</span>
-        </div>
-      </div>
-      <div class="header-actions">
-        <a href="/docs" target="_blank" class="link-subtle">API Docs</a>
-        <button id="themeToggle" class="btn-icon" title="Toggle theme">
-          <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v1"/><path d="M12 20v1"/><path d="M3 12h1"/><path d="M20 12h1"/><path d="m18.364 5.636-.707.707"/><path d="m6.343 17.657-.707.707"/><path d="m5.636 5.636.707.707"/><path d="m17.657 17.657.707.707"/><circle cx="12" cy="12" r="4"/></svg>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main class="container" style="flex:1;display:flex;flex-direction:column">
-    <!-- Hero -->
-    <section class="hero fade-up">
-      <h2 id="heroGreeting">What are we building today?</h2>
-      <p>Describe your project in plain English or use the detailed form. AI-powered estimates for 50+ Indian cities.</p>
-    </section>
-
-    <!-- Tabs -->
-    <div class="tabs fade-up" style="animation-delay:0.1s">
-      <div class="tab-group">
-        <button id="tabNLP" class="tab-btn active">Smart Prompt</button>
-        <button id="tabForm" class="tab-btn">Detailed Form</button>
-      </div>
-    </div>
-
-    <!-- Input -->
-    <div class="input-wrap fade-up" style="animation-delay:0.15s">
-      <!-- NLP Section -->
-      <div id="sectionNLP">
-        <div class="input-card glass">
-          <div class="prompt-row">
-            <input id="promptInput" type="text" class="prompt-input" placeholder="e.g. '3 BHK house 1200 sqft G+2 in Chennai premium'" autocomplete="off"/>
-            <button id="btnNLP" class="btn-primary">
-              <span>Estimate</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </button>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta
+      name="description"
+      content="AI-powered construction material and cost estimator for 50+ Indian cities. Get instant estimates for cement, sand, bricks, aggregate, and steel."
+    />
+    <title>Construction Estimator | Ayatiworks AI</title>
+    <link rel="icon" type="image/svg+xml" href="/static/logo.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/fav-icon.png" />
+    <link rel="apple-touch-icon" href="/static/fav-icon.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style id="dynamicPrintPage">@page { size: A4 landscape; margin: 9mm; }</style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+              display: ["Outfit", "Inter", "sans-serif"],
+            },
+            boxShadow: {
+              soft: "0 20px 60px rgba(15, 23, 42, 0.08)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background: #ffffff;
+      }
+      .fade-up {
+        opacity: 0;
+        transform: translateY(12px);
+        animation: fadeUp 0.45s ease forwards;
+      }
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .tab-btn.active,
+      .btn-select.active {
+        background: #dc2626;
+        border-color: #dc2626;
+        color: #fff;
+        box-shadow: 0 14px 30px rgba(220, 38, 38, 0.18);
+      }
+      .city-wrap {
+        position: relative;
+      }
+      .city-dropdown {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        z-index: 30;
+        max-height: 260px;
+        overflow-y: auto;
+        border-radius: 1rem;
+        border: 1px solid rgb(226 232 240);
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+      }
+      .city-state-header {
+        position: sticky;
+        top: 0;
+        padding: 0.7rem 0.9rem;
+        background: rgba(248, 250, 252, 0.98);
+        color: rgb(100 116 139);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .city-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.85rem 0.9rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+      }
+      .city-option:hover {
+        background: rgb(254 242 242);
+      }
+      .tier {
+        border-radius: 999px;
+        background: rgb(241 245 249);
+        padding: 0.15rem 0.55rem;
+        color: rgb(100 116 139);
+        font-size: 0.68rem;
+        font-weight: 600;
+      }
+      .spinner {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 999px;
+        border: 3px solid rgb(226 232 240);
+        border-top-color: #dc2626;
+        animation: spin 0.7s linear infinite;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .badge-ai {
+        border: 1px solid rgb(254 202 202);
+        background: rgb(254 242 242);
+        color: rgb(220 38 38);
+      }
+      .badge-city {
+        border: 1px solid rgb(191 219 254);
+        background: rgb(239 246 255);
+        color: rgb(37 99 235);
+      }
+      .mat-bar,
+      .r2-bar {
+        height: 0.38rem;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgb(226 232 240);
+      }
+      .mat-bar-fill,
+      .r2-bar-fill {
+        height: 100%;
+        width: 0;
+        transition: width 0.8s ease;
+      }
+      .material-icon-img {
+        width: 1.5rem;
+        height: 1.5rem;
+        object-fit: contain;
+      }
+      .cement-fill {
+        background: #dc2626;
+      }
+      .sand-fill {
+        background: #2563eb;
+      }
+      .brick-fill {
+        background: #f97316;
+      }
+      .agg-fill {
+        background: #16a34a;
+      }
+      .steel-fill {
+        background: #ca8a04;
+      }
+      .rate-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.2rem 0.75rem;
+        border-bottom: 1px solid rgb(226 232 240);
+        padding: 0.8rem 0;
+      }
+      .rate-row:last-child {
+        border-bottom: 0;
+      }
+      .rate-name {
+        color: rgb(71 85 105);
+      }
+      .rate-val {
+        font-weight: 700;
+        color: rgb(15 23 42);
+      }
+      .rate-sub {
+        grid-column: 1 / -1;
+        color: rgb(100 116 139);
+        font-size: 0.75rem;
+      }
+      .note-item {
+        display: flex;
+        gap: 0.7rem;
+        margin-bottom: 0.65rem;
+        border-radius: 1rem;
+        border: 1px solid rgb(226 232 240);
+        background: rgb(248 250 252);
+        padding: 0.8rem 0.9rem;
+      }
+      .note-dot {
+        width: 0.45rem;
+        height: 0.45rem;
+        flex-shrink: 0;
+        margin-top: 0.45rem;
+        border-radius: 999px;
+        background: #dc2626;
+      }
+      .note-text {
+        color: rgb(51 65 85);
+        font-size: 0.875rem;
+        line-height: 1.5;
+      }
+      .r2-item {
+        margin-bottom: 0.85rem;
+      }
+      .r2-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.35rem;
+        color: rgb(100 116 139);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .r2-bar-fill {
+        background: #16a34a;
+      }
+      .history-card {
+        min-width: 220px;
+        cursor: pointer;
+        border-radius: 1rem;
+        border: 1px solid rgb(226 232 240);
+        background: rgba(255, 255, 255, 0.96);
+        padding: 1rem;
+        transition:
+          transform 0.2s ease,
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .history-card:hover {
+        transform: translateY(-2px);
+        border-color: rgb(254 202 202);
+        box-shadow: 0 18px 34px rgba(220, 38, 38, 0.12);
+      }
+      .hc-prompt {
+        color: rgb(15 23 42);
+        font-size: 0.86rem;
+        font-weight: 700;
+      }
+      .hc-meta {
+        margin-top: 0.25rem;
+        color: rgb(100 116 139);
+        font-size: 0.75rem;
+      }
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+        body {
+          background: #fff;
+          color: #0f172a !important;
+          font-size: 9pt;
+        }
+        #results {
+          display: block !important;
+          width: 100% !important;
+          zoom: 0.92;
+        }
+        #results > div:first-child {
+          margin-bottom: 0.45rem !important;
+          align-items: flex-start !important;
+          display: flex !important;
+          justify-content: space-between !important;
+        }
+        #costRow,
+        #matsGrid {
+          display: grid !important;
+          grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+          grid-auto-rows: min-content !important;
+          align-items: start !important;
+          gap: 0.35rem !important;
+          margin-bottom: 0.45rem !important;
+        }
+        #results > .mb-6.grid.gap-4.xl\:grid-cols-3 {
+          display: grid !important;
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          grid-auto-rows: min-content !important;
+          align-items: start !important;
+          gap: 0.35rem !important;
+          margin-bottom: 0.4rem !important;
+        }
+        #costRow > div,
+        #matsGrid > div,
+        #results > .mb-6.grid.gap-4.xl\:grid-cols-3 > div {
+          break-inside: avoid;
+          page-break-inside: avoid;
+          border: 1px solid #cbd5e1 !important;
+          border-radius: 6px !important;
+          box-shadow: none !important;
+          background: #fff !important;
+          padding: 0.45rem !important;
+          min-height: auto !important;
+          height: auto !important;
+        }
+        #costRow > div .font-display,
+        #matsGrid > div .font-display,
+        #results > .mb-6.grid.gap-4.xl\:grid-cols-3 > div .font-display {
+          font-size: 0.82rem !important;
+          line-height: 1.1 !important;
+        }
+        #results h3 {
+          font-size: 12pt !important;
+        }
+        #results p,
+        #results span,
+        #results div {
+          line-height: 1.15 !important;
+        }
+        #results .text-sm,
+        #results .text-\[11px\],
+        #results .text-xs {
+          font-size: 6.8pt !important;
+        }
+        #results .text-4xl,
+        #results .text-3xl,
+        #results .text-2xl {
+          font-size: 9pt !important;
+        }
+        #costRow > div *,
+        #matsGrid > div *,
+        #results > .mb-6.grid.gap-4.xl\:grid-cols-3 > div * {
+          color: #0f172a !important;
+        }
+        #costRow .mt-2,
+        #matsGrid .mt-4,
+        #results .mb-4,
+        #results .mt-2,
+        #results .mt-1 {
+          margin-top: 0.18rem !important;
+          margin-bottom: 0 !important;
+        }
+        .badge-city,
+        .badge-ai {
+          border-color: #94a3b8 !important;
+          background: #ffffff !important;
+          color: #334155 !important;
+          padding: 0.14rem 0.38rem !important;
+          font-size: 6.4pt !important;
+        }
+        .mat-bar,
+        .r2-bar {
+          background: #cbd5e1 !important;
+        }
+        .mat-bar-fill,
+        .r2-bar-fill {
+          opacity: 1 !important;
+        }
+        .rate-row {
+          padding: 0.22rem 0 !important;
+        }
+        .note-item {
+          background: #fff !important;
+          padding: 0.24rem 0.34rem !important;
+          margin-bottom: 0.18rem !important;
+          border-color: #e2e8f0 !important;
+          border-radius: 5px !important;
+        }
+        .mat-bar,
+        .r2-bar {
+          height: 0.16rem !important;
+        }
+        .flex.h-11.w-11,
+        .h-11.w-11 {
+          width: 1.05rem !important;
+          height: 1.05rem !important;
+          min-width: 1.05rem !important;
+          font-size: 0.52rem !important;
+        }
+        #results > .mb-5.flex.flex-wrap.items-end.justify-between.gap-4 {
+          border-bottom: 1px solid #cbd5e1;
+          padding-bottom: 0.22rem;
+        }
+        #results > .mb-6.grid.gap-4.xl\:grid-cols-3 > div {
+          min-height: auto !important;
+        }
+        #costArea:empty,
+        #costMaterialPct:empty,
+        #costLabourPct:empty,
+        #costOverhead:empty,
+        #costCement:empty,
+        #costSand:empty,
+        #costBricks:empty,
+        #costAggregate:empty,
+        #costSteel:empty,
+        #rateMeta:empty {
+          display: none !important;
+        }
+        #costRow .mt-1:empty,
+        #matsGrid .mt-2:empty {
+          display: none !important;
+        }
+        #costRow > div,
+        #matsGrid > div {
+          align-content: start !important;
+        }
+        #costRow > div .text-\[11px\],
+        #matsGrid > div .text-\[11px\],
+        #results > .mb-6.grid.gap-4.xl\:grid-cols-3 .text-\[11px\] {
+          letter-spacing: 0.04em !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen text-slate-900">
+    <header class="no-print sticky top-0 z-40 border-b border-slate-200 bg-white">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-4">
+          <div class="flex flex-col items-start">
+            <div class="flex h-14 w-40 items-center justify-center overflow-hidden sm:h-16 sm:w-48">
+              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/ayati.png" alt="Ayatiworks logo" class="h-full w-full object-contain p-1" />
+            </div>
+            <div class="mt-1 pl-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500 sm:text-xs">
+              Construction Estimator
+            </div>
           </div>
-          <div class="quick-tags">
-            <label>Try:</label>
-            <button class="tag" data-prompt="3 BHK house 1200 sqft G+2 Chennai">3BHK Chennai</button>
-            <button class="tag" data-prompt="2 BHK flat 850 sqft Mumbai standard">2BHK Mumbai</button>
-            <button class="tag" data-prompt="commercial office 5 floors 250 sqm Bangalore premium">Office Bangalore</button>
-            <button class="tag" data-prompt="industrial warehouse 5000 sqft 2 floors Pune">Warehouse Pune</button>
-            <button class="tag" data-prompt="4 BHK luxury villa G+2 Hyderabad 2400 sqft">Villa Hyderabad</button>
+        </div>
+        <div class="hidden text-sm font-medium text-slate-500 sm:block">
+          Simple construction cost planning
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
+      <section class="fade-up no-print mb-8">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+          <div class="text-center">
+            <h2 id="heroGreeting" class="font-display text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+              What are we building today?
+            </h2>
+            <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+Your project, your budget. Precise construction estimates for India's top cities.            </p>
+            <div class="mt-6 grid gap-3 sm:grid-cols-3">
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-left">
+                <div class="text-sm font-semibold text-slate-900">50+ Cities</div>
+                <div class="mt-1 text-sm text-slate-600">Local market-based estimate support</div>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-left">
+                <div class="text-sm font-semibold text-slate-900">Prompt or Form</div>
+                <div class="mt-1 text-sm text-slate-600">Use the mode that is easiest for you</div>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-left">
+                <div class="text-sm font-semibold text-slate-900">Print Ready</div>
+                <div class="mt-1 text-sm text-slate-600">Simple summary designed for reports</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="fade-up no-print mb-6 flex justify-center" style="animation-delay: 0.06s">
+        <div class="inline-flex rounded-xl border border-slate-200 bg-white p-1">
+          <button id="tabNLP" class="tab-btn active rounded-xl px-5 py-3 text-sm font-semibold text-slate-600 transition hover:text-slate-900">
+            Quick Estimate
+          </button>
+          <button id="tabForm" class="tab-btn rounded-xl px-5 py-3 text-sm font-semibold text-slate-600 transition hover:text-slate-900">
+            Customized Estimate
+          </button>
+        </div>
+      </div>
+
+      <div class="fade-up no-print mb-8" style="animation-delay: 0.12s">
+        <div id="sectionNLP">
+          <div class="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6">
+            <div class="flex flex-col gap-3 lg:flex-row">
+              <input
+                id="promptInput"
+                type="text"
+                class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-900 outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100"
+                placeholder="e.g. 3 BHK house 1200 sqft G+2 in Chennai premium"
+                autocomplete="off"
+              />
+              <button
+                id="btnNLP"
+                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-red-600/20 transition hover:bg-red-700"
+              >
+                <span>Estimate</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="mt-4 flex flex-wrap items-center gap-2">
+              <span class="mr-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Try</span>
+              <button class="tag rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600" data-prompt="3 BHK house 1200 sqft G+2 Chennai">3BHK Chennai</button>
+              <button class="tag rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600" data-prompt="2 BHK flat 850 sqft Mumbai standard">2BHK Mumbai</button>
+              <button class="tag rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600" data-prompt="commercial office 5 floors 250 sqm Bangalore premium">Office Bangalore</button>
+              <button class="tag rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600" data-prompt="industrial warehouse 5000 sqft 2 floors Pune">Warehouse Pune</button>
+              <button class="tag rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600" data-prompt="4 BHK luxury villa G+2 Hyderabad 2400 sqft">Villa Hyderabad</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="sectionForm" class="hidden">
+          <div class="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6">
+            <form id="detailsForm" class="grid gap-5 md:grid-cols-2">
+              <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Built-up Area</label>
+                <div class="flex gap-3">
+                  <input type="number" id="formArea" class="w-full min-w-0 flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100" placeholder="1200" required min="1" step="0.1" />
+                  <select id="formUnit" class="w-28 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-red-300">
+                    <option value="sqft">Sqft</option>
+                    <option value="sqm">Sqm</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Number of Floors</label>
+                <input type="number" id="formFloors" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100" min="1" max="15" value="1" required />
+              </div>
+              <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Building Type</label>
+                <div class="grid grid-cols-3 gap-2">
+                  <button type="button" data-val="0" class="btn-select btn-type active rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Residential</button>
+                  <button type="button" data-val="1" class="btn-select btn-type rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Commercial</button>
+                  <button type="button" data-val="2" class="btn-select btn-type rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Industrial</button>
+                </div>
+              </div>
+              <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Quality Grade</label>
+                <div class="grid grid-cols-3 gap-2">
+                  <button type="button" data-val="0" class="btn-select btn-quality rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Economy</button>
+                  <button type="button" data-val="1" class="btn-select btn-quality active rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Standard</button>
+                  <button type="button" data-val="2" class="btn-select btn-quality rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Premium</button>
+                </div>
+              </div>
+              <div class="md:col-span-2">
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">City (optional)</label>
+                <div class="city-wrap">
+                  <input type="text" id="formCity" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100" placeholder="Search city... e.g. Chennai, Mumbai" autocomplete="off" />
+                  <div id="cityDropdown" class="city-dropdown hidden"></div>
+                </div>
+              </div>
+              <div class="md:col-span-2">
+                <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-red-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-red-600/20 transition hover:bg-red-700">
+                  Get Estimate
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
 
-      <!-- Form Section -->
-      <div id="sectionForm" class="hidden">
-        <div class="input-card glass">
-          <form id="detailsForm" class="form-grid">
-            <div class="form-group">
-              <label>Built-up Area</label>
-              <div class="form-row">
-                <input type="number" id="formArea" class="form-input" placeholder="1200" required min="1" step="0.1" style="flex:1"/>
-                <select id="formUnit" class="form-select" style="width:100px">
-                  <option value="sqft">Sqft</option>
-                  <option value="sqm">Sqm</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Number of Floors</label>
-              <input type="number" id="formFloors" class="form-input" min="1" max="15" value="1" required/>
-            </div>
-            <div class="form-group">
-              <label>Building Type</label>
-              <div class="btn-group">
-                <button type="button" data-val="0" class="btn-select btn-type active">Residential</button>
-                <button type="button" data-val="1" class="btn-select btn-type">Commercial</button>
-                <button type="button" data-val="2" class="btn-select btn-type">Industrial</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Quality Grade</label>
-              <div class="btn-group">
-                <button type="button" data-val="0" class="btn-select btn-quality">Economy</button>
-                <button type="button" data-val="1" class="btn-select btn-quality active">Standard</button>
-                <button type="button" data-val="2" class="btn-select btn-quality">Premium</button>
-              </div>
-            </div>
-            <div class="form-group form-full">
-              <label>City (optional)</label>
-              <div class="city-wrap">
-                <input type="text" id="formCity" class="form-input" placeholder="Search city… (e.g. Chennai, Mumbai)" autocomplete="off"/>
-                <div id="cityDropdown" class="city-dropdown hidden"></div>
-              </div>
-            </div>
-            <div class="form-full">
-              <button type="submit" class="btn-submit">Generate Estimate</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Loader -->
-    <div id="loader" class="loader-wrap hidden">
-      <div class="spinner"></div>
-      <p>Calculating with AI model…</p>
-    </div>
-
-    <!-- Error -->
-    <div id="errorState" class="error-bar hidden">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span id="errorMsg"></span>
-    </div>
-
-    <!-- History -->
-    <div id="historySection" class="history-section hidden">
-      <div class="history-title">
-        <span>Recent Estimates</span>
-        <button id="clearHistory" class="btn-clear-history">Clear all</button>
-      </div>
-      <div id="historyList" class="history-list"></div>
-    </div>
-
-    <!-- Results -->
-    <div id="results" class="results hidden">
-      <!-- Header -->
-      <div class="results-header">
-        <div>
-          <h3>Estimation Results</h3>
-          <p class="desc" id="resDescription"></p>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <span id="resCityBadge" class="badge badge-city hidden"></span>
-          <span id="resParsedBadge" class="badge badge-ai hidden">AI Parsed</span>
+      <div id="loader" class="no-print hidden py-12">
+        <div class="flex flex-col items-center justify-center gap-4">
+          <div class="spinner"></div>
+          <p class="text-sm font-medium text-slate-500">Calculating with AI model...</p>
         </div>
       </div>
 
-      <!-- Cost Overview -->
-      <div class="cost-row" id="costRow">
-        <div class="cost-card total glass">
-          <div class="label">Total Cost</div>
-          <div class="value" id="costTotal">--</div>
-          <div class="sub">All inclusive</div>
-        </div>
-        <div class="cost-card sqft glass">
-          <div class="label">Cost per Sqft</div>
-          <div class="value" id="costSqft">--</div>
-          <div class="sub" id="costArea">--</div>
-        </div>
-        <div class="cost-card glass" style="background:linear-gradient(135deg,rgba(59,130,246,0.08),rgba(59,130,246,0.02))">
-          <div class="label">Structural Material</div>
-          <div class="value" id="costMaterialVal" style="color:var(--blue)">--</div>
-          <div class="sub" id="costMaterialPct"></div>
-        </div>
-        <div class="cost-card labour glass">
-          <div class="label">Labour Cost</div>
-          <div class="value" id="costLabour">--</div>
-          <div class="sub" id="costLabourPct"></div>
-        </div>
-        <div class="cost-card glass" style="background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.02))">
-          <div class="label">Finishing & MEP</div>
-          <div class="value" id="costFinishing" style="color:var(--amber)">--</div>
-          <div class="sub" id="costOverhead">Overhead: --</div>
-        </div>
+      <div id="errorState" class="no-print hidden mb-6 flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span id="errorMsg"></span>
       </div>
 
-      <!-- Materials -->
-      <div class="materials-grid" id="matsGrid">
-        <div class="mat-card glass">
-          <div class="mat-icon cement-bg cement-color">🧱</div>
-          <div class="mat-val" id="resCement">--</div>
-          <div class="mat-label">Cement (Bags)</div>
-          <div class="mat-cost" id="costCement"></div>
-          <div class="mat-bar"><div class="mat-bar-fill cement-fill" id="barCement"></div></div>
+      <div id="historySection" class="no-print hidden mb-8">
+        <div class="mb-3 flex items-center justify-between gap-3">
+          <span class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Recent Estimates</span>
+          <button id="clearHistory" class="text-xs font-semibold text-slate-500 transition hover:text-red-600">Clear all</button>
         </div>
-        <div class="mat-card glass">
-          <div class="mat-icon sand-bg sand-color">🏖️</div>
-          <div class="mat-val" id="resSand">--</div>
-          <div class="mat-label">Sand (CFT)</div>
-          <div class="mat-cost" id="costSand"></div>
-          <div class="mat-bar"><div class="mat-bar-fill sand-fill" id="barSand"></div></div>
-        </div>
-        <div class="mat-card glass">
-          <div class="mat-icon brick-bg brick-color">🧱</div>
-          <div class="mat-val" id="resBricks">--</div>
-          <div class="mat-label">Bricks (Nos)</div>
-          <div class="mat-cost" id="costBricks"></div>
-          <div class="mat-bar"><div class="mat-bar-fill brick-fill" id="barBricks"></div></div>
-        </div>
-        <div class="mat-card glass">
-          <div class="mat-icon agg-bg agg-color">🪨</div>
-          <div class="mat-val" id="resAggregate">--</div>
-          <div class="mat-label">Aggregate (CFT)</div>
-          <div class="mat-cost" id="costAggregate"></div>
-          <div class="mat-bar"><div class="mat-bar-fill agg-fill" id="barAggregate"></div></div>
-        </div>
-        <div class="mat-card glass">
-          <div class="mat-icon steel-bg steel-color">🔩</div>
-          <div class="mat-val" id="resSteel">--</div>
-          <div class="mat-label">Steel (KG)</div>
-          <div class="mat-cost" id="costSteel"></div>
-          <div class="mat-bar"><div class="mat-bar-fill steel-fill" id="barSteel"></div></div>
-        </div>
+        <div id="historyList" class="flex gap-3 overflow-x-auto pb-2"></div>
       </div>
 
-      <!-- Bottom panels -->
-      <div class="bottom-grid">
-        <div class="panel glass">
-          <div class="panel-title"><span>Rate Card</span><span class="chip" id="rateCity">--</span></div>
-          <div class="desc" id="rateMeta">Midpoint price card</div>
-          <div id="rateTable"></div>
-        </div>
-        <div class="panel glass">
-          <div class="panel-title"><span>Analysis</span><span class="chip">Smart Insights</span></div>
-          <div id="notesContainer"></div>
-        </div>
-        <div class="panel glass">
-          <div class="panel-title">Validation Score</div>
-          <div class="r2-avg" id="avgR2">--</div>
-          <div class="r2-label" id="r2Label">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5L20 7"/></svg>
-            <span>Waiting for model data</span>
+      <div id="results" class="hidden">
+        <div class="mb-5 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h3 class="font-display text-2xl font-extrabold tracking-tight text-slate-950">Estimation Results</h3>
+            <p class="mt-1 text-sm text-slate-500" id="resDescription"></p>
           </div>
-          <div id="r2List"></div>
+          <div class="flex flex-wrap gap-2">
+            <span id="resCityBadge" class="badge badge-city hidden"></span>
+            <span id="resParsedBadge" class="badge badge-ai hidden">AI Parsed</span>
+          </div>
+        </div>
+
+        <div id="costRow" class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Total Cost</div>
+            <div class="font-display mt-2 text-3xl font-extrabold text-red-600" id="costTotal">--</div>
+            <div class="mt-1 text-sm text-slate-500">All inclusive</div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Cost per Sqft</div>
+            <div class="font-display mt-2 text-3xl font-extrabold text-emerald-600" id="costSqft">--</div>
+            <div class="mt-1 text-sm text-slate-500" id="costArea">--</div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Structural Material</div>
+            <div class="font-display mt-2 text-3xl font-extrabold text-blue-600" id="costMaterialVal">--</div>
+            <div class="mt-1 text-sm text-slate-500" id="costMaterialPct"></div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Labour Cost</div>
+            <div class="font-display mt-2 text-3xl font-extrabold text-violet-600" id="costLabour">--</div>
+            <div class="mt-1 text-sm text-slate-500" id="costLabourPct"></div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Finishing and MEP</div>
+            <div class="font-display mt-2 text-3xl font-extrabold text-amber-600" id="costFinishing">--</div>
+            <div class="mt-1 text-sm text-slate-500" id="costOverhead">Overhead: --</div>
+          </div>
+        </div>
+
+        <div id="matsGrid" class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-50 text-lg text-red-600">
+              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/cement.svg" alt="Cement icon" class="material-icon-img" />
+            </div>
+            <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resCement">--</div>
+            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Cement (Bags)</div>
+            <div class="mt-2 text-sm text-slate-500" id="costCement"></div>
+            <div class="mat-bar mt-3"><div class="mat-bar-fill cement-fill" id="barCement"></div></div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-lg text-blue-600">
+              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/sand.svg" alt="Sand icon" class="material-icon-img" />
+            </div>
+            <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resSand">--</div>
+            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Sand (CFT)</div>
+            <div class="mt-2 text-sm text-slate-500" id="costSand"></div>
+            <div class="mat-bar mt-3"><div class="mat-bar-fill sand-fill" id="barSand"></div></div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-50 text-lg text-orange-600">
+              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/briks.svg" alt="Bricks icon" class="material-icon-img" />
+            </div>
+            <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resBricks">--</div>
+            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Bricks (Nos)</div>
+            <div class="mt-2 text-sm text-slate-500" id="costBricks"></div>
+            <div class="mat-bar mt-3"><div class="mat-bar-fill brick-fill" id="barBricks"></div></div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-lg text-emerald-600">
+              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/aggregate.svg" alt="Aggregate icon" class="material-icon-img" />
+            </div>
+            <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resAggregate">--</div>
+            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Aggregate (CFT)</div>
+            <div class="mt-2 text-sm text-slate-500" id="costAggregate"></div>
+            <div class="mat-bar mt-3"><div class="mat-bar-fill agg-fill" id="barAggregate"></div></div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-lg text-amber-600">
+              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/steels.svg" alt="Steel icon" class="material-icon-img" />
+            </div>
+            <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resSteel">--</div>
+            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Steel (KG)</div>
+            <div class="mt-2 text-sm text-slate-500" id="costSteel"></div>
+            <div class="mat-bar mt-3"><div class="mat-bar-fill steel-fill" id="barSteel"></div></div>
+          </div>
+        </div>
+
+        <div class="mb-6 grid gap-4 xl:grid-cols-3">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <span class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Rate Card</span>
+              <span class="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-red-600" id="rateCity">--</span>
+            </div>
+            <div class="mb-2 text-sm text-slate-500" id="rateMeta">Midpoint price card</div>
+            <div id="rateTable"></div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <span class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Analysis</span>
+              <span class="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-red-600">Smart Insights</span>
+            </div>
+            <div id="notesContainer"></div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="mb-4 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Validation Score</div>
+            <div class="font-display text-4xl font-extrabold text-slate-950" id="avgR2">--</div>
+            <div class="mb-4 mt-2 flex items-center gap-2 text-sm font-semibold text-emerald-600" id="r2Label">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <path d="m5 12 5 5L20 7"></path>
+              </svg>
+              <span>Waiting for model data</span>
+            </div>
+            <div id="r2List"></div>
+          </div>
+        </div>
+
+        <div class="no-print mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <label class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600">
+            <span>Paper</span>
+            <select id="printSizeSelect" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 outline-none">
+              <option value="A4 landscape" selected>A4 Landscape</option>
+              <option value="A3 landscape">A3 Landscape</option>
+              <option value="A2 landscape">A2 Landscape</option>
+              <option value="A4 portrait">A4 Portrait</option>
+              <option value="A3 portrait">A3 Portrait</option>
+              <option value="A2 portrait">A2 Portrait</option>
+            </select>
+          </label>
+          <button id="btnPrintEstimate" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-red-200 hover:text-red-600">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9V2h12v7"></path>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            Print Estimate
+          </button>
+          <button id="btnNewEstimate" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-700">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14"></path>
+              <path d="M5 12h14"></path>
+            </svg>
+            New Estimate
+          </button>
         </div>
       </div>
+    </main>
 
-      <!-- Actions -->
-      <div class="action-row">
-        <button class="btn-action" onclick="window.print()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-          Print Estimate
-        </button>
-        <button class="btn-action" id="btnNewEstimate">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-          New Estimate
-        </button>
+    <footer class="no-print border-t border-slate-200/80 bg-white/90">
+      <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <span>Powered by Ayatiworks AI 2026</span>
+        <span> 50+ Indian cities</span>
       </div>
-    </div>
-  </main>
+    </footer>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-inner">
-      <span>Powered by Ayatiworks AI · FastAPI v3</span>
-      <span>50+ Indian cities · ML R²&gt;99%</span>
-    </div>
-  </footer>
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const currencyFormatter = new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0,
+      });
 
-  <script>
-/* ══════════════════════════════════════════════════════════════════
-   CONSTRUCTION ESTIMATOR — Frontend v3.0
-   ══════════════════════════════════════════════════════════════════ */
+      const tabNLP = $("tabNLP");
+      const tabForm = $("tabForm");
+      const secNLP = $("sectionNLP");
+      const secForm = $("sectionForm");
+      const promptInput = $("promptInput");
+      const btnNLP = $("btnNLP");
+      const loader = $("loader");
+      const results = $("results");
+      const errorState = $("errorState");
+      const errorMsg = $("errorMsg");
+      const printSizeSelect = $("printSizeSelect");
+      const cityInput = $("formCity");
+      const cityDrop = $("cityDropdown");
 
-// ── Theme ───────────────────────────────────────────────────────
-const html = document.documentElement;
-const themeBtn = document.getElementById('themeToggle');
-if (localStorage.getItem('theme') === 'light') html.dataset.theme = 'light';
-themeBtn.onclick = () => {
-  const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
-  html.dataset.theme = next;
-  localStorage.setItem('theme', next);
-};
+      let currentBuildingType = 0;
+      let currentQuality = 1;
+      let selectedCity = null;
+      let allCities = [];
 
-// ── Greeting ────────────────────────────────────────────────────
-const h = new Date().getHours();
-const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-document.getElementById('heroGreeting').textContent = `${greet}! What are we building?`;
+      const h = new Date().getHours();
+      const greet = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+      $("heroGreeting").textContent = `${greet}! What are we building?`;
 
-// ── State ───────────────────────────────────────────────────────
-let currentBuildingType = 0, currentQuality = 1;
-let allCities = [];
+      function setTab(isNLP) {
+        tabNLP.classList.toggle("active", isNLP);
+        tabForm.classList.toggle("active", !isNLP);
+        secNLP.classList.toggle("hidden", !isNLP);
+        secForm.classList.toggle("hidden", isNLP);
+      }
 
-// ── Elements ────────────────────────────────────────────────────
-const $ = id => document.getElementById(id);
-const tabNLP = $('tabNLP'), tabForm = $('tabForm');
-const secNLP = $('sectionNLP'), secForm = $('sectionForm');
-const promptInput = $('promptInput'), btnNLP = $('btnNLP');
-const loader = $('loader'), results = $('results');
-const errorState = $('errorState'), errorMsg = $('errorMsg');
+      tabNLP.onclick = () => setTab(true);
+      tabForm.onclick = () => setTab(false);
 
-// ── Tabs ────────────────────────────────────────────────────────
-function setTab(isNLP) {
-  tabNLP.classList.toggle('active', isNLP);
-  tabForm.classList.toggle('active', !isNLP);
-  secNLP.classList.toggle('hidden', !isNLP);
-  secForm.classList.toggle('hidden', isNLP);
-}
-tabNLP.onclick = () => setTab(true);
-tabForm.onclick = () => setTab(false);
+      document.querySelectorAll(".btn-type").forEach((btn) => {
+        btn.onclick = () => {
+          document.querySelectorAll(".btn-type").forEach((item) => item.classList.remove("active"));
+          btn.classList.add("active");
+          currentBuildingType = Number(btn.dataset.val);
+        };
+      });
 
-// ── Form Selectors ──────────────────────────────────────────────
-document.querySelectorAll('.btn-type').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.btn-type').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentBuildingType = +btn.dataset.val;
-  };
-});
-document.querySelectorAll('.btn-quality').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.btn-quality').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentQuality = +btn.dataset.val;
-  };
-});
+      document.querySelectorAll(".btn-quality").forEach((btn) => {
+        btn.onclick = () => {
+          document.querySelectorAll(".btn-quality").forEach((item) => item.classList.remove("active"));
+          btn.classList.add("active");
+          currentQuality = Number(btn.dataset.val);
+        };
+      });
 
-// ── Quick Tags ──────────────────────────────────────────────────
-document.querySelectorAll('.tag').forEach(tag => {
-  tag.onclick = () => { promptInput.value = tag.dataset.prompt; handleNLP(); };
-});
+      document.querySelectorAll(".tag").forEach((tag) => {
+        tag.onclick = () => {
+          promptInput.value = tag.dataset.prompt;
+          handleNLP();
+        };
+      });
 
-// ── City Autocomplete ───────────────────────────────────────────
-const cityInput = $('formCity'), cityDrop = $('cityDropdown');
-let selectedCity = null;
+      function formatINR(value) {
+        if (value == null || Number.isNaN(value)) return "--";
+        const abs = Math.abs(value);
+        if (abs >= 10000000) {
+          return `₹${(value / 10000000).toFixed(abs >= 100000000 ? 1 : 2).replace(/\.0$/, "")} Cr`;
+        }
+        if (abs >= 100000) {
+          return `₹${(value / 100000).toFixed(abs >= 1000000 ? 1 : 2).replace(/\.0$/, "")} L`;
+        }
+        return currencyFormatter.format(Math.round(value));
+      }
 
-async function loadCities() {
-  try {
-    const res = await fetch('api/cities');
-    if (!res.ok) throw new Error(`Status ${res.status}: ${res.statusText}`);
-    const data = await res.json();
-    allCities = data.cities || [];
-  } catch(e) { console.warn('Could not load cities', e); }
-}
-loadCities();
+      function formatNum(value) {
+        return value == null || Number.isNaN(value) ? "--" : value.toLocaleString("en-IN");
+      }
 
-cityInput.onfocus = () => renderCityDropdown(cityInput.value);
-cityInput.oninput = () => renderCityDropdown(cityInput.value);
-document.addEventListener('click', e => {
-  if (!e.target.closest('.city-wrap')) cityDrop.classList.add('hidden');
-});
+      function formatRange(range, unit) {
+        return range ? `Range: ${formatINR(range)}${unit}` : "Range not available";
+      }
 
-function renderCityDropdown(query) {
-  const q = query.toLowerCase().trim();
-  const filtered = q ? allCities.filter(c =>
-    c.city.toLowerCase().includes(q) || c.state.toLowerCase().includes(q)
-  ) : allCities;
-  if (!filtered.length) { cityDrop.classList.add('hidden'); return; }
+      function showLoading(show) {
+        loader.classList.toggle("hidden", !show);
+        if (show) {
+          results.classList.add("hidden");
+          errorState.classList.add("hidden");
+        }
+      }
 
-  const grouped = {};
-  filtered.forEach(c => {
-    if (!grouped[c.state]) grouped[c.state] = [];
-    grouped[c.state].push(c);
-  });
+      function showError(message) {
+        errorMsg.textContent = message;
+        errorState.classList.remove("hidden");
+        results.classList.add("hidden");
+      }
 
-  let html = '';
-  for (const [state, cities] of Object.entries(grouped).sort()) {
-    html += `<div class="city-state-header">${state}</div>`;
-    cities.forEach(c => {
-      html += `<div class="city-option" data-city="${c.city}">
-        <span>${c.city}</span>
-        <span class="tier">Tier ${c.tier}</span>
-      </div>`;
-    });
-  }
-  cityDrop.innerHTML = html;
-  cityDrop.classList.remove('hidden');
+      function updatePrintPageRule() {
+        const styleEl = $("dynamicPrintPage");
+        const selected = printSizeSelect?.value || "A4 landscape";
+        styleEl.textContent = `@page { size: ${selected}; margin: 9mm; }`;
+      }
 
-  cityDrop.querySelectorAll('.city-option').forEach(opt => {
-    opt.onclick = () => {
-      selectedCity = opt.dataset.city;
-      cityInput.value = selectedCity;
-      cityDrop.classList.add('hidden');
-    };
-  });
-}
+      async function loadCities() {
+        try {
+          const res = await fetch("api/cities");
+          if (!res.ok) throw new Error(`Status ${res.status}`);
+          const data = await res.json();
+          allCities = data.cities || [];
+        } catch (err) {
+          console.warn("Could not load cities", err);
+        }
+      }
 
-// ── Indian currency formatter ───────────────────────────────────
-function formatINR(n) {
-  if (n == null) return '--';
-  const str = Math.round(n).toString();
-  if (str.length <= 3) return '₹' + str;
-  let last3 = str.slice(-3);
-  let rest = str.slice(0, -3);
-  let formatted = '';
-  while (rest.length > 2) {
-    formatted = ',' + rest.slice(-2) + formatted;
-    rest = rest.slice(0, -2);
-  }
-  return '₹' + rest + formatted + ',' + last3;
-}
+      function renderCityDropdown(query) {
+        const q = (query || "").toLowerCase().trim();
+        const filtered = q
+          ? allCities.filter(
+              (city) =>
+                city.city.toLowerCase().includes(q) ||
+                city.state.toLowerCase().includes(q),
+            )
+          : allCities;
 
-function formatNum(n) {
-  return n != null ? n.toLocaleString('en-IN') : '--';
-}
+        if (!filtered.length) {
+          cityDrop.classList.add("hidden");
+          return;
+        }
 
-function formatRange(range, unit) {
-  return range ? `Range: ₹${range}${unit}` : 'Range not available';
-}
+        const grouped = {};
+        filtered.forEach((city) => {
+          if (!grouped[city.state]) grouped[city.state] = [];
+          grouped[city.state].push(city);
+        });
 
-// ── Animated Counter ────────────────────────────────────────────
-function animateValue(el, end, prefix='', suffix='') {
-  const dur = 600;
-  const start = 0;
-  const startTime = performance.now();
-  function tick(now) {
-    const p = Math.min((now - startTime) / dur, 1);
-    const ease = 1 - Math.pow(1 - p, 3);
-    const val = Math.round(start + (end - start) * ease);
-    el.textContent = prefix + val.toLocaleString('en-IN') + suffix;
-    if (p < 1) requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-}
+        let html = "";
+        Object.entries(grouped)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .forEach(([state, cities]) => {
+            html += `<div class="city-state-header">${state}</div>`;
+            cities.forEach((city) => {
+              html += `<div class="city-option" data-city="${city.city}">
+                <span>${city.city}</span>
+                <span class="tier">Tier ${city.tier}</span>
+              </div>`;
+            });
+          });
 
-// ── API: NLP ────────────────────────────────────────────────────
-async function handleNLP() {
-  const prompt = promptInput.value.trim();
-  if (!prompt) return;
-  showLoading(true);
-  try {
-    const res = await fetch('api/estimate-from-prompt', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ prompt })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      const err = Array.isArray(data.detail) ? data.detail.map(e => e.msg).join(', ') : data.detail || res.statusText;
-      throw new Error(`API Error (${res.status}): ${err}`);
-    }
-    displayResults(data, true, prompt);
-  } catch(e) { 
-    console.error('NLP Error:', e);
-    showError(e.message.includes('fetch') ? 'Network error: Please check if the server is running.' : e.message); 
-  }
-  finally { showLoading(false); }
-}
+        cityDrop.innerHTML = html;
+        cityDrop.classList.remove("hidden");
+        cityDrop.querySelectorAll(".city-option").forEach((opt) => {
+          opt.onclick = () => {
+            selectedCity = opt.dataset.city;
+            cityInput.value = selectedCity;
+            cityDrop.classList.add("hidden");
+          };
+        });
+      }
 
-// ── API: Form ───────────────────────────────────────────────────
-$('detailsForm').onsubmit = async e => {
-  e.preventDefault();
-  const payload = {
-    area: parseFloat($('formArea').value),
-    unit: $('formUnit').value,
-    floors: parseInt($('formFloors').value),
-    building_type: currentBuildingType,
-    quality: currentQuality,
-    city: selectedCity || cityInput.value || null
-  };
-  showLoading(true);
-  try {
-    const res = await fetch('api/estimate', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      const err = Array.isArray(data.detail) ? data.detail.map(e => e.msg).join(', ') : data.detail || res.statusText;
-      throw new Error(`API Error (${res.status}): ${err}`);
-    }
-    displayResults(data, false, `${payload.area} ${payload.unit} ${payload.floors}F`);
-  } catch(e) { 
-    console.error('Form Error:', e);
-    showError(e.message.includes('fetch') ? 'Network error: Please check server connectivity.' : e.message); 
-  }
-  finally { showLoading(false); }
-};
+      cityInput.onfocus = () => renderCityDropdown(cityInput.value);
+      cityInput.oninput = () => renderCityDropdown(cityInput.value);
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest(".city-wrap")) cityDrop.classList.add("hidden");
+      });
 
-btnNLP.onclick = handleNLP;
-promptInput.onkeydown = e => { if (e.key === 'Enter') handleNLP(); };
+      function getHistory() {
+        try {
+          return JSON.parse(localStorage.getItem("est_history") || "[]");
+        } catch {
+          return [];
+        }
+      }
 
-// ── UI helpers ──────────────────────────────────────────────────
-function showLoading(show) {
-  loader.classList.toggle('hidden', !show);
-  if (show) { results.classList.add('hidden'); errorState.classList.add('hidden'); }
-}
-function showError(msg) {
-  errorMsg.textContent = msg;
-  errorState.classList.remove('hidden');
-  results.classList.add('hidden');
-}
+      function saveHistory(prompt, data) {
+        const history = getHistory().slice(0, 9);
+        history.unshift({
+          prompt: prompt || "Estimate",
+          total: data.cost?.total_cost_inr || 0,
+          city: data.cost?.city || "",
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          data,
+        });
+        localStorage.setItem("est_history", JSON.stringify(history));
+        renderHistory();
+      }
 
-// ── Display Results ─────────────────────────────────────────────
-function displayResults(data, isNLP, promptText) {
-  results.classList.remove('hidden');
-  $('resParsedBadge').classList.toggle('hidden', !isNLP);
+      function renderHistory() {
+        const list = getHistory();
+        const section = $("historySection");
+        const listEl = $("historyList");
+        if (!list.length) {
+          section.classList.add("hidden");
+          return;
+        }
+        section.classList.remove("hidden");
+        listEl.innerHTML = list
+          .map(
+            (item, index) => `
+              <div class="history-card" data-idx="${index}">
+                <div class="hc-prompt">${item.prompt}</div>
+                <div class="hc-meta">${item.city ? `${item.city} · ` : ""}${item.total ? formatINR(item.total) : ""} · ${item.time}</div>
+              </div>`,
+          )
+          .join("");
+        listEl.querySelectorAll(".history-card").forEach((card) => {
+          card.onclick = () => {
+            const item = list[Number(card.dataset.idx)];
+            if (item?.data) displayResults(item.data, Boolean(item.data.parsed), item.prompt);
+          };
+        });
+      }
 
-  const cost = data.cost || {};
-  const mats = data.materials || {};
-  const parsed = data.parsed || {};
-  const r2 = data.model_r2_scores || {};
+      $("clearHistory").onclick = () => {
+        localStorage.removeItem("est_history");
+        renderHistory();
+      };
 
-  // City badge
-  const cityBadge = $('resCityBadge');
-  if (cost.city) {
-    cityBadge.textContent = `📍 ${cost.city}, ${cost.state || ''} (Tier ${cost.tier || '?'})`;
-    cityBadge.classList.remove('hidden');
-  } else { cityBadge.classList.add('hidden'); }
+      function setMaterial(id, barId, costId, quantity, maxQty, costValue) {
+        $(id).textContent = formatNum(quantity);
+        $(costId).textContent = costValue ? formatINR(costValue) : "";
+        setTimeout(() => {
+          $(barId).style.width = `${Math.max(5, (quantity / maxQty) * 100)}%`;
+        }, 100);
+      }
 
-  // Description
-  const area = data.total_area_sqft ? formatNum(Math.round(data.total_area_sqft)) : 'N/A';
-  const bType = isNLP ? (parsed.building_label||'') : (data.building_type||'');
-  const qType = isNLP ? (parsed.quality_label||'') : (data.quality||'');
-  $('resDescription').textContent = `${area} sqft total · ${bType} · ${qType}`;
+      function displayResults(data, isNLP, promptText) {
+        results.classList.remove("hidden");
+        $("resParsedBadge").classList.toggle("hidden", !isNLP);
 
-  // Cost cards
-  const total = cost.total_cost_inr || 0;
-  $('costTotal').textContent = total ? formatINR(total) : '--';
-  $('costSqft').textContent = cost.cost_per_sqft ? formatINR(cost.cost_per_sqft) : '--';
-  $('costArea').textContent = data.total_area_sqft ? `${formatNum(Math.round(data.total_area_sqft))} sqft total` : '';
-  $('costMaterialVal').textContent = cost.material_total ? formatINR(cost.material_total) : '--';
-  $('costMaterialPct').textContent = total ? `${Math.round(cost.material_total/total*100)}% of total` : '';
-  $('costLabour').textContent = cost.labour_cost ? formatINR(cost.labour_cost) : '--';
-  $('costLabourPct').textContent = total ? `${Math.round(cost.labour_cost/total*100)}% of total` : '';
-  $('costFinishing').textContent = cost.finishing_cost ? formatINR(cost.finishing_cost) : '--';
-  $('costOverhead').textContent = cost.overhead_cost ? `Overhead: ${formatINR(cost.overhead_cost)}` : '';
+        const cost = data.cost || {};
+        const mats = data.materials || {};
+        const parsed = data.parsed || {};
+        const scores = data.model_r2_scores || {};
 
-  // Materials
-  const maxQty = Math.max(mats.cement_bags||0, mats.sand_cft||0, mats.bricks||0, mats.aggregate_cft||0, mats.steel_kg||0, 1);
-  const cb = cost.cost_breakdown || {};
+        if (cost.city) {
+          $("resCityBadge").textContent = `${cost.city}, ${cost.state || ""} (Tier ${cost.tier || "?"})`;
+          $("resCityBadge").classList.remove("hidden");
+        } else {
+          $("resCityBadge").classList.add("hidden");
+        }
 
-  function setMat(id, barId, costId, qty, barColor, costVal) {
-    $(id).textContent = formatNum(qty);
-    setTimeout(() => { $(barId).style.width = Math.max(5, (qty/maxQty)*100) + '%'; }, 100);
-    $(costId).textContent = costVal ? formatINR(costVal) : '';
-  }
-  setMat('resCement','barCement','costCement', mats.cement_bags, 'cement', cb.cement);
-  setMat('resSand','barSand','costSand', mats.sand_cft, 'sand', cb.sand);
-  setMat('resBricks','barBricks','costBricks', mats.bricks, 'brick', cb.bricks);
-  setMat('resAggregate','barAggregate','costAggregate', mats.aggregate_cft, 'agg', cb.aggregate);
-  setMat('resSteel','barSteel','costSteel', mats.steel_kg, 'steel', cb.steel);
+        const area = data.total_area_sqft ? formatNum(Math.round(data.total_area_sqft)) : "N/A";
+        const buildingLabel = isNLP ? parsed.building_label || "" : data.building_type || "";
+        const qualityLabel = isNLP ? parsed.quality_label || "" : data.quality || "";
+        $("resDescription").textContent = `${area} sqft total · ${buildingLabel} · ${qualityLabel}`;
 
-  // Rate card
-  const rates = cost.rates_used || {};
-  const rateRanges = cost.rate_ranges || {};
-  const rateMeta = cost.rate_meta || {};
-  $('rateCity').textContent = cost.city || 'Default';
-  const rateBadge = rateMeta.verified ? 'Verified market rate' : (rateMeta.source_label || 'Range-based estimate');
-  const rateDate = rateMeta.last_updated ? ` · Updated ${rateMeta.last_updated}` : '';
-  $('rateMeta').textContent = rateBadge + rateDate;
-  $('rateTable').innerHTML = [
-    ['Cement', rates.cement_per_bag, '/bag', rateRanges.cement_per_bag],
-    ['Sand', rates.sand_per_cft, '/cft', rateRanges.sand_per_cft],
-    ['Brick', rates.brick_per_nos, '/nos', rateRanges.brick_per_nos],
-    ['Aggregate', rates.aggregate_per_cft, '/cft', rateRanges.aggregate_per_cft],
-    ['Steel', rates.steel_per_kg, '/kg', rateRanges.steel_per_kg],
-  ].map(([n,v,u,r]) => `<div class="rate-row"><span class="rate-name">${n}</span><span class="rate-val">${v ? '₹'+v+u : '--'}</span><div class="rate-sub">${formatRange(r, u)}</div></div>`).join('');
+        const total = cost.total_cost_inr || 0;
+        $("costTotal").textContent = total ? formatINR(total) : "--";
+        $("costSqft").textContent = cost.cost_per_sqft ? formatINR(cost.cost_per_sqft) : "--";
+        $("costArea").textContent = data.total_area_sqft ? `${formatNum(Math.round(data.total_area_sqft))} sqft total` : "";
+        $("costMaterialVal").textContent = cost.material_total ? formatINR(cost.material_total) : "--";
+        $("costMaterialPct").textContent = total ? `${Math.round((cost.material_total / total) * 100)}% of total` : "";
+        $("costLabour").textContent = cost.labour_cost ? formatINR(cost.labour_cost) : "--";
+        $("costLabourPct").textContent = total ? `${Math.round((cost.labour_cost / total) * 100)}% of total` : "";
+        $("costFinishing").textContent = cost.finishing_cost ? formatINR(cost.finishing_cost) : "--";
+        $("costOverhead").textContent = cost.overhead_cost ? `Overhead: ${formatINR(cost.overhead_cost)}` : "";
 
-  // Notes
-  const notes = isNLP ? (parsed.parsed_notes || []) : [`Building: ${bType}`, `Quality: ${qType}`, `Area: ${area} sqft`];
-  $('notesContainer').innerHTML = notes.map(n =>
-    `<div class="note-item"><div class="note-dot"></div><div class="note-text">${n}</div></div>`
-  ).join('');
+        const maxQty = Math.max(
+          mats.cement_bags || 0,
+          mats.sand_cft || 0,
+          mats.bricks || 0,
+          mats.aggregate_cft || 0,
+          mats.steel_kg || 0,
+          1,
+        );
+        const breakdown = cost.cost_breakdown || {};
 
-  // R2
-  let sum=0, cnt=0;
-  $('r2List').innerHTML = Object.entries(r2).map(([k,v]) => {
-    sum+=v; cnt++;
-    return `<div class="r2-item"><div class="r2-header"><span>${k.replace(/_/g,' ')}</span><span>${(v*100).toFixed(1)}%</span></div><div class="r2-bar"><div class="r2-bar-fill" style="width:${v*100}%"></div></div></div>`;
-  }).join('');
-  const avg = cnt ? ((sum/cnt)*100).toFixed(1) : '--';
-  $('avgR2').textContent = avg + '%';
-  const avgNum = cnt ? ((sum/cnt) * 100) : null;
-  const labelText = avgNum == null ? 'Waiting for model data'
-    : avgNum <= 0 ? 'Insufficient validation data'
-    : avgNum < 70 ? 'Needs improvement'
-    : avgNum < 90 ? 'Good validation fit'
-    : 'Strong validation fit';
-  $('r2Label').querySelector('span').textContent = labelText;
+        setMaterial("resCement", "barCement", "costCement", mats.cement_bags || 0, maxQty, breakdown.cement);
+        setMaterial("resSand", "barSand", "costSand", mats.sand_cft || 0, maxQty, breakdown.sand);
+        setMaterial("resBricks", "barBricks", "costBricks", mats.bricks || 0, maxQty, breakdown.bricks);
+        setMaterial("resAggregate", "barAggregate", "costAggregate", mats.aggregate_cft || 0, maxQty, breakdown.aggregate);
+        setMaterial("resSteel", "barSteel", "costSteel", mats.steel_kg || 0, maxQty, breakdown.steel);
 
-  // Scroll
-  results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const rates = cost.rates_used || {};
+        const ranges = cost.rate_ranges || {};
+        const meta = cost.rate_meta || {};
+        $("rateCity").textContent = cost.city || "Default";
+        $("rateMeta").textContent = meta.verified
+          ? `Verified market rate${meta.last_updated ? ` · Updated ${meta.last_updated}` : ""}`
+          : `${meta.source_label || "Range-based estimate"}${meta.last_updated ? ` · Updated ${meta.last_updated}` : ""}`;
 
-  // Save history
-  saveHistory(promptText, data);
-}
+        $("rateTable").innerHTML = [
+          ["Cement", rates.cement_per_bag, "/bag", ranges.cement_per_bag],
+          ["Sand", rates.sand_per_cft, "/cft", ranges.sand_per_cft],
+          ["Brick", rates.brick_per_nos, "/nos", ranges.brick_per_nos],
+          ["Aggregate", rates.aggregate_per_cft, "/cft", ranges.aggregate_per_cft],
+          ["Steel", rates.steel_per_kg, "/kg", ranges.steel_per_kg],
+        ]
+          .map(
+            ([label, value, unit, range]) => `
+              <div class="rate-row">
+                <span class="rate-name">${label}</span>
+                <span class="rate-val">${value ? `${formatINR(value)}${unit}` : "--"}</span>
+                <div class="rate-sub">${formatRange(range, unit)}</div>
+              </div>`,
+          )
+          .join("");
 
-// ── History ─────────────────────────────────────────────────────
-function getHistory() {
-  try { return JSON.parse(localStorage.getItem('est_history') || '[]'); } catch { return []; }
-}
-function saveHistory(prompt, data) {
-  const history = getHistory().slice(0, 9);
-  history.unshift({
-    prompt: prompt || 'Estimate',
-    total: data.cost?.total_cost_inr || 0,
-    city: data.cost?.city || '',
-    time: new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),
-    data: data
-  });
-  localStorage.setItem('est_history', JSON.stringify(history));
-  renderHistory();
-}
-function renderHistory() {
-  const list = getHistory();
-  const sec = $('historySection');
-  if (!list.length) { sec.classList.add('hidden'); return; }
-  sec.classList.remove('hidden');
-  $('historyList').innerHTML = list.map((h,i) =>
-    `<div class="history-card" data-idx="${i}">
-      <div class="hc-prompt">${h.prompt}</div>
-      <div class="hc-meta">${h.city ? h.city+' · ' : ''}${h.total ? formatINR(h.total) : ''} · ${h.time}</div>
-    </div>`
-  ).join('');
-  $('historyList').querySelectorAll('.history-card').forEach(card => {
-    card.onclick = () => {
-      const item = list[+card.dataset.idx];
-      if (item?.data) displayResults(item.data, !!item.data.parsed, item.prompt);
-    };
-  });
-}
-$('clearHistory').onclick = () => { localStorage.removeItem('est_history'); renderHistory(); };
-renderHistory();
+        const notes = isNLP
+          ? parsed.parsed_notes || []
+          : [`Building: ${buildingLabel}`, `Quality: ${qualityLabel}`, `Area: ${area} sqft`];
+        $("notesContainer").innerHTML = notes
+          .map(
+            (note) => `
+              <div class="note-item">
+                <div class="note-dot"></div>
+                <div class="note-text">${note}</div>
+              </div>`,
+          )
+          .join("");
 
-// ── New Estimate ────────────────────────────────────────────────
-$('btnNewEstimate').onclick = () => {
-  results.classList.add('hidden');
-  promptInput.value = '';
-  promptInput.focus();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+        let sum = 0;
+        let count = 0;
+        $("r2List").innerHTML = Object.entries(scores)
+          .map(([key, value]) => {
+            sum += value;
+            count += 1;
+            return `
+              <div class="r2-item">
+                <div class="r2-header">
+                  <span>${key.replace(/_/g, " ")}</span>
+                  <span>${(value * 100).toFixed(1)}%</span>
+                </div>
+                <div class="r2-bar">
+                  <div class="r2-bar-fill" style="width:${value * 100}%"></div>
+                </div>
+              </div>`;
+          })
+          .join("");
 
-// ── Keyboard shortcut ───────────────────────────────────────────
-window.onkeydown = e => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-    e.preventDefault();
-    setTab(true);
-    promptInput.focus();
-  }
-};
-  </script>
-</body>
+        const avg = count ? (sum / count) * 100 : null;
+        $("avgR2").textContent = avg == null ? "--" : `${avg.toFixed(1)}%`;
+        $("r2Label").querySelector("span").textContent =
+          avg == null
+            ? "Waiting for model data"
+            : avg <= 0
+              ? "Insufficient validation data"
+              : avg < 70
+                ? "Needs improvement"
+                : avg < 90
+                  ? "Good validation fit"
+                  : "Strong validation fit";
+
+        results.scrollIntoView({ behavior: "smooth", block: "start" });
+        saveHistory(promptText, data);
+      }
+
+      async function handleNLP() {
+        const prompt = promptInput.value.trim();
+        if (!prompt) return;
+        showLoading(true);
+        try {
+          const res = await fetch("api/estimate-from-prompt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            const detail = Array.isArray(data.detail)
+              ? data.detail.map((item) => item.msg).join(", ")
+              : data.detail || res.statusText;
+            throw new Error(`API Error (${res.status}): ${detail}`);
+          }
+          displayResults(data, true, prompt);
+        } catch (err) {
+          console.error(err);
+          showError(err.message.includes("fetch") ? "Network error: Please check if the server is running." : err.message);
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      $("detailsForm").onsubmit = async (event) => {
+        event.preventDefault();
+        const payload = {
+          area: parseFloat($("formArea").value),
+          unit: $("formUnit").value,
+          floors: parseInt($("formFloors").value, 10),
+          building_type: currentBuildingType,
+          quality: currentQuality,
+          city: selectedCity || cityInput.value || null,
+        };
+
+        showLoading(true);
+        try {
+          const res = await fetch("api/estimate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            const detail = Array.isArray(data.detail)
+              ? data.detail.map((item) => item.msg).join(", ")
+              : data.detail || res.statusText;
+            throw new Error(`API Error (${res.status}): ${detail}`);
+          }
+          displayResults(data, false, `${payload.area} ${payload.unit} ${payload.floors}F`);
+        } catch (err) {
+          console.error(err);
+          showError(err.message.includes("fetch") ? "Network error: Please check server connectivity." : err.message);
+        } finally {
+          showLoading(false);
+        }
+      };
+
+      btnNLP.onclick = handleNLP;
+      promptInput.onkeydown = (event) => {
+        if (event.key === "Enter") handleNLP();
+      };
+
+      $("btnPrintEstimate").onclick = () => {
+        updatePrintPageRule();
+        window.print();
+      };
+
+      printSizeSelect?.addEventListener("change", updatePrintPageRule);
+
+      $("btnNewEstimate").onclick = () => {
+        results.classList.add("hidden");
+        promptInput.value = "";
+        promptInput.focus();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+
+      window.onkeydown = (event) => {
+        if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+          event.preventDefault();
+          setTab(true);
+          promptInput.focus();
+        }
+      };
+
+      loadCities();
+      updatePrintPageRule();
+      renderHistory();
+    </script>
+  </body>
 </html>
