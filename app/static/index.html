@@ -8,9 +8,9 @@
       content="AI-powered construction material and cost estimator for 50+ Indian cities. Get instant estimates for cement, sand, bricks, aggregate, and steel."
     />
     <title>Construction Estimator | Ayatiworks AI</title>
-    <link rel="icon" type="image/svg+xml" href="/static/logo.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/fav-icon.png" />
-    <link rel="apple-touch-icon" href="/static/fav-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="https://apextmt.com/Apex-icons/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://apextmt.com/Apex-icons/favicon.png" />
+    <link rel="apple-touch-icon" href="https://apextmt.com/Apex-icons/favicon.png" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
       rel="stylesheet"
@@ -485,11 +485,11 @@
       <div class="print-report-brand">
         <img class="print-report-logo" src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/ayati.png" alt="Ayatiworks logo" />
         <div>
-          <div class="print-report-title">Construction Estimator</div>
+          <div class="print-report-title" data-i18n="constructionEstimator">Construction Estimator</div>
           <div class="print-report-subtitle">Ayatiworks AI</div>
         </div>
       </div>
-      <div class="print-report-meta">Estimate Report</div>
+      <div class="print-report-meta" data-i18n="estimateReport">Estimate Report</div>
     </div>
     <header class="no-print sticky top-0 z-40 border-b border-slate-200 bg-white">
       <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
@@ -498,12 +498,22 @@
             <div class="flex h-14 w-40 items-center justify-center overflow-hidden sm:h-16 sm:w-48">
               <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/ayati.png" alt="Ayatiworks logo" class="h-full w-full object-contain p-1" />
             </div>
-            <div class="mt-1 pl-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500 sm:text-xs">
+            <div class="mt-1 pl-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500 sm:text-xs" data-i18n="constructionEstimator">
               Construction Estimator
             </div>
           </div>
         </div>
-
+        <label class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600">
+          <span data-i18n="language">Language</span>
+          <select id="languageSelect" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700 outline-none">
+            <option value="en">English</option>
+            <option value="ta">தமிழ்</option>
+            <option value="te">తెలుగు</option>
+            <option value="kn">ಕನ್ನಡ</option>
+            <option value="ml">മലയാളം</option>
+            <option value="hi">हिन्दी</option>
+          </select>
+        </label>
       </div>
     </header>
 
@@ -511,23 +521,23 @@
       <section class="fade-up no-print mb-8">
         <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
           <div class="text-center">
-            <h2 id="heroGreeting" class="font-display text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+            <h2 id="heroGreeting" class="font-display text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl" data-i18n="heroTitle">
               What are we building today?
             </h2>
-            <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+            <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base" data-i18n="heroSubtitle">
 Your project, your budget. Precise construction estimates for India's top cities.            </p>
             <div class="mt-6 grid gap-3 sm:grid-cols-3">
               <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-left">
-                <div class="text-sm font-semibold text-slate-900">50+ Cities</div>
-                <div class="mt-1 text-sm text-slate-600">Local market-based estimate support</div>
+                <div class="text-sm font-semibold text-slate-900" data-i18n="citiesCount">50+ Cities</div>
+                <div class="mt-1 text-sm text-slate-600" data-i18n="citiesSupport">Local market-based estimate support</div>
               </div>
               <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-left">
-                <div class="text-sm font-semibold text-slate-900">Prompt or Form</div>
-                <div class="mt-1 text-sm text-slate-600">Use the mode that is easiest for you</div>
+                <div class="text-sm font-semibold text-slate-900" data-i18n="promptOrForm">Prompt or Form</div>
+                <div class="mt-1 text-sm text-slate-600" data-i18n="modeHelp">Use the mode that is easiest for you</div>
               </div>
               <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-left">
-                <div class="text-sm font-semibold text-slate-900">Print Ready</div>
-                <div class="mt-1 text-sm text-slate-600">Simple summary designed for reports</div>
+                <div class="text-sm font-semibold text-slate-900" data-i18n="printReady">Print Ready</div>
+                <div class="mt-1 text-sm text-slate-600" data-i18n="printHelp">Simple summary designed for reports</div>
               </div>
             </div>
           </div>
@@ -537,10 +547,10 @@ Your project, your budget. Precise construction estimates for India's top cities
       <div class="fade-up no-print mb-6 flex justify-center" style="animation-delay: 0.06s">
         <div class="inline-flex rounded-xl border border-slate-200 bg-white p-1">
           <button id="tabNLP" class="tab-btn active rounded-xl px-5 py-3 text-sm font-semibold text-slate-600 transition hover:text-slate-900">
-            Quick Estimate
+            <span data-i18n="quickEstimate">Quick Estimate</span>
           </button>
           <button id="tabForm" class="tab-btn rounded-xl px-5 py-3 text-sm font-semibold text-slate-600 transition hover:text-slate-900">
-            Customized Estimate
+            <span data-i18n="customEstimate">Customized Estimate</span>
           </button>
         </div>
       </div>
@@ -554,13 +564,14 @@ Your project, your budget. Precise construction estimates for India's top cities
                 type="text"
                 class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-base text-slate-900 outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100"
                 placeholder="e.g. 3 BHK house 1200 sqft G+2 in Chennai premium"
+                data-i18n-placeholder="promptPlaceholder"
                 autocomplete="off"
               />
               <button
                 id="btnNLP"
                 class="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-red-600/20 transition hover:bg-red-700"
               >
-                <span>Estimate</span>
+                <span data-i18n="estimate">Estimate</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M5 12h14"></path>
                   <path d="m12 5 7 7-7 7"></path>
@@ -568,7 +579,7 @@ Your project, your budget. Precise construction estimates for India's top cities
               </button>
             </div>
             <div class="mt-4 flex flex-wrap items-center gap-2">
-              <span class="mr-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Try</span>
+              <span class="mr-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500" data-i18n="try">Try</span>
               <button class="tag rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600" data-prompt="3 BHK house 1200 sqft G+2 Chennai">3BHK Chennai</button>
               <button class="tag rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600" data-prompt="2 BHK flat 850 sqft Mumbai standard">2BHK Mumbai</button>
               <button class="tag rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600" data-prompt="commercial office 5 floors 250 sqm Bangalore premium">Office Bangalore</button>
@@ -582,7 +593,7 @@ Your project, your budget. Precise construction estimates for India's top cities
           <div class="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6">
             <form id="detailsForm" class="grid gap-5 md:grid-cols-2">
               <div>
-                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Built-up Area</label>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500" data-i18n="builtArea">Built-up Area</label>
                 <div class="flex gap-3">
                   <input type="number" id="formArea" class="w-full min-w-0 flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100" placeholder="1200" required min="1" step="0.1" />
                   <select id="formUnit" class="w-28 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-red-300">
@@ -592,35 +603,35 @@ Your project, your budget. Precise construction estimates for India's top cities
                 </div>
               </div>
               <div>
-                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Number of Floors</label>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500" data-i18n="floors">Number of Floors</label>
                 <input type="number" id="formFloors" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100" min="1" max="15" value="1" required />
               </div>
               <div>
-                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Building Type</label>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500" data-i18n="buildingType">Building Type</label>
                 <div class="grid grid-cols-3 gap-2">
-                  <button type="button" data-val="0" class="btn-select btn-type active rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Residential</button>
-                  <button type="button" data-val="1" class="btn-select btn-type rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Commercial</button>
-                  <button type="button" data-val="2" class="btn-select btn-type rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Industrial</button>
+                  <button type="button" data-val="0" class="btn-select btn-type active rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600" data-i18n="residential">Residential</button>
+                  <button type="button" data-val="1" class="btn-select btn-type rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600" data-i18n="commercial">Commercial</button>
+                  <button type="button" data-val="2" class="btn-select btn-type rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600" data-i18n="industrial">Industrial</button>
                 </div>
               </div>
               <div>
-                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Quality Grade</label>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500" data-i18n="qualityGrade">Quality Grade</label>
                 <div class="grid grid-cols-3 gap-2">
-                  <button type="button" data-val="0" class="btn-select btn-quality rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Economy</button>
-                  <button type="button" data-val="1" class="btn-select btn-quality active rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Standard</button>
-                  <button type="button" data-val="2" class="btn-select btn-quality rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600">Premium</button>
+                  <button type="button" data-val="0" class="btn-select btn-quality rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600" data-i18n="economy">Economy</button>
+                  <button type="button" data-val="1" class="btn-select btn-quality active rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600" data-i18n="standard">Standard</button>
+                  <button type="button" data-val="2" class="btn-select btn-quality rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:text-red-600" data-i18n="premium">Premium</button>
                 </div>
               </div>
               <div class="md:col-span-2">
-                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">City (optional)</label>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500" data-i18n="cityOptional">City (optional)</label>
                 <div class="city-wrap">
-                  <input type="text" id="formCity" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100" placeholder="Search city... e.g. Chennai, Mumbai" autocomplete="off" />
+                  <input type="text" id="formCity" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100" placeholder="Search city... e.g. Chennai, Mumbai" data-i18n-placeholder="cityPlaceholder" autocomplete="off" />
                   <div id="cityDropdown" class="city-dropdown hidden"></div>
                 </div>
               </div>
               <div class="md:col-span-2">
                 <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-red-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-red-600/20 transition hover:bg-red-700">
-                  Get Estimate
+                  <span data-i18n="getEstimate">Get Estimate</span>
                 </button>
               </div>
             </form>
@@ -631,7 +642,7 @@ Your project, your budget. Precise construction estimates for India's top cities
       <div id="loader" class="no-print hidden py-12">
         <div class="flex flex-col items-center justify-center gap-4">
           <div class="spinner"></div>
-          <p class="text-sm font-medium text-slate-500">Calculating with AI model...</p>
+          <p class="text-sm font-medium text-slate-500" data-i18n="calculating">Calculating with AI model...</p>
         </div>
       </div>
 
@@ -646,8 +657,8 @@ Your project, your budget. Precise construction estimates for India's top cities
 
       <div id="historySection" class="no-print hidden mb-8">
         <div class="mb-3 flex items-center justify-between gap-3">
-          <span class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Recent Estimates</span>
-          <button id="clearHistory" class="text-xs font-semibold text-slate-500 transition hover:text-red-600">Clear all</button>
+          <span class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500" data-i18n="recentEstimates">Recent Estimates</span>
+          <button id="clearHistory" class="text-xs font-semibold text-slate-500 transition hover:text-red-600" data-i18n="clearAll">Clear all</button>
         </div>
         <div id="historyList" class="flex gap-3 overflow-x-auto pb-2"></div>
       </div>
@@ -655,38 +666,38 @@ Your project, your budget. Precise construction estimates for India's top cities
       <div id="results" class="hidden">
         <div class="mb-5 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h3 class="font-display text-2xl font-extrabold tracking-tight text-slate-950">Estimation Results</h3>
+            <h3 class="font-display text-2xl font-extrabold tracking-tight text-slate-950" data-i18n="estimationResults">Estimation Results</h3>
             <p class="mt-1 text-sm text-slate-500" id="resDescription"></p>
           </div>
           <div class="flex flex-wrap gap-2">
             <span id="resCityBadge" class="badge badge-city hidden"></span>
-            <span id="resParsedBadge" class="badge badge-ai hidden">AI Parsed</span>
+            <span id="resParsedBadge" class="badge badge-ai hidden" data-i18n="aiParsed">AI Parsed</span>
           </div>
         </div>
 
         <div id="costRow" class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
-            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Total Cost</div>
+            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="totalCost">Total Cost</div>
             <div class="font-display mt-2 text-3xl font-extrabold text-red-600" id="costTotal">--</div>
-            <div class="mt-1 text-sm text-slate-500">All inclusive</div>
+            <div class="mt-1 text-sm text-slate-500" data-i18n="allInclusive">All inclusive</div>
           </div>
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
-            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Cost per Sqft</div>
+            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="costPerSqft">Cost per Sqft</div>
             <div class="font-display mt-2 text-3xl font-extrabold text-emerald-600" id="costSqft">--</div>
             <div class="mt-1 text-sm text-slate-500" id="costArea">--</div>
           </div>
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
-            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Structural Material</div>
+            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="structuralMaterial">Structural Material</div>
             <div class="font-display mt-2 text-3xl font-extrabold text-blue-600" id="costMaterialVal">--</div>
             <div class="mt-1 text-sm text-slate-500" id="costMaterialPct"></div>
           </div>
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
-            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Labour Cost</div>
+            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="labourCost">Labour Cost</div>
             <div class="font-display mt-2 text-3xl font-extrabold text-violet-600" id="costLabour">--</div>
             <div class="mt-1 text-sm text-slate-500" id="costLabourPct"></div>
           </div>
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
-            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Finishing and MEP</div>
+            <div class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="finishingMep">Finishing and MEP</div>
             <div class="font-display mt-2 text-3xl font-extrabold text-amber-600" id="costFinishing">--</div>
             <div class="mt-1 text-sm text-slate-500" id="costOverhead">Overhead: --</div>
           </div>
@@ -698,7 +709,7 @@ Your project, your budget. Precise construction estimates for India's top cities
               <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/cement.svg" alt="Cement icon" class="material-icon-img" />
             </div>
             <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resCement">--</div>
-            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Cement (Bags)</div>
+            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="cementBags">Cement (Bags)</div>
             <div class="mt-2 text-sm text-slate-500" id="costCement"></div>
             <div class="mat-bar mt-3"><div class="mat-bar-fill cement-fill" id="barCement"></div></div>
           </div>
@@ -707,7 +718,7 @@ Your project, your budget. Precise construction estimates for India's top cities
               <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/sand.svg" alt="Sand icon" class="material-icon-img" />
             </div>
             <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resSand">--</div>
-            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Sand (CFT)</div>
+            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="sandCft">Sand (CFT)</div>
             <div class="mt-2 text-sm text-slate-500" id="costSand"></div>
             <div class="mat-bar mt-3"><div class="mat-bar-fill sand-fill" id="barSand"></div></div>
           </div>
@@ -716,7 +727,7 @@ Your project, your budget. Precise construction estimates for India's top cities
               <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/briks.svg" alt="Bricks icon" class="material-icon-img" />
             </div>
             <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resBricks">--</div>
-            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Bricks (Nos)</div>
+            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="bricksNos">Bricks (Nos)</div>
             <div class="mt-2 text-sm text-slate-500" id="costBricks"></div>
             <div class="mat-bar mt-3"><div class="mat-bar-fill brick-fill" id="barBricks"></div></div>
           </div>
@@ -725,7 +736,7 @@ Your project, your budget. Precise construction estimates for India's top cities
               <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/aggregate.svg" alt="Aggregate icon" class="material-icon-img" />
             </div>
             <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resAggregate">--</div>
-            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Aggregate (CFT)</div>
+            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="aggregateCft">Aggregate (CFT)</div>
             <div class="mt-2 text-sm text-slate-500" id="costAggregate"></div>
             <div class="mat-bar mt-3"><div class="mat-bar-fill agg-fill" id="barAggregate"></div></div>
           </div>
@@ -734,7 +745,7 @@ Your project, your budget. Precise construction estimates for India's top cities
               <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/steels.svg" alt="Steel icon" class="material-icon-img" />
             </div>
             <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resSteel">--</div>
-            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Steel (KG)</div>
+            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="steelKg">Steel (KG)</div>
             <div class="mt-2 text-sm text-slate-500" id="costSteel"></div>
             <div class="mat-bar mt-3"><div class="mat-bar-fill steel-fill" id="barSteel"></div></div>
           </div>
@@ -743,7 +754,7 @@ Your project, your budget. Precise construction estimates for India's top cities
         <div class="mb-6 grid gap-4 xl:grid-cols-3">
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
             <div class="mb-4 flex items-center justify-between gap-3">
-              <span class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Rate Card</span>
+              <span class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="rateCard">Rate Card</span>
               <span class="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-red-600" id="rateCity">--</span>
             </div>
             <div class="mb-2 text-sm text-slate-500" id="rateMeta">Midpoint price card</div>
@@ -751,19 +762,19 @@ Your project, your budget. Precise construction estimates for India's top cities
           </div>
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
             <div class="mb-4 flex items-center justify-between gap-3">
-              <span class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Analysis</span>
-              <span class="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-red-600">Smart Insights</span>
+              <span class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="analysis">Analysis</span>
+              <span class="rounded-full bg-red-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-red-600" data-i18n="smartInsights">Smart Insights</span>
             </div>
             <div id="notesContainer"></div>
           </div>
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
-            <div class="mb-4 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Validation Score</div>
+            <div class="mb-4 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="validationScore">Validation Score</div>
             <div class="font-display text-4xl font-extrabold text-slate-950" id="avgR2">--</div>
             <div class="mb-4 mt-2 flex items-center gap-2 text-sm font-semibold text-emerald-600" id="r2Label">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                 <path d="m5 12 5 5L20 7"></path>
               </svg>
-              <span>Waiting for model data</span>
+              <span data-i18n="waitingModel">Waiting for model data</span>
             </div>
             <div id="r2List"></div>
           </div>
@@ -771,7 +782,7 @@ Your project, your budget. Precise construction estimates for India's top cities
 
         <div class="no-print mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           <label class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600">
-            <span>Paper</span>
+            <span data-i18n="paper">Paper</span>
             <select id="printSizeSelect" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 outline-none">
               <option value="A4 landscape" selected>A4 Landscape</option>
               <option value="A3 landscape">A3 Landscape</option>
@@ -787,14 +798,14 @@ Your project, your budget. Precise construction estimates for India's top cities
               <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
               <rect x="6" y="14" width="12" height="8"></rect>
             </svg>
-            Print Estimate
+            <span data-i18n="printEstimate">Print Estimate</span>
           </button>
           <button id="btnNewEstimate" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-700">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 5v14"></path>
               <path d="M5 12h14"></path>
             </svg>
-            New Estimate
+            <span data-i18n="newEstimate">New Estimate</span>
           </button>
         </div>
       </div>
@@ -802,8 +813,8 @@ Your project, your budget. Precise construction estimates for India's top cities
 
     <footer class="no-print border-t border-slate-200/80 bg-white/90">
       <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-        <span>Powered by Ayatiworks AI 2026</span>
-        <span> 50+ Indian cities</span>
+        <span data-i18n="poweredBy">Powered by Ayatiworks AI 2026</span>
+        <span data-i18n="southCities">50+ Indian cities</span>
       </div>
     </footer>
 
@@ -828,15 +839,501 @@ Your project, your budget. Precise construction estimates for India's top cities
       const printSizeSelect = $("printSizeSelect");
       const cityInput = $("formCity");
       const cityDrop = $("cityDropdown");
+      const languageSelect = $("languageSelect");
+
+      const translations = {
+        en: {
+          language: "Language",
+          constructionEstimator: "Construction Estimator",
+          estimateReport: "Estimate Report",
+          heroTitle: "What are we building today?",
+          heroSubtitle: "Your project, your budget. Precise construction estimates for India's top cities.",
+          citiesCount: "50+ Cities",
+          citiesSupport: "Local market-based estimate support",
+          promptOrForm: "Prompt or Form",
+          modeHelp: "Use the mode that is easiest for you",
+          printReady: "Print Ready",
+          printHelp: "Simple summary designed for reports",
+          quickEstimate: "Quick Estimate",
+          customEstimate: "Customized Estimate",
+          promptPlaceholder: "e.g. 3 BHK house 1200 sqft G+2 in Chennai premium",
+          estimate: "Estimate",
+          try: "Try",
+          builtArea: "Built-up Area",
+          floors: "Number of Floors",
+          buildingType: "Building Type",
+          residential: "Residential",
+          commercial: "Commercial",
+          industrial: "Industrial",
+          qualityGrade: "Quality Grade",
+          economy: "Economy",
+          standard: "Standard",
+          premium: "Premium",
+          cityOptional: "City (optional)",
+          cityPlaceholder: "Search city... e.g. Chennai, Mumbai",
+          getEstimate: "Get Estimate",
+          calculating: "Calculating with AI model...",
+          recentEstimates: "Recent Estimates",
+          clearAll: "Clear all",
+          estimationResults: "Estimation Results",
+          aiParsed: "AI Parsed",
+          totalCost: "Total Cost",
+          allInclusive: "All inclusive",
+          costPerSqft: "Cost per Sqft",
+          structuralMaterial: "Structural Material",
+          labourCost: "Labour Cost",
+          finishingMep: "Finishing and MEP",
+          cementBags: "Cement (Bags)",
+          sandCft: "Sand (CFT)",
+          bricksNos: "Bricks (Nos)",
+          aggregateCft: "Aggregate (CFT)",
+          steelKg: "Steel (KG)",
+          rateCard: "Rate Card",
+          analysis: "Analysis",
+          smartInsights: "Smart Insights",
+          validationScore: "Validation Score",
+          waitingModel: "Waiting for model data",
+          paper: "Paper",
+          printEstimate: "Print Estimate",
+          newEstimate: "New Estimate",
+          poweredBy: "Powered by Ayatiworks AI 2026",
+          southCities: "50+ Indian cities",
+          total: "total",
+          ofTotal: "of total",
+          overhead: "Overhead",
+          defaultCity: "Default",
+          midpointCard: "Midpoint price card",
+          verifiedRate: "Verified market rate",
+          updated: "Updated",
+          rangeEstimate: "Range-based estimate",
+          range: "Range",
+          rangeUnavailable: "Range not available",
+          building: "Building",
+          quality: "Quality",
+          area: "Area",
+          insufficientData: "Insufficient validation data",
+          needsImprovement: "Needs improvement",
+          goodFit: "Good validation fit",
+          strongFit: "Strong validation fit",
+          networkServer: "Network error: Please check if the server is running.",
+          networkConnectivity: "Network error: Please check server connectivity.",
+        },
+        ta: {
+          language: "மொழி",
+          constructionEstimator: "கட்டுமான மதிப்பீட்டாளர்",
+          estimateReport: "மதிப்பீட்டு அறிக்கை",
+          heroTitle: "இன்று என்ன கட்டப் போகிறோம்?",
+          heroSubtitle: "உங்கள் திட்டம், உங்கள் பட்ஜெட். இந்திய நகரங்களுக்கு துல்லியமான கட்டுமான மதிப்பீடு.",
+          citiesCount: "50+ நகரங்கள்",
+          citiesSupport: "உள்ளூர் சந்தை விலை அடிப்படையிலான ஆதரவு",
+          promptOrForm: "விளக்கம் அல்லது படிவம்",
+          modeHelp: "உங்களுக்கு எளிதான முறையை தேர்வு செய்யுங்கள்",
+          printReady: "அச்சுக்கு தயார்",
+          printHelp: "அறிக்கைகளுக்கான எளிய சுருக்கம்",
+          quickEstimate: "விரைவு மதிப்பீடு",
+          customEstimate: "தனிப்பயன் மதிப்பீடு",
+          promptPlaceholder: "உதா. 3 BHK வீடு 1200 sqft G+2 Chennai premium",
+          estimate: "மதிப்பிடு",
+          try: "முயற்சி",
+          builtArea: "கட்டிட பரப்பு",
+          floors: "மாடிகளின் எண்ணிக்கை",
+          buildingType: "கட்டிடம் வகை",
+          residential: "வீட்டு",
+          commercial: "வணிக",
+          industrial: "தொழில்",
+          qualityGrade: "தர நிலை",
+          economy: "சிக்கன",
+          standard: "நிலையான",
+          premium: "பிரீமியம்",
+          cityOptional: "நகரம் (விருப்பம்)",
+          cityPlaceholder: "நகரம் தேடவும்... உதா. Chennai, Mumbai",
+          getEstimate: "மதிப்பீடு பெறு",
+          calculating: "AI மாதிரி கணக்கிடுகிறது...",
+          recentEstimates: "சமீபத்திய மதிப்பீடுகள்",
+          clearAll: "அனைத்தையும் அழி",
+          estimationResults: "மதிப்பீட்டு முடிவுகள்",
+          aiParsed: "AI பகுத்தது",
+          totalCost: "மொத்த செலவு",
+          allInclusive: "அனைத்தும் உட்பட",
+          costPerSqft: "சதுர அடி செலவு",
+          structuralMaterial: "கட்டமைப்பு பொருட்கள்",
+          labourCost: "தொழிலாளர் செலவு",
+          finishingMep: "பினிஷிங் மற்றும் MEP",
+          cementBags: "சிமெண்டு (மூட்டைகள்)",
+          sandCft: "மணல் (CFT)",
+          bricksNos: "செங்கற்கள் (Nos)",
+          aggregateCft: "ஜல்லி (CFT)",
+          steelKg: "இரும்பு (KG)",
+          rateCard: "விலை அட்டை",
+          analysis: "பகுப்பாய்வு",
+          smartInsights: "சிறப்பு குறிப்புகள்",
+          validationScore: "சரிபார்ப்பு மதிப்பெண்",
+          waitingModel: "மாதிரி தரவு காத்திருக்கிறது",
+          paper: "காகிதம்",
+          printEstimate: "மதிப்பீட்டை அச்சிடு",
+          newEstimate: "புதிய மதிப்பீடு",
+          poweredBy: "Ayatiworks AI 2026 மூலம்",
+          southCities: "50+ இந்திய நகரங்கள்",
+          total: "மொத்தம்",
+          ofTotal: "மொத்தத்தில்",
+          overhead: "மேல்செலவு",
+          defaultCity: "இயல்புநிலை",
+          midpointCard: "நடுத்தர விலை அட்டை",
+          verifiedRate: "சரிபார்க்கப்பட்ட சந்தை விலை",
+          updated: "புதுப்பிப்பு",
+          rangeEstimate: "வரம்பு அடிப்படையிலான மதிப்பீடு",
+          range: "வரம்பு",
+          rangeUnavailable: "வரம்பு இல்லை",
+          building: "கட்டிடம்",
+          quality: "தரம்",
+          area: "பரப்பு",
+          insufficientData: "சரிபார்ப்பு தரவு போதவில்லை",
+          needsImprovement: "மேம்பாடு தேவை",
+          goodFit: "நல்ல சரிபார்ப்பு பொருத்தம்",
+          strongFit: "வலுவான சரிபார்ப்பு பொருத்தம்",
+          networkServer: "நெட்வொர்க் பிழை: சர்வர் இயங்குகிறதா என பார்க்கவும்.",
+          networkConnectivity: "நெட்வொர்க் பிழை: சர்வர் இணைப்பை பார்க்கவும்.",
+        },
+        te: {
+          language: "భాష",
+          constructionEstimator: "నిర్మాణ అంచనా",
+          estimateReport: "అంచనా నివేదిక",
+          heroTitle: "ఈ రోజు ఏమి నిర్మించాలి?",
+          heroSubtitle: "మీ ప్రాజెక్ట్, మీ బడ్జెట్. భారత నగరాలకు ఖచ్చితమైన నిర్మాణ అంచనాలు.",
+          citiesCount: "50+ నగరాలు",
+          citiesSupport: "స్థానిక మార్కెట్ ధరల ఆధారిత మద్దతు",
+          promptOrForm: "ప్రాంప్ట్ లేదా ఫారం",
+          modeHelp: "మీకు సులభమైన విధానాన్ని ఎంచుకోండి",
+          printReady: "ప్రింట్ సిద్ధం",
+          printHelp: "నివేదికలకు సరళమైన సారాంశం",
+          quickEstimate: "త్వరిత అంచనా",
+          customEstimate: "అనుకూల అంచనా",
+          promptPlaceholder: "ఉదా. 3 BHK house 1200 sqft G+2 Chennai premium",
+          estimate: "అంచనా వేయండి",
+          try: "ప్రయత్నించండి",
+          builtArea: "నిర్మిత విస్తీర్ణం",
+          floors: "అంతస్తుల సంఖ్య",
+          buildingType: "భవనం రకం",
+          residential: "నివాస",
+          commercial: "వాణిజ్య",
+          industrial: "పారిశ్రామిక",
+          qualityGrade: "నాణ్యత గ్రేడ్",
+          economy: "ఎకానమీ",
+          standard: "స్టాండర్డ్",
+          premium: "ప్రీమియం",
+          cityOptional: "నగరం (ఐచ్ఛికం)",
+          cityPlaceholder: "నగరం వెతకండి... ఉదా. Chennai, Mumbai",
+          getEstimate: "అంచనా పొందండి",
+          calculating: "AI మోడల్‌తో లెక్కిస్తోంది...",
+          recentEstimates: "ఇటీవలి అంచనాలు",
+          clearAll: "అన్నీ క్లియర్ చేయండి",
+          estimationResults: "అంచనా ఫలితాలు",
+          aiParsed: "AI విశ్లేషించింది",
+          totalCost: "మొత్తం ఖర్చు",
+          allInclusive: "అన్నీ కలిపి",
+          costPerSqft: "చదరపు అడుగు ఖర్చు",
+          structuralMaterial: "నిర్మాణ పదార్థాలు",
+          labourCost: "కార్మిక ఖర్చు",
+          finishingMep: "ఫినిషింగ్ మరియు MEP",
+          cementBags: "సిమెంట్ (బ్యాగులు)",
+          sandCft: "ఇసుక (CFT)",
+          bricksNos: "ఇటుకలు (Nos)",
+          aggregateCft: "అగ్రిగేట్ (CFT)",
+          steelKg: "స్టీల్ (KG)",
+          rateCard: "ధరల పట్టిక",
+          analysis: "విశ్లేషణ",
+          smartInsights: "స్మార్ట్ సూచనలు",
+          validationScore: "ధృవీకరణ స్కోర్",
+          waitingModel: "మోడల్ డేటా కోసం వేచి ఉంది",
+          paper: "పేపర్",
+          printEstimate: "అంచనాను ప్రింట్ చేయండి",
+          newEstimate: "కొత్త అంచనా",
+          poweredBy: "Ayatiworks AI 2026 ద్వారా",
+          southCities: "50+ భారత నగరాలు",
+          total: "మొత్తం",
+          ofTotal: "మొత్తంలో",
+          overhead: "ఓవర్ హెడ్",
+          defaultCity: "డిఫాల్ట్",
+          midpointCard: "మధ్యస్థ ధరల పట్టిక",
+          verifiedRate: "ధృవీకరించిన మార్కెట్ ధర",
+          updated: "నవీకరించబడింది",
+          rangeEstimate: "రేంజ్ ఆధారిత అంచనా",
+          range: "రేంజ్",
+          rangeUnavailable: "రేంజ్ అందుబాటులో లేదు",
+          building: "భవనం",
+          quality: "నాణ్యత",
+          area: "విస్తీర్ణం",
+          insufficientData: "ధృవీకరణ డేటా సరిపోదు",
+          needsImprovement: "మెరుగుదల అవసరం",
+          goodFit: "మంచి ధృవీకరణ సరిపోలిక",
+          strongFit: "బలమైన ధృవీకరణ సరిపోలిక",
+          networkServer: "నెట్‌వర్క్ లోపం: సర్వర్ నడుస్తుందో చూడండి.",
+          networkConnectivity: "నెట్‌వర్క్ లోపం: సర్వర్ కనెక్టివిటీని చూడండి.",
+        },
+        kn: {
+          language: "ಭಾಷೆ",
+          constructionEstimator: "ನಿರ್ಮಾಣ ಅಂದಾಜು",
+          estimateReport: "ಅಂದಾಜು ವರದಿ",
+          heroTitle: "ಇಂದು ಏನು ನಿರ್ಮಿಸಬೇಕು?",
+          heroSubtitle: "ನಿಮ್ಮ ಯೋಜನೆ, ನಿಮ್ಮ ಬಜೆಟ್. ಭಾರತದ ನಗರಗಳಿಗೆ ನಿಖರವಾದ ನಿರ್ಮಾಣ ಅಂದಾಜುಗಳು.",
+          citiesCount: "50+ ನಗರಗಳು",
+          citiesSupport: "ಸ್ಥಳೀಯ ಮಾರುಕಟ್ಟೆ ದರ ಆಧಾರಿತ ಬೆಂಬಲ",
+          promptOrForm: "ಪ್ರಾಂಪ್ಟ್ ಅಥವಾ ಫಾರ್ಮ್",
+          modeHelp: "ನಿಮಗೆ ಸುಲಭವಾದ ವಿಧಾನವನ್ನು ಆರಿಸಿ",
+          printReady: "ಪ್ರಿಂಟ್ ಸಿದ್ಧ",
+          printHelp: "ವರದಿಗಳಿಗೆ ಸರಳ ಸಾರಾಂಶ",
+          quickEstimate: "ತ್ವರಿತ ಅಂದಾಜು",
+          customEstimate: "ಕಸ್ಟಮ್ ಅಂದಾಜು",
+          promptPlaceholder: "ಉದಾ. 3 BHK house 1200 sqft G+2 Chennai premium",
+          estimate: "ಅಂದಾಜಿಸಿ",
+          try: "ಪ್ರಯತ್ನಿಸಿ",
+          builtArea: "ನಿರ್ಮಿತ ವಿಸ್ತೀರ್ಣ",
+          floors: "ಮಹಡಿಗಳ ಸಂಖ್ಯೆ",
+          buildingType: "ಕಟ್ಟಡ ಪ್ರಕಾರ",
+          residential: "ನಿವಾಸ",
+          commercial: "ವಾಣಿಜ್ಯ",
+          industrial: "ಕೈಗಾರಿಕಾ",
+          qualityGrade: "ಗುಣಮಟ್ಟದ ದರ್ಜೆ",
+          economy: "ಎಕಾನಮಿ",
+          standard: "ಸ್ಟ್ಯಾಂಡರ್ಡ್",
+          premium: "ಪ್ರೀಮಿಯಂ",
+          cityOptional: "ನಗರ (ಐಚ್ಛಿಕ)",
+          cityPlaceholder: "ನಗರ ಹುಡುಕಿ... ಉದಾ. Chennai, Mumbai",
+          getEstimate: "ಅಂದಾಜು ಪಡೆಯಿರಿ",
+          calculating: "AI ಮಾದರಿಯಿಂದ ಲೆಕ್ಕ ಹಾಕುತ್ತಿದೆ...",
+          recentEstimates: "ಇತ್ತೀಚಿನ ಅಂದಾಜುಗಳು",
+          clearAll: "ಎಲ್ಲ ತೆರವುಗೊಳಿಸಿ",
+          estimationResults: "ಅಂದಾಜು ಫಲಿತಾಂಶಗಳು",
+          aiParsed: "AI ವಿಶ್ಲೇಷಿಸಿದೆ",
+          totalCost: "ಒಟ್ಟು ವೆಚ್ಚ",
+          allInclusive: "ಎಲ್ಲವೂ ಒಳಗೊಂಡಿದೆ",
+          costPerSqft: "ಪ್ರತಿ ಚ.ಅಡಿ ವೆಚ್ಚ",
+          structuralMaterial: "ರಚನಾ ಸಾಮಗ್ರಿಗಳು",
+          labourCost: "ಕಾರ್ಮಿಕ ವೆಚ್ಚ",
+          finishingMep: "ಫಿನಿಷಿಂಗ್ ಮತ್ತು MEP",
+          cementBags: "ಸಿಮೆಂಟ್ (ಚೀಲಗಳು)",
+          sandCft: "ಮಣ್ಣು (CFT)",
+          bricksNos: "ಇಟ್ಟಿಗೆಗಳು (Nos)",
+          aggregateCft: "ಅಗ್ರಿಗೇಟ್ (CFT)",
+          steelKg: "ಸ್ಟೀಲ್ (KG)",
+          rateCard: "ದರ ಪಟ್ಟಿ",
+          analysis: "ವಿಶ್ಲೇಷಣೆ",
+          smartInsights: "ಸ್ಮಾರ್ಟ್ ಸೂಚನೆಗಳು",
+          validationScore: "ಮಾನ್ಯತೆ ಅಂಕ",
+          waitingModel: "ಮಾದರಿ ಡೇಟಾ ಕಾಯುತ್ತಿದೆ",
+          paper: "ಪೇಪರ್",
+          printEstimate: "ಅಂದಾಜು ಪ್ರಿಂಟ್ ಮಾಡಿ",
+          newEstimate: "ಹೊಸ ಅಂದಾಜು",
+          poweredBy: "Ayatiworks AI 2026 ಮೂಲಕ",
+          southCities: "50+ ಭಾರತೀಯ ನಗರಗಳು",
+          total: "ಒಟ್ಟು",
+          ofTotal: "ಒಟ್ಟಿನಲ್ಲಿ",
+          overhead: "ಓವರ್ ಹೆಡ್",
+          defaultCity: "ಡೀಫಾಲ್ಟ್",
+          midpointCard: "ಮಧ್ಯಮ ದರ ಪಟ್ಟಿ",
+          verifiedRate: "ಪರಿಶೀಲಿಸಿದ ಮಾರುಕಟ್ಟೆ ದರ",
+          updated: "ನವೀಕರಿಸಲಾಗಿದೆ",
+          rangeEstimate: "ಶ್ರೇಣಿ ಆಧಾರಿತ ಅಂದಾಜು",
+          range: "ಶ್ರೇಣಿ",
+          rangeUnavailable: "ಶ್ರೇಣಿ ಲಭ್ಯವಿಲ್ಲ",
+          building: "ಕಟ್ಟಡ",
+          quality: "ಗುಣಮಟ್ಟ",
+          area: "ವಿಸ್ತೀರ್ಣ",
+          insufficientData: "ಮಾನ್ಯತೆ ಡೇಟಾ ಸಾಕಾಗಿಲ್ಲ",
+          needsImprovement: "ಸುಧಾರಣೆ ಅಗತ್ಯ",
+          goodFit: "ಉತ್ತಮ ಮಾನ್ಯತೆ ಹೊಂದಾಣಿಕೆ",
+          strongFit: "ಬಲವಾದ ಮಾನ್ಯತೆ ಹೊಂದಾಣಿಕೆ",
+          networkServer: "ನೆಟ್ವರ್ಕ್ ದೋಷ: ಸರ್ವರ್ ಚಾಲನೆಯಲ್ಲಿದೆಯೇ ನೋಡಿ.",
+          networkConnectivity: "ನೆಟ್ವರ್ಕ್ ದೋಷ: ಸರ್ವರ್ ಸಂಪರ್ಕ ಪರಿಶೀಲಿಸಿ.",
+        },
+        ml: {
+          language: "ഭാഷ",
+          constructionEstimator: "നിർമാണ എസ്റ്റിമേറ്റർ",
+          estimateReport: "എസ്റ്റിമേറ്റ് റിപ്പോർട്ട്",
+          heroTitle: "ഇന്ന് എന്താണ് നിർമ്മിക്കുന്നത്?",
+          heroSubtitle: "നിങ്ങളുടെ പദ്ധതി, നിങ്ങളുടെ ബജറ്റ്. ഇന്ത്യൻ നഗരങ്ങൾക്ക് കൃത്യമായ നിർമാണ എസ്റ്റിമേറ്റുകൾ.",
+          citiesCount: "50+ നഗരങ്ങൾ",
+          citiesSupport: "പ്രാദേശിക മാർക്കറ്റ് നിരക്കിനെ അടിസ്ഥാനമാക്കിയ പിന്തുണ",
+          promptOrForm: "പ്രോംപ്റ്റ് അല്ലെങ്കിൽ ഫോം",
+          modeHelp: "നിങ്ങൾക്ക് എളുപ്പമുള്ള രീതി തിരഞ്ഞെടുക്കുക",
+          printReady: "പ്രിന്റിന് തയ്യാറാണ്",
+          printHelp: "റിപ്പോർട്ടുകൾക്കായുള്ള ലളിതമായ സംഗ്രഹം",
+          quickEstimate: "വേഗത്തിലുള്ള എസ്റ്റിമേറ്റ്",
+          customEstimate: "കസ്റ്റം എസ്റ്റിമേറ്റ്",
+          promptPlaceholder: "ഉദാ. 3 BHK house 1200 sqft G+2 Chennai premium",
+          estimate: "എസ്റ്റിമേറ്റ്",
+          try: "ശ്രമിക്കുക",
+          builtArea: "നിർമിത വിസ്തീർണം",
+          floors: "നിലകളുടെ എണ്ണം",
+          buildingType: "കെട്ടിട തരം",
+          residential: "താമസ",
+          commercial: "വാണിജ്യ",
+          industrial: "വ്യവസായ",
+          qualityGrade: "ഗുണനിലവാരം",
+          economy: "ഇക്കണോമി",
+          standard: "സ്റ്റാൻഡേർഡ്",
+          premium: "പ്രീമിയം",
+          cityOptional: "നഗരം (ഐച്ഛികം)",
+          cityPlaceholder: "നഗരം തിരയുക... ഉദാ. Chennai, Mumbai",
+          getEstimate: "എസ്റ്റിമേറ്റ് നേടുക",
+          calculating: "AI മോഡൽ ഉപയോഗിച്ച് കണക്കാക്കുന്നു...",
+          recentEstimates: "സമീപകാല എസ്റ്റിമേറ്റുകൾ",
+          clearAll: "എല്ലാം നീക്കുക",
+          estimationResults: "എസ്റ്റിമേറ്റ് ഫലങ്ങൾ",
+          aiParsed: "AI വിശകലനം",
+          totalCost: "മൊത്തം ചെലവ്",
+          allInclusive: "എല്ലാം ഉൾപ്പെടെ",
+          costPerSqft: "ചതുരശ്ര അടി ചെലവ്",
+          structuralMaterial: "ഘടനാ സാമഗ്രികൾ",
+          labourCost: "തൊഴിലാളി ചെലവ്",
+          finishingMep: "ഫിനിഷിംഗ് & MEP",
+          cementBags: "സിമന്റ് (ബാഗുകൾ)",
+          sandCft: "മണൽ (CFT)",
+          bricksNos: "ഇഷ്ടികകൾ (Nos)",
+          aggregateCft: "അഗ്രിഗേറ്റ് (CFT)",
+          steelKg: "സ്റ്റീൽ (KG)",
+          rateCard: "നിരക്ക് കാർഡ്",
+          analysis: "വിശകലനം",
+          smartInsights: "സ്മാർട്ട് കുറിപ്പുകൾ",
+          validationScore: "വാലിഡേഷൻ സ്കോർ",
+          waitingModel: "മോഡൽ ഡാറ്റ കാത്തിരിക്കുന്നു",
+          paper: "പേപ്പർ",
+          printEstimate: "എസ്റ്റിമേറ്റ് പ്രിന്റ് ചെയ്യുക",
+          newEstimate: "പുതിയ എസ്റ്റിമേറ്റ്",
+          poweredBy: "Ayatiworks AI 2026 നൽകുന്നത്",
+          southCities: "50+ ഇന്ത്യൻ നഗരങ്ങൾ",
+          total: "മൊത്തം",
+          ofTotal: "മൊത്തത്തിൽ",
+          overhead: "ഓവർഹെഡ്",
+          defaultCity: "ഡീഫോൾട്ട്",
+          midpointCard: "മിഡ്പോയിന്റ് നിരക്ക് കാർഡ്",
+          verifiedRate: "സ്ഥിരീകരിച്ച മാർക്കറ്റ് നിരക്ക്",
+          updated: "അപ്ഡേറ്റ്",
+          rangeEstimate: "റേഞ്ച് അടിസ്ഥാന എസ്റ്റിമേറ്റ്",
+          range: "റേഞ്ച്",
+          rangeUnavailable: "റേഞ്ച് ലഭ്യമല്ല",
+          building: "കെട്ടിടം",
+          quality: "ഗുണനിലവാരം",
+          area: "വിസ്തീർണം",
+          insufficientData: "വാലിഡേഷൻ ഡാറ്റ മതിയല്ല",
+          needsImprovement: "മെച്ചപ്പെടുത്തണം",
+          goodFit: "നല്ല വാലിഡേഷൻ ഫിറ്റ്",
+          strongFit: "ശക്തമായ വാലിഡേഷൻ ഫിറ്റ്",
+          networkServer: "നെറ്റ്‌വർക്ക് പിശക്: സർവർ പ്രവർത്തിക്കുന്നുണ്ടോ എന്ന് പരിശോധിക്കുക.",
+          networkConnectivity: "നെറ്റ്‌വർക്ക് പിശക്: സർവർ കണക്റ്റിവിറ്റി പരിശോധിക്കുക.",
+        },
+        hi: {
+          language: "भाषा",
+          constructionEstimator: "निर्माण अनुमानक",
+          estimateReport: "अनुमान रिपोर्ट",
+          heroTitle: "आज हम क्या बनाएंगे?",
+          heroSubtitle: "आपका प्रोजेक्ट, आपका बजट। भारत के शहरों के लिए सटीक निर्माण अनुमान।",
+          citiesCount: "50+ शहर",
+          citiesSupport: "स्थानीय बाजार दर आधारित अनुमान सहायता",
+          promptOrForm: "प्रॉम्प्ट या फॉर्म",
+          modeHelp: "जो तरीका आपके लिए आसान हो उसे चुनें",
+          printReady: "प्रिंट के लिए तैयार",
+          printHelp: "रिपोर्ट के लिए सरल सारांश",
+          quickEstimate: "त्वरित अनुमान",
+          customEstimate: "कस्टम अनुमान",
+          promptPlaceholder: "उदा. 3 BHK house 1200 sqft G+2 Chennai premium",
+          estimate: "अनुमान लगाएं",
+          try: "कोशिश करें",
+          builtArea: "निर्मित क्षेत्र",
+          floors: "मंजिलों की संख्या",
+          buildingType: "भवन प्रकार",
+          residential: "आवासीय",
+          commercial: "वाणिज्यिक",
+          industrial: "औद्योगिक",
+          qualityGrade: "गुणवत्ता श्रेणी",
+          economy: "किफायती",
+          standard: "मानक",
+          premium: "प्रीमियम",
+          cityOptional: "शहर (वैकल्पिक)",
+          cityPlaceholder: "शहर खोजें... उदा. Chennai, Mumbai",
+          getEstimate: "अनुमान प्राप्त करें",
+          calculating: "AI मॉडल से गणना हो रही है...",
+          recentEstimates: "हाल के अनुमान",
+          clearAll: "सब साफ करें",
+          estimationResults: "अनुमान परिणाम",
+          aiParsed: "AI द्वारा विश्लेषित",
+          totalCost: "कुल लागत",
+          allInclusive: "सभी शामिल",
+          costPerSqft: "प्रति वर्ग फुट लागत",
+          structuralMaterial: "संरचनात्मक सामग्री",
+          labourCost: "मजदूरी लागत",
+          finishingMep: "फिनिशिंग और MEP",
+          cementBags: "सीमेंट (बैग)",
+          sandCft: "रेत (CFT)",
+          bricksNos: "ईंटें (Nos)",
+          aggregateCft: "एग्रीगेट (CFT)",
+          steelKg: "स्टील (KG)",
+          rateCard: "दर कार्ड",
+          analysis: "विश्लेषण",
+          smartInsights: "स्मार्ट सुझाव",
+          validationScore: "सत्यापन स्कोर",
+          waitingModel: "मॉडल डेटा की प्रतीक्षा है",
+          paper: "पेपर",
+          printEstimate: "अनुमान प्रिंट करें",
+          newEstimate: "नया अनुमान",
+          poweredBy: "Ayatiworks AI 2026 द्वारा संचालित",
+          southCities: "50+ भारतीय शहर",
+          total: "कुल",
+          ofTotal: "कुल में से",
+          overhead: "ओवरहेड",
+          defaultCity: "डिफॉल्ट",
+          midpointCard: "मध्य दर कार्ड",
+          verifiedRate: "सत्यापित बाजार दर",
+          updated: "अपडेट",
+          rangeEstimate: "रेंज आधारित अनुमान",
+          range: "रेंज",
+          rangeUnavailable: "रेंज उपलब्ध नहीं",
+          building: "भवन",
+          quality: "गुणवत्ता",
+          area: "क्षेत्र",
+          insufficientData: "सत्यापन डेटा पर्याप्त नहीं है",
+          needsImprovement: "सुधार की आवश्यकता है",
+          goodFit: "अच्छा सत्यापन फिट",
+          strongFit: "मजबूत सत्यापन फिट",
+          networkServer: "नेटवर्क त्रुटि: कृपया जांचें कि सर्वर चल रहा है।",
+          networkConnectivity: "नेटवर्क त्रुटि: कृपया सर्वर कनेक्टिविटी जांचें।",
+        },
+      };
 
       let currentBuildingType = 0;
       let currentQuality = 1;
       let selectedCity = null;
       let allCities = [];
+      let currentLanguage = localStorage.getItem("est_language") || "en";
+      let lastDisplayedEstimate = null;
 
-      const h = new Date().getHours();
-      const greet = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
-      $("heroGreeting").textContent = `${greet}! What are we building?`;
+      function t(key) {
+        return translations[currentLanguage]?.[key] || translations.en[key] || key;
+      }
+
+      function applyLanguage(lang = currentLanguage) {
+        currentLanguage = translations[lang] ? lang : "en";
+        localStorage.setItem("est_language", currentLanguage);
+        if (languageSelect) languageSelect.value = currentLanguage;
+        document.documentElement.lang = currentLanguage;
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          el.textContent = t(el.dataset.i18n);
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+          el.placeholder = t(el.dataset.i18nPlaceholder);
+        });
+        if (lastDisplayedEstimate && results && !results.classList.contains("hidden")) {
+          displayResults(
+            lastDisplayedEstimate.data,
+            lastDisplayedEstimate.isNLP,
+            lastDisplayedEstimate.promptText,
+            false,
+          );
+        }
+      }
+
+      applyLanguage(currentLanguage);
+      languageSelect?.addEventListener("change", (event) => applyLanguage(event.target.value));
 
       function setTab(isNLP) {
         tabNLP.classList.toggle("active", isNLP);
@@ -888,7 +1385,7 @@ Your project, your budget. Precise construction estimates for India's top cities
       }
 
       function formatRange(range, unit) {
-        return range ? `Range: ${formatINR(range)}${unit}` : "Range not available";
+        return range ? `${t("range")}: ${formatINR(range)}${unit}` : t("rangeUnavailable");
       }
 
       function showLoading(show) {
@@ -1033,7 +1530,8 @@ Your project, your budget. Precise construction estimates for India's top cities
         }, 100);
       }
 
-      function displayResults(data, isNLP, promptText) {
+      function displayResults(data, isNLP, promptText, shouldSaveHistory = true) {
+        lastDisplayedEstimate = { data, isNLP, promptText };
         results.classList.remove("hidden");
         $("resParsedBadge").classList.toggle("hidden", !isNLP);
 
@@ -1052,18 +1550,18 @@ Your project, your budget. Precise construction estimates for India's top cities
         const area = data.total_area_sqft ? formatNum(Math.round(data.total_area_sqft)) : "N/A";
         const buildingLabel = isNLP ? parsed.building_label || "" : data.building_type || "";
         const qualityLabel = isNLP ? parsed.quality_label || "" : data.quality || "";
-        $("resDescription").textContent = `${area} sqft total · ${buildingLabel} · ${qualityLabel}`;
+        $("resDescription").textContent = `${area} sqft ${t("total")} · ${buildingLabel} · ${qualityLabel}`;
 
         const total = cost.total_cost_inr || 0;
         $("costTotal").textContent = total ? formatINR(total) : "--";
         $("costSqft").textContent = cost.cost_per_sqft ? formatINR(cost.cost_per_sqft) : "--";
-        $("costArea").textContent = data.total_area_sqft ? `${formatNum(Math.round(data.total_area_sqft))} sqft total` : "";
+        $("costArea").textContent = data.total_area_sqft ? `${formatNum(Math.round(data.total_area_sqft))} sqft ${t("total")}` : "";
         $("costMaterialVal").textContent = cost.material_total ? formatINR(cost.material_total) : "--";
-        $("costMaterialPct").textContent = total ? `${Math.round((cost.material_total / total) * 100)}% of total` : "";
+        $("costMaterialPct").textContent = total ? `${Math.round((cost.material_total / total) * 100)}% ${t("ofTotal")}` : "";
         $("costLabour").textContent = cost.labour_cost ? formatINR(cost.labour_cost) : "--";
-        $("costLabourPct").textContent = total ? `${Math.round((cost.labour_cost / total) * 100)}% of total` : "";
+        $("costLabourPct").textContent = total ? `${Math.round((cost.labour_cost / total) * 100)}% ${t("ofTotal")}` : "";
         $("costFinishing").textContent = cost.finishing_cost ? formatINR(cost.finishing_cost) : "--";
-        $("costOverhead").textContent = cost.overhead_cost ? `Overhead: ${formatINR(cost.overhead_cost)}` : "";
+        $("costOverhead").textContent = cost.overhead_cost ? `${t("overhead")}: ${formatINR(cost.overhead_cost)}` : "";
 
         const maxQty = Math.max(
           mats.cement_bags || 0,
@@ -1084,17 +1582,17 @@ Your project, your budget. Precise construction estimates for India's top cities
         const rates = cost.rates_used || {};
         const ranges = cost.rate_ranges || {};
         const meta = cost.rate_meta || {};
-        $("rateCity").textContent = cost.city || "Default";
+        $("rateCity").textContent = cost.city || t("defaultCity");
         $("rateMeta").textContent = meta.verified
-          ? `Verified market rate${meta.last_updated ? ` · Updated ${meta.last_updated}` : ""}`
-          : `${meta.source_label || "Range-based estimate"}${meta.last_updated ? ` · Updated ${meta.last_updated}` : ""}`;
+          ? `${t("verifiedRate")}${meta.last_updated ? ` · ${t("updated")} ${meta.last_updated}` : ""}`
+          : `${meta.source_label || t("rangeEstimate")}${meta.last_updated ? ` · ${t("updated")} ${meta.last_updated}` : ""}`;
 
         $("rateTable").innerHTML = [
-          ["Cement", rates.cement_per_bag, "/bag", ranges.cement_per_bag],
-          ["Sand", rates.sand_per_cft, "/cft", ranges.sand_per_cft],
-          ["Brick", rates.brick_per_nos, "/nos", ranges.brick_per_nos],
-          ["Aggregate", rates.aggregate_per_cft, "/cft", ranges.aggregate_per_cft],
-          ["Steel", rates.steel_per_kg, "/kg", ranges.steel_per_kg],
+          [t("cementBags").replace(/\s*\(.+\)/, ""), rates.cement_per_bag, "/bag", ranges.cement_per_bag],
+          [t("sandCft").replace(/\s*\(.+\)/, ""), rates.sand_per_cft, "/cft", ranges.sand_per_cft],
+          [t("bricksNos").replace(/\s*\(.+\)/, ""), rates.brick_per_nos, "/nos", ranges.brick_per_nos],
+          [t("aggregateCft").replace(/\s*\(.+\)/, ""), rates.aggregate_per_cft, "/cft", ranges.aggregate_per_cft],
+          [t("steelKg").replace(/\s*\(.+\)/, ""), rates.steel_per_kg, "/kg", ranges.steel_per_kg],
         ]
           .map(
             ([label, value, unit, range]) => `
@@ -1108,7 +1606,7 @@ Your project, your budget. Precise construction estimates for India's top cities
 
         const notes = isNLP
           ? parsed.parsed_notes || []
-          : [`Building: ${buildingLabel}`, `Quality: ${qualityLabel}`, `Area: ${area} sqft`];
+          : [`${t("building")}: ${buildingLabel}`, `${t("quality")}: ${qualityLabel}`, `${t("area")}: ${area} sqft`];
         $("notesContainer").innerHTML = notes
           .map(
             (note) => `
@@ -1142,17 +1640,17 @@ Your project, your budget. Precise construction estimates for India's top cities
         $("avgR2").textContent = avg == null ? "--" : `${avg.toFixed(1)}%`;
         $("r2Label").querySelector("span").textContent =
           avg == null
-            ? "Waiting for model data"
+            ? t("waitingModel")
             : avg <= 0
-              ? "Insufficient validation data"
+              ? t("insufficientData")
               : avg < 70
-                ? "Needs improvement"
+                ? t("needsImprovement")
                 : avg < 90
-                  ? "Good validation fit"
-                  : "Strong validation fit";
+                  ? t("goodFit")
+                  : t("strongFit");
 
         results.scrollIntoView({ behavior: "smooth", block: "start" });
-        saveHistory(promptText, data);
+        if (shouldSaveHistory) saveHistory(promptText, data);
       }
 
       async function handleNLP() {
@@ -1175,7 +1673,7 @@ Your project, your budget. Precise construction estimates for India's top cities
           displayResults(data, true, prompt);
         } catch (err) {
           console.error(err);
-          showError(err.message.includes("fetch") ? "Network error: Please check if the server is running." : err.message);
+          showError(err.message.includes("fetch") ? t("networkServer") : err.message);
         } finally {
           showLoading(false);
         }
@@ -1209,7 +1707,7 @@ Your project, your budget. Precise construction estimates for India's top cities
           displayResults(data, false, `${payload.area} ${payload.unit} ${payload.floors}F`);
         } catch (err) {
           console.error(err);
-          showError(err.message.includes("fetch") ? "Network error: Please check server connectivity." : err.message);
+          showError(err.message.includes("fetch") ? t("networkConnectivity") : err.message);
         } finally {
           showLoading(false);
         }
