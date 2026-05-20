@@ -95,6 +95,9 @@ Swagger UI at **http://localhost:8000/docs**
 | POST   | `/api/estimate-from-prompt`| **New** — AI NLP estimate (auto-detect city) |
 | POST   | `/api/estimate`            | Structured JSON estimate                     |
 | GET    | `/api/model/info`          | Training metrics (R², MAE per target)        |
+| GET    | `/api/model/catalog`       | **New** — Active AI model + tuned candidates |
+| POST   | `/api/model/refresh-live`  | **New** — Fetch latest rates + auto-tune AI  |
+| GET    | `/api/model/refresh-status`| **New** — Last live refresh status           |
 
 ---
 
@@ -118,6 +121,20 @@ POST /api/estimate
   "building_type": 0,
   "quality": 1,
   "city": "Chennai"
+}
+```
+
+### Model Catalog
+```json
+GET /api/model/catalog
+```
+
+### Live Refresh
+```json
+POST /api/model/refresh-live
+{
+  "only_verified": true,
+  "dry_run": false
 }
 ```
 
@@ -182,6 +199,47 @@ To retrain on new project data:
 2. Run: `python model/train.py`
 
 3. Restart the server — new model loads automatically on startup.
+
+### Daily Auto-Tuning
+
+For day-by-day model improvement and version tracking:
+
+```bash
+python -m model.auto_tune
+```
+
+This tries multiple model settings, selects the best by validation R²/MAE, updates
+`model/estimator_model.pkl`, writes `model/model_meta.json`, and stores a dated
+copy under `model/versions/`.
+
+Windows daily scheduler command:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\daily_model_tuning.ps1
+```
+
+### Weekly Price Updates
+
+To refresh material rates from configured city source URLs:
+
+```bash
+python -m data.update_prices
+```
+
+Dry run without writing the CSV:
+
+```bash
+python -m data.update_prices --dry-run
+```
+
+Run weekly price update and then auto-tune/version the model:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\weekly_price_update.ps1 -AutoTune
+```
+
+The updater creates a timestamped backup like
+`data/city_rates.csv.YYYYMMDD-HHMMSS.bak` before writing new rates.
 
 ---
 

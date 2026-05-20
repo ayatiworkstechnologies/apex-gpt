@@ -1,10 +1,18 @@
 {
+  "model_type": "QuantityRatioRegressor(MultiOutputRegressor(RandomForestRegressor))",
+  "model_params": {
+    "n_estimators": 160,
+    "max_depth": 9,
+    "min_samples_leaf": 8,
+    "random_state": 42
+  },
   "features": [
     "area_sqft",
     "floors",
     "building_type",
     "quality",
     "total_area_sqft",
+    "foundation_factor",
     "city"
   ],
   "numeric_features": [
@@ -12,11 +20,13 @@
     "floors",
     "building_type",
     "quality",
-    "total_area_sqft"
+    "total_area_sqft",
+    "foundation_factor"
   ],
   "categorical_features": [
     "city"
   ],
+  "total_area_feature_index": 4,
   "targets": [
     "cement_bags",
     "sand_cft",
@@ -93,24 +103,28 @@
   "test_samples": 5400,
   "metrics": {
     "cement_bags": {
-      "mae": 742.06,
-      "r2": 0.9787
+      "mae": 719.54,
+      "r2": 0.9801
     },
     "sand_cft": {
-      "mae": 1295.57,
-      "r2": 0.9913
+      "mae": 1256.17,
+      "r2": 0.9919
     },
     "bricks": {
-      "mae": 4447.04,
-      "r2": 0.9932
+      "mae": 4288.1,
+      "r2": 0.9939
     },
     "aggregate_cft": {
-      "mae": 1229.78,
-      "r2": 0.9923
+      "mae": 1173.66,
+      "r2": 0.993
     },
     "steel_kg": {
-      "mae": 4685.21,
-      "r2": 0.9942
+      "mae": 4414.69,
+      "r2": 0.9947
     }
+  },
+  "score": {
+    "avg_mae": 2370.43,
+    "avg_r2": 0.9907
   }
 }

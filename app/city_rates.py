@@ -433,6 +433,13 @@ def _load_city_rates_from_csv(default_db: dict) -> dict:
 CITY_DB = _load_city_rates_from_csv(DEFAULT_CITY_DB)
 
 
+def reload_city_db() -> dict:
+    """Reload city rates from CSV so runtime uses the latest fetched prices."""
+    global CITY_DB
+    CITY_DB = _load_city_rates_from_csv(DEFAULT_CITY_DB)
+    return CITY_DB
+
+
 def resolve_city(city_raw: Optional[str]) -> dict:
     """
     Resolve raw city/state string to a city record.
@@ -489,34 +496,59 @@ def get_city_rate_stats() -> dict:
     }
 
 
-def _extract_ranges_from_notes(notes: str) -> dict:
+def _format_range(low: float, high: float) -> str:
+    return f"{int(round(low))}-{int(round(high))}"
+
+
+def _scaled_ton_range_to_unit_range(rate: int, low_ton: float, high_ton: float) -> str:
+    midpoint = (low_ton + high_ton) / 2
+    if midpoint <= 0:
+        return ""
+    return _format_range(rate * (low_ton / midpoint), rate * (high_ton / midpoint))
+
+
+def _fallback_range(rate: int) -> str:
+    return _format_range(rate * 0.9, rate * 1.1)
+
+
+def _extract_ranges_from_notes(notes: str, rates: Optional[dict] = None) -> dict:
     text = notes or ""
-    patterns = {
-        "cement_per_bag": r"cement.*?\(?(\d+(?:-\d+)?)\)?",
-        "sand_per_cft": r"sand.*?\(?(\d+(?:-\d+)?)\)?",
-        "brick_per_nos": r"brick.*?\(?(\d+(?:-\d+)?)\)?",
-        "aggregate_per_cft": r"(?:aggregate|jelly).*?\(?(\d+(?:-\d+)?)\)?",
-        "steel_per_kg": r"steel.*?\(?(\d+(?:-\d+)?)\)?",
-    }
     import re
+
+    material_patterns = {
+        "cement_per_bag": (r"cement", "cement_per_bag"),
+        "sand_per_cft": (r"sand|m-sand|river sand", "sand_per_cft"),
+        "brick_per_nos": (r"brick", "brick_per_nos"),
+        "aggregate_per_cft": (r"aggregate|jelly", "aggregate_per_cft"),
+        "steel_per_kg": (r"steel", "steel_per_kg"),
+    }
     ranges = {}
-    for key, pattern in patterns.items():
-        # Specifically look for (low-high) format or similar near the material mention
-        match = re.search(r"(" + key.split("_")[0] + r".*?)\((\d+-\d+)\)", text, re.IGNORECASE)
-        if match:
-            # Found (100-200) style
-            ranges[key] = match.group(2)
+
+    for key, (material_pattern, rate_key) in material_patterns.items():
+        material_match = re.search(
+            rf"(?:{material_pattern}).{{0,120}}?(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)(?:\s*/\s*(ton|kg|cft|nos|bag))?",
+            text,
+            re.IGNORECASE,
+        )
+        if not material_match:
+            continue
+
+        low = float(material_match.group(1))
+        high = float(material_match.group(2))
+        unit = (material_match.group(3) or "").lower()
+        rate = int((rates or {}).get(rate_key, 0) or 0)
+
+        if unit == "ton" and rate and key in {"sand_per_cft", "aggregate_per_cft"}:
+            ranges[key] = _scaled_ton_range_to_unit_range(rate, low, high)
+        elif unit == "ton" and key == "steel_per_kg":
+            ranges[key] = _format_range(low / 1000, high / 1000)
+        elif key == "steel_per_kg" and low > 1000 and high > 1000:
+            ranges[key] = _format_range(low / 1000, high / 1000)
+        elif key == "aggregate_per_cft" and low == 20:
+            continue
         else:
-            # Fallback legacy parsing
-            match2 = re.search(pattern, text, re.IGNORECASE)
-            if match2:
-                # Discard silly 20mm matches for aggregate
-                if key == "aggregate_per_cft" and match2.group(1) == "20":
-                    match3 = re.search(r"aggregate 20mm.*?\((\d+-\d+)\)", text, re.IGNORECASE)
-                    if match3:
-                        ranges[key] = match3.group(1)
-                else:
-                    ranges[key] = match2.group(1)
+            ranges[key] = _format_range(low, high)
+
     return ranges
 
 
@@ -576,18 +608,23 @@ def get_cost_estimate(materials: dict, city_key: str = "chennai",
 
     total = material_total + labour_cost + finishing_cost + overhead_cost
 
+    rates_used = {
+        "cement_per_bag":    city["cement"],
+        "sand_per_cft":      city["sand"],
+        "brick_per_nos":     city["brick"],
+        "aggregate_per_cft": city["aggregate"],
+        "steel_per_kg":      city["steel"],
+    }
+    rate_ranges = _extract_ranges_from_notes(city.get("notes", ""), rates_used)
+    for key, value in rates_used.items():
+        rate_ranges.setdefault(key, _fallback_range(value))
+
     return {
         "city":           city["city"],
         "state":          city["state"],
         "tier":           city.get("tier", 2),
-        "rates_used":     {
-            "cement_per_bag":    city["cement"],
-            "sand_per_cft":      city["sand"],
-            "brick_per_nos":     city["brick"],
-            "aggregate_per_cft": city["aggregate"],
-            "steel_per_kg":      city["steel"],
-        },
-        "rate_ranges":    _extract_ranges_from_notes(city.get("notes", "")),
+        "rates_used":     rates_used,
+        "rate_ranges":    rate_ranges,
         "rate_meta":      {
             "verified": city.get("verified", False),
             "last_updated": city.get("last_updated", ""),

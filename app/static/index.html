@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <meta
       name="description"
-      content="AI-powered construction material and cost estimator for 50+ Indian cities. Get instant estimates for cement, sand, bricks, aggregate, and steel."
+      content="AI-powered construction material and cost estimator. Get instant estimates for cement, sand, bricks, aggregate, and steel."
     />
     <title>Construction Estimator | Ayatiworks AI</title>
     <link rel="icon" type="image/svg+xml" href="https://apextmt.com/Apex-icons/favicon.png" />
@@ -62,6 +62,20 @@
         border-color: #dc2626;
         color: #fff;
         box-shadow: 0 14px 30px rgba(220, 38, 38, 0.18);
+      }
+      .btn-select {
+        color: rgb(71 85 105);
+      }
+      .btn-select:hover {
+        background: rgb(254 242 242);
+        border-color: rgb(254 202 202);
+        color: rgb(185 28 28);
+      }
+      .btn-select.active:hover,
+      .btn-select.active:focus {
+        background: #b91c1c;
+        border-color: #b91c1c;
+        color: #fff;
       }
       .city-wrap {
         position: relative;
@@ -170,6 +184,50 @@
       }
       .steel-fill {
         background: #ca8a04;
+      }
+      .steel-highlight-card {
+        position: relative;
+        overflow: hidden;
+        border-color: rgb(252 211 77) !important;
+        background:
+          linear-gradient(180deg, rgba(255, 251, 235, 0.92), #ffffff 58%),
+          #ffffff;
+      }
+      .steel-highlight-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        border-radius: 1rem;
+        box-shadow: inset 0 0 0 1px rgba(202, 138, 4, 0.16);
+      }
+      .steel-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        border-radius: 999px;
+        border: 1px solid rgb(253 230 138);
+        background: rgb(255 251 235);
+        padding: 0.28rem 0.62rem;
+        color: rgb(146 64 14);
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .steel-brand img {
+        width: 1rem;
+        height: 1rem;
+        object-fit: contain;
+      }
+      .steel-calc {
+        border-radius: 0.75rem;
+        background: rgb(255 251 235);
+        padding: 0.5rem 0.65rem;
+        color: rgb(120 53 15);
+        font-size: 0.74rem;
+        font-weight: 700;
+        line-height: 1.35;
       }
       .rate-row {
         display: grid;
@@ -480,10 +538,10 @@
     </style>
   </head>
   <body class="min-h-screen text-slate-900">
-    <img class="print-watermark" src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/ayati.png" alt="" aria-hidden="true" />
+    <img class="print-watermark" src="https://ik.imagekit.io/bf5g7wxrp/ayatiworks-storage/apex.png" alt="" aria-hidden="true" />
     <div class="print-report-header">
       <div class="print-report-brand">
-        <img class="print-report-logo" src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/ayati.png" alt="Ayatiworks logo" />
+        <img class="print-report-logo" src="https://ik.imagekit.io/bf5g7wxrp/ayatiworks-storage/apex.png" alt="Ayatiworks logo" />
         <div>
           <div class="print-report-title" data-i18n="constructionEstimator">Construction Estimator</div>
           <div class="print-report-subtitle">Ayatiworks AI</div>
@@ -496,7 +554,7 @@
         <div class="flex items-center gap-4">
           <div class="flex flex-col items-start">
             <div class="flex h-14 w-40 items-center justify-center overflow-hidden sm:h-16 sm:w-48">
-              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/ayati.png" alt="Ayatiworks logo" class="h-full w-full object-contain p-1" />
+              <img src="https://ik.imagekit.io/bf5g7wxrp/ayatiworks-storage/apex.png" alt="Ayatiworks logo" class="h-full w-full object-contain p-1" />
             </div>
             <div class="mt-1 pl-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500 sm:text-xs" data-i18n="constructionEstimator">
               Construction Estimator
@@ -517,29 +575,25 @@
       </div>
     </header>
 
+    <section class="no-print border-b border-slate-200 bg-white">
+      <div class="mx-auto w-full max-w-6xl px-4 py-3 sm:px-6 lg:px-8">
+        <img
+          src="https://ik.imagekit.io/bf5g7wxrp/ayatiworks-storage/Rectangle.svg"
+          alt="Ayatiworks accent"
+          class="block h-auto w-full object-cover"
+        />
+      </div>
+    </section>
+
     <main class="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
       <section class="fade-up no-print mb-8">
         <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
           <div class="text-center">
             <h2 id="heroGreeting" class="font-display text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl" data-i18n="heroTitle">
-              What are we building today?
+              Good day, plan your Apex Steel requirement
             </h2>
             <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base" data-i18n="heroSubtitle">
-Your project, your budget. Precise construction estimates for India's top cities.            </p>
-            <div class="mt-6 grid gap-3 sm:grid-cols-3">
-              <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-left">
-                <div class="text-sm font-semibold text-slate-900" data-i18n="citiesCount">50+ Cities</div>
-                <div class="mt-1 text-sm text-slate-600" data-i18n="citiesSupport">Local market-based estimate support</div>
-              </div>
-              <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-left">
-                <div class="text-sm font-semibold text-slate-900" data-i18n="promptOrForm">Prompt or Form</div>
-                <div class="mt-1 text-sm text-slate-600" data-i18n="modeHelp">Use the mode that is easiest for you</div>
-              </div>
-              <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-left">
-                <div class="text-sm font-semibold text-slate-900" data-i18n="printReady">Print Ready</div>
-                <div class="mt-1 text-sm text-slate-600" data-i18n="printHelp">Simple summary designed for reports</div>
-              </div>
-            </div>
+Calculate steel, cement, sand, bricks, and aggregate quantities with Apex Steel focused cost guidance.            </p>
           </div>
         </div>
       </section>
@@ -706,7 +760,7 @@ Your project, your budget. Precise construction estimates for India's top cities
         <div id="matsGrid" class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
             <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-50 text-lg text-red-600">
-              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/cement.svg" alt="Cement icon" class="material-icon-img" />
+              <img src="https://ik.imagekit.io/bf5g7wxrp/ayatiworks-storage/cement.svg" alt="Cement icon" class="material-icon-img" />
             </div>
             <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resCement">--</div>
             <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="cementBags">Cement (Bags)</div>
@@ -715,7 +769,7 @@ Your project, your budget. Precise construction estimates for India's top cities
           </div>
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
             <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-lg text-blue-600">
-              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/sand.svg" alt="Sand icon" class="material-icon-img" />
+              <img src="https://ik.imagekit.io/bf5g7wxrp/ayatiworks-storage/sand.svg" alt="Sand icon" class="material-icon-img" />
             </div>
             <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resSand">--</div>
             <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="sandCft">Sand (CFT)</div>
@@ -724,7 +778,7 @@ Your project, your budget. Precise construction estimates for India's top cities
           </div>
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
             <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-50 text-lg text-orange-600">
-              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/briks.svg" alt="Bricks icon" class="material-icon-img" />
+              <img src="https://ik.imagekit.io/bf5g7wxrp/ayatiworks-storage/briks.svg" alt="Bricks icon" class="material-icon-img" />
             </div>
             <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resBricks">--</div>
             <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="bricksNos">Bricks (Nos)</div>
@@ -733,21 +787,25 @@ Your project, your budget. Precise construction estimates for India's top cities
           </div>
           <div class="rounded-2xl border border-slate-200 bg-white p-5">
             <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-lg text-emerald-600">
-              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/aggregate.svg" alt="Aggregate icon" class="material-icon-img" />
+              <img src="https://ik.imagekit.io/bf5g7wxrp/ayatiworks-storage/aggregate.svg" alt="Aggregate icon" class="material-icon-img" />
             </div>
             <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resAggregate">--</div>
             <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="aggregateCft">Aggregate (CFT)</div>
             <div class="mt-2 text-sm text-slate-500" id="costAggregate"></div>
             <div class="mat-bar mt-3"><div class="mat-bar-fill agg-fill" id="barAggregate"></div></div>
           </div>
-          <div class="rounded-2xl border border-slate-200 bg-white p-5">
-            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-lg text-amber-600">
-              <img src="https://ayatiworks-storage.s3.us-east-1.amazonaws.com/steels.svg" alt="Steel icon" class="material-icon-img" />
+          <div class="steel-highlight-card rounded-2xl border bg-white p-5">
+            <div class="relative z-10 flex items-start justify-between gap-3">
+              <div class="steel-brand">
+                <img src="https://apextmt.com/Apex-icons/favicon.png" alt="Apex Steel logo" />
+                
+              </div>
             </div>
-            <div class="font-display mt-4 text-2xl font-extrabold text-slate-950" id="resSteel">--</div>
-            <div class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-i18n="steelKg">Steel (KG)</div>
-            <div class="mt-2 text-sm text-slate-500" id="costSteel"></div>
-            <div class="mat-bar mt-3"><div class="mat-bar-fill steel-fill" id="barSteel"></div></div>
+            <div class="relative z-10 font-display mt-4 text-2xl font-extrabold text-slate-950" id="resSteel">--</div>
+            <div class="relative z-10 mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-amber-700" data-i18n="steelKg">Steel (KG)</div>
+            <div class="relative z-10 mt-2 text-sm font-bold text-slate-700" id="costSteel"></div>
+            <div class="relative z-10 mt-2 steel-calc" id="steelCalc">Steel cost calculation will appear here.</div>
+            <div class="relative z-10 mat-bar mt-3"><div class="mat-bar-fill steel-fill" id="barSteel"></div></div>
           </div>
         </div>
 
@@ -812,9 +870,16 @@ Your project, your budget. Precise construction estimates for India's top cities
     </main>
 
     <footer class="no-print border-t border-slate-200/80 bg-white/90">
-      <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-        <span data-i18n="poweredBy">Powered by Ayatiworks AI 2026</span>
-        <span data-i18n="southCities">50+ Indian cities</span>
+      <div class="mx-auto flex max-w-7xl items-center justify-center gap-2 px-4 py-5 text-center text-sm text-slate-500 sm:px-6 lg:px-8">
+        <span data-i18n="poweredBy">Powered by</span>
+        <a
+          href="https://ayatiworks.com"
+          target="_blank"
+          rel="noreferrer"
+          class="font-semibold text-slate-700 transition hover:text-red-600"
+        >
+          Ayatiworks
+        </a>
       </div>
     </footer>
 
@@ -846,8 +911,8 @@ Your project, your budget. Precise construction estimates for India's top cities
           language: "Language",
           constructionEstimator: "Construction Estimator",
           estimateReport: "Estimate Report",
-          heroTitle: "What are we building today?",
-          heroSubtitle: "Your project, your budget. Precise construction estimates for India's top cities.",
+          heroTitle: "Good day, plan your Apex Steel requirement",
+          heroSubtitle: "Calculate steel, cement, sand, bricks, and aggregate quantities with Apex Steel focused cost guidance.",
           citiesCount: "50+ Cities",
           citiesSupport: "Local market-based estimate support",
           promptOrForm: "Prompt or Form",
@@ -896,8 +961,8 @@ Your project, your budget. Precise construction estimates for India's top cities
           paper: "Paper",
           printEstimate: "Print Estimate",
           newEstimate: "New Estimate",
-          poweredBy: "Powered by Ayatiworks AI 2026",
-          southCities: "50+ Indian cities",
+          poweredBy: "Powered by",
+          southCities: "",
           total: "total",
           ofTotal: "of total",
           overhead: "Overhead",
@@ -972,8 +1037,8 @@ Your project, your budget. Precise construction estimates for India's top cities
           paper: "காகிதம்",
           printEstimate: "மதிப்பீட்டை அச்சிடு",
           newEstimate: "புதிய மதிப்பீடு",
-          poweredBy: "Ayatiworks AI 2026 மூலம்",
-          southCities: "50+ இந்திய நகரங்கள்",
+          poweredBy: "மூலம்",
+          southCities: "",
           total: "மொத்தம்",
           ofTotal: "மொத்தத்தில்",
           overhead: "மேல்செலவு",
@@ -1048,8 +1113,8 @@ Your project, your budget. Precise construction estimates for India's top cities
           paper: "పేపర్",
           printEstimate: "అంచనాను ప్రింట్ చేయండి",
           newEstimate: "కొత్త అంచనా",
-          poweredBy: "Ayatiworks AI 2026 ద్వారా",
-          southCities: "50+ భారత నగరాలు",
+          poweredBy: "ఆధారంగా",
+          southCities: "",
           total: "మొత్తం",
           ofTotal: "మొత్తంలో",
           overhead: "ఓవర్ హెడ్",
@@ -1124,8 +1189,8 @@ Your project, your budget. Precise construction estimates for India's top cities
           paper: "ಪೇಪರ್",
           printEstimate: "ಅಂದಾಜು ಪ್ರಿಂಟ್ ಮಾಡಿ",
           newEstimate: "ಹೊಸ ಅಂದಾಜು",
-          poweredBy: "Ayatiworks AI 2026 ಮೂಲಕ",
-          southCities: "50+ ಭಾರತೀಯ ನಗರಗಳು",
+          poweredBy: "ಚಾಲಿತ",
+          southCities: "",
           total: "ಒಟ್ಟು",
           ofTotal: "ಒಟ್ಟಿನಲ್ಲಿ",
           overhead: "ಓವರ್ ಹೆಡ್",
@@ -1200,8 +1265,8 @@ Your project, your budget. Precise construction estimates for India's top cities
           paper: "പേപ്പർ",
           printEstimate: "എസ്റ്റിമേറ്റ് പ്രിന്റ് ചെയ്യുക",
           newEstimate: "പുതിയ എസ്റ്റിമേറ്റ്",
-          poweredBy: "Ayatiworks AI 2026 നൽകുന്നത്",
-          southCities: "50+ ഇന്ത്യൻ നഗരങ്ങൾ",
+          poweredBy: "പിന്തുണ",
+          southCities: "",
           total: "മൊത്തം",
           ofTotal: "മൊത്തത്തിൽ",
           overhead: "ഓവർഹെഡ്",
@@ -1276,8 +1341,8 @@ Your project, your budget. Precise construction estimates for India's top cities
           paper: "पेपर",
           printEstimate: "अनुमान प्रिंट करें",
           newEstimate: "नया अनुमान",
-          poweredBy: "Ayatiworks AI 2026 द्वारा संचालित",
-          southCities: "50+ भारतीय शहर",
+          poweredBy: "द्वारा संचालित",
+          southCities: "",
           total: "कुल",
           ofTotal: "कुल में से",
           overhead: "ओवरहेड",
@@ -1311,6 +1376,20 @@ Your project, your budget. Precise construction estimates for India's top cities
         return translations[currentLanguage]?.[key] || translations.en[key] || key;
       }
 
+      function getTimeGreeting() {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good morning";
+        if (hour < 17) return "Good afternoon";
+        if (hour < 21) return "Good evening";
+        return "Good night";
+      }
+
+      function updateHeroGreeting() {
+        const hero = $("heroGreeting");
+        if (!hero) return;
+        hero.textContent = `${getTimeGreeting()}, plan your Apex Steel requirement`;
+      }
+
       function applyLanguage(lang = currentLanguage) {
         currentLanguage = translations[lang] ? lang : "en";
         localStorage.setItem("est_language", currentLanguage);
@@ -1322,6 +1401,7 @@ Your project, your budget. Precise construction estimates for India's top cities
         document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
           el.placeholder = t(el.dataset.i18nPlaceholder);
         });
+        updateHeroGreeting();
         if (lastDisplayedEstimate && results && !results.classList.contains("hidden")) {
           displayResults(
             lastDisplayedEstimate.data,
@@ -1385,7 +1465,20 @@ Your project, your budget. Precise construction estimates for India's top cities
       }
 
       function formatRange(range, unit) {
-        return range ? `${t("range")}: ${formatINR(range)}${unit}` : t("rangeUnavailable");
+        if (!range) return t("rangeUnavailable");
+        const text = String(range).trim();
+        const match = text.match(/^(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)(.*)$/);
+        if (match) {
+          const suffix = match[3]?.trim() || unit;
+          return `${t("range")}: ${formatINR(Number(match[1]))}-${formatINR(Number(match[2]))}${suffix}`;
+        }
+        return `${t("range")}: ${text}`;
+      }
+
+      function formatRateMeta(meta) {
+        if (!meta || typeof meta !== "object") return t("rangeEstimate");
+        if (meta.verified) return meta.source_label || t("verifiedRate");
+        return meta.source_label || t("rangeEstimate");
       }
 
       function showLoading(show) {
@@ -1582,10 +1675,12 @@ Your project, your budget. Precise construction estimates for India's top cities
         const rates = cost.rates_used || {};
         const ranges = cost.rate_ranges || {};
         const meta = cost.rate_meta || {};
+        $("steelCalc").textContent =
+          mats.steel_kg && rates.steel_per_kg
+            ? `${formatNum(mats.steel_kg)} kg × ${formatINR(rates.steel_per_kg)}/kg = ${formatINR(breakdown.steel || 0)}`
+            : "Steel cost calculation will appear here.";
         $("rateCity").textContent = cost.city || t("defaultCity");
-        $("rateMeta").textContent = meta.verified
-          ? `${t("verifiedRate")}${meta.last_updated ? ` · ${t("updated")} ${meta.last_updated}` : ""}`
-          : `${meta.source_label || t("rangeEstimate")}${meta.last_updated ? ` · ${t("updated")} ${meta.last_updated}` : ""}`;
+        $("rateMeta").textContent = formatRateMeta(meta);
 
         $("rateTable").innerHTML = [
           [t("cementBags").replace(/\s*\(.+\)/, ""), rates.cement_per_bag, "/bag", ranges.cement_per_bag],

@@ -23,10 +23,12 @@ from app.schemas import (
     EstimateRequest, EstimateResponse,
     PromptRequest, PromptResponse,
     MaterialQuantities, CostEstimate, CostBreakdown, ParsedDetails,
+    ModelCatalogResponse, LiveRefreshRequest, LiveRefreshStatus,
 )
 from app.nlp_parser import parse_prompt
 from app.city_rates import resolve_city, get_cost_estimate, get_all_cities, get_city_rate_stats
 from app import predictor
+from app.live_refresh import get_refresh_status, run_live_refresh
 
 app = FastAPI(
     title="Apex Construction Estimator v3",
@@ -90,7 +92,7 @@ def health():
     return {
         "status":        "healthy",
         "version":       "3.0.0",
-        "model":         "MultiOutputRegressor(RandomForestRegressor)",
+        "model":         meta.get("model_type", "MultiOutputRegressor(RandomForestRegressor)"),
         "train_samples": meta["train_samples"],
         "cities":        len(get_all_cities()),
         "verified_city_rates": rate_stats["verified"],
@@ -269,3 +271,30 @@ def estimate_from_prompt(request: PromptRequest):
 @app.get("/api/model/info", tags=["Model"])
 def model_info():
     return predictor.load_meta()
+
+
+@app.get("/api/model/catalog", response_model=ModelCatalogResponse, tags=["Model"])
+def model_catalog():
+    """Structured AI model catalog for the active estimator and tuned candidates."""
+    return predictor.get_model_catalog()
+
+
+@app.get("/api/model/refresh-status", response_model=LiveRefreshStatus, tags=["Model"])
+def model_refresh_status():
+    """Return the last live data refresh and model tuning status."""
+    return get_refresh_status()
+
+
+@app.post("/api/model/refresh-live", response_model=LiveRefreshStatus, tags=["Model"])
+def model_refresh_live(request: LiveRefreshRequest):
+    """
+    Fetch latest city material rates, retune the model, and reload live runtime data.
+    """
+    result = run_live_refresh(
+        only_verified=request.only_verified,
+        dry_run=request.dry_run,
+        version=request.version,
+    )
+    if result["state"] == "failed":
+        raise HTTPException(status_code=500, detail=result["error"])
+    return result

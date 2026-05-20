@@ -121,3 +121,56 @@ class PromptResponse(BaseModel):
     materials:       MaterialQuantities
     cost:            CostEstimate
     model_r2_scores: Optional[Dict[str, float]] = None
+
+
+class ModelScore(BaseModel):
+    avg_mae: float
+    avg_r2: float
+
+
+class ModelMetric(BaseModel):
+    mae: float
+    r2: float
+
+
+class ModelCandidateSummary(BaseModel):
+    candidate: str
+    model_params: Dict[str, Any]
+    score: ModelScore
+    metrics: Dict[str, ModelMetric]
+
+
+class ModelCatalogResponse(BaseModel):
+    version: str
+    trained_at: Optional[str] = None
+    auto_tuned: bool
+    model_type: str
+    active_candidate: Optional[str] = None
+    model_params: Dict[str, Any]
+    features: List[str]
+    numeric_features: List[str] = []
+    categorical_features: List[str] = []
+    targets: List[str]
+    train_samples: int
+    test_samples: int
+    data_source: str
+    cities_seen: List[str] = []
+    score: Optional[ModelScore] = None
+    metrics: Dict[str, ModelMetric]
+    candidates: List[ModelCandidateSummary] = []
+
+
+class LiveRefreshRequest(BaseModel):
+    only_verified: bool = True
+    dry_run: bool = False
+    version: Optional[str] = None
+
+
+class LiveRefreshStatus(BaseModel):
+    state: str
+    started_at: Optional[str] = None
+    finished_at: Optional[str] = None
+    only_verified: bool
+    dry_run: bool
+    summary: Optional[Dict[str, Any]] = None
+    error: Optional[str] = None
