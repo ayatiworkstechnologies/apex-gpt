@@ -7,7 +7,7 @@
       name="description"
       content="AI-powered construction material and cost estimator. Get instant estimates for cement, sand, bricks, aggregate, and steel."
     />
-    <title>Construction Estimator | Ayatiworks AI</title>
+    <title>Construction Estimator | Ayatiworks</title>
     <link rel="icon" type="image/svg+xml" href="https://apextmt.com/Apex-icons/favicon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="https://apextmt.com/Apex-icons/favicon.png" />
     <link rel="apple-touch-icon" href="https://apextmt.com/Apex-icons/favicon.png" />
@@ -544,7 +544,7 @@
         <img class="print-report-logo" src="https://ik.imagekit.io/bf5g7wxrp/ayatiworks-storage/apex.png" alt="Ayatiworks logo" />
         <div>
           <div class="print-report-title" data-i18n="constructionEstimator">Construction Estimator</div>
-          <div class="print-report-subtitle">Ayatiworks AI</div>
+          <div class="print-report-subtitle">Ayatiworks</div>
         </div>
       </div>
       <div class="print-report-meta" data-i18n="estimateReport">Estimate Report</div>
@@ -1501,6 +1501,11 @@ Calculate steel, cement, sand, bricks, and aggregate quantities with Apex Steel 
         styleEl.textContent = `@page { size: ${selected}; margin: 9mm; }`;
       }
 
+      function buildPrintTitle() {
+        const today = new Date().toISOString().slice(0, 10);
+        return `apex_Estimator_${today}`;
+      }
+
       async function loadCities() {
         try {
           const res = await fetch("api/cities");
@@ -1815,7 +1820,12 @@ Calculate steel, cement, sand, bricks, and aggregate quantities with Apex Steel 
 
       $("btnPrintEstimate").onclick = () => {
         updatePrintPageRule();
+        const previousTitle = document.title;
+        document.title = buildPrintTitle();
         window.print();
+        window.setTimeout(() => {
+          document.title = previousTitle;
+        }, 300);
       };
 
       printSizeSelect?.addEventListener("change", updatePrintPageRule);
