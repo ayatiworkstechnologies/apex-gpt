@@ -298,3 +298,21 @@ def model_refresh_live(request: LiveRefreshRequest):
     if result["state"] == "failed":
         raise HTTPException(status_code=500, detail=result["error"])
     return result
+
+
+@app.get("/{filename}", tags=["Static Fallback"], include_in_schema=False)
+def serve_root_static(filename: str):
+    file_path = os.path.join(STATIC_DIR, filename)
+    if os.path.isfile(file_path):
+        return FileResponse(file_path)
+    # Common alias fallbacks
+    if filename == "bricks.svg":
+        alt_path = os.path.join(STATIC_DIR, "briks.svg")
+        if os.path.isfile(alt_path):
+            return FileResponse(alt_path)
+    elif filename == "steel.svg":
+        alt_path = os.path.join(STATIC_DIR, "steels.svg")
+        if os.path.isfile(alt_path):
+            return FileResponse(alt_path)
+    raise HTTPException(status_code=404, detail=f"File {filename} not found")
+

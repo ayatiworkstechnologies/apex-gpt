@@ -1,0 +1,11 @@
+<svg width="1200" height="8" viewBox="0 0 1200 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="apexAccentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="35%" stop-color="#2563EB" />
+      <stop offset="70%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#EA580C" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="8" rx="4" fill="url(#apexAccentGrad)" />
+</svg>
