@@ -41,6 +41,7 @@ model/estimator_model.pkl
 model/tuning_history.jsonl
 model/versions/
 data/city_rates.csv.*.bak
+tests/.tmp/
 
 # Byte-compiled
 *.pyc

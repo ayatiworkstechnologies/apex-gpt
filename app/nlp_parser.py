@@ -14,9 +14,12 @@ Supports:
   "1200 sq ft house chennai 2 floors economy"
 """
 
+import os
 import re
 from typing import Optional
 from app.city_rates import resolve_city, CITY_DB, CITY_ALIASES, STATE_ALIASES
+
+PROMPT_PARSER = os.environ.get("PROMPT_PARSER", "regex").strip().lower()
 
 # ── BHK area inference table ───────────────────────────────────────────────────
 BHK_AREA_MAP = {1: 500, 2: 850, 3: 1200, 4: 1800, 5: 2400, 6: 3200}
@@ -54,7 +57,7 @@ ALL_CITIES = set(CITY_DB.keys()) | set(CITY_ALIASES.keys())
 
 
 def _extract_bhk(lower: str, notes: list) -> Optional[int]:
-    m = re.search(r'(\d)\s*bhk', lower)
+    m = re.search(r'(\d+)\s*bhk', lower)
     if m:
         bhk = int(m.group(1))
         notes.append(f"BHK detected: {bhk} BHK")
@@ -183,15 +186,8 @@ def _extract_quality(lower: str, notes: list) -> int:
     return 1
 
 
-def parse_prompt(text: str) -> dict:
-    """
-    Deep parse of free-form construction prompt.
-
-    Mandatory: area with unit (sqft/sqm/cents/grounds)
-    Optional : BHK, floors, city, state, building type, quality
-
-    Returns full structured dict.
-    """
+def _parse_prompt_regex(text: str) -> dict:
+    """Deep parse of free-form construction prompt using hand-written regex rules."""
     raw   = text.strip()
     lower = raw.lower()
     notes = []
@@ -231,6 +227,64 @@ def parse_prompt(text: str) -> dict:
         "raw_prompt":    raw,
         "parsed_notes":  notes,
     }
+
+
+def _parse_prompt_llm(text: str) -> dict:
+    """Parse using a local Ollama LLM (see app/llm_parser.py), same output shape as regex parser."""
+    from app.llm_parser import OLLAMA_MODEL, parse_prompt_llm
+
+    raw = text.strip()
+    fields = parse_prompt_llm(raw)
+    notes = [f"Parsed via local LLM ({OLLAMA_MODEL})"]
+
+    area, unit, bhk = fields["area"], fields["unit"], fields["bhk"]
+    if area is None and bhk is not None:
+        area = float(BHK_AREA_MAP.get(bhk, 1000))
+        unit = "sqft"
+        notes.append(f"Area inferred: {area} sqft from {bhk} BHK")
+    elif area is None:
+        raise ValueError(
+            "Area is required. Please mention area with unit, e.g. '1200 sqft', '250 sqm', '3 cents'."
+        )
+
+    city_input = fields["city"] or fields["state"]
+    city_data = resolve_city(city_input)
+
+    return {
+        "area":          area,
+        "unit":          unit,
+        "floors":        fields["floors"],
+        "building_type": fields["building_type"],
+        "quality":       fields["quality"],
+        "bhk":           bhk,
+        "city":          city_data["city"],
+        "state":         city_data["state"],
+        "city_data":     city_data,
+        "raw_prompt":    raw,
+        "parsed_notes":  notes,
+    }
+
+
+def parse_prompt(text: str) -> dict:
+    """
+    Deep parse of free-form construction prompt.
+
+    Mandatory: area with unit (sqft/sqm/cents/grounds)
+    Optional : BHK, floors, city, state, building type, quality
+
+    Uses a local Ollama LLM when PROMPT_PARSER=llm is set (see app/llm_parser.py),
+    falling back to the regex parser on any failure — invalid prompts (missing
+    area) still raise ValueError either way; only LLM *infrastructure* failures
+    (Ollama not running, bad JSON, etc.) trigger the regex fallback.
+    """
+    if PROMPT_PARSER == "llm":
+        try:
+            return _parse_prompt_llm(text)
+        except ValueError:
+            raise
+        except Exception:
+            pass  # Ollama unavailable / bad output — fall back to regex parser
+    return _parse_prompt_regex(text)
 
 
 # ── CLI test ───────────────────────────────────────────────────────────────────

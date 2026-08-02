@@ -1,2 +1,0 @@
-city,state,tier,cost_mult,labour_mult,cement,sand,brick,aggregate,steel,verified,last_updated,source_label,source_url,notes
-coimbatore,Tamil Nadu,2,1.0,1.0,415,54,10,45,61,true,2026-05-20,todaypricerates.com live fetch,https://property.todaypricerates.com/construction-building-materials-rate-in-Coimbatore,"Auto-updated 2026-05-20 from todaypricerates.com live fetch. cement Rs 415, sand Rs 54, brick Rs 10, aggregate Rs 45, steel Rs 61. Previous notes: old notes"

@@ -2,7 +2,7 @@
 Construction Material Dataset Generator -- v4 (Tier-Stratified, City-Aware)
 =============================================================================
 Generates SEPARATE datasets for Tier 1 / Tier 2 / Tier 3 Indian cities,
-then MERGES them into a single training_data.csv.
+then MERGES them into a single data.csv.
 
 Tier definitions:
   Tier 1 -- Major metros (Mumbai, Delhi, Bangalore, Hyderabad, Chennai,
@@ -283,7 +283,7 @@ def validate(df: pd.DataFrame):
 if __name__ == "__main__":
     base_dir       = os.path.dirname(os.path.abspath(__file__))
     city_rates_csv = os.path.join(base_dir, "city_rates.csv")
-    out_csv        = os.path.join(base_dir, "training_data.csv")
+    out_csv        = os.path.join(base_dir, "data.csv")
 
     city_df = load_city_rates(city_rates_csv)
 
@@ -329,5 +329,5 @@ v4 -- Tier-stratified generation:
   Tier 1: 12,000 samples | metros  | live April-2026 prices
   Tier 2: 10,000 samples | mid-cities | regional-band prices
   Tier 3:  5,000 samples | small cities | lowest price tier
-  Total : 27,000 rows  | 24 columns | single training_data.csv
+  Total : 27,000 rows  | 24 columns | single data.csv
 """

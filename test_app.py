@@ -1,5 +1,5 @@
 import sys, os
-sys.path.insert(0, os.path.abspath('d:/2026/apex-gpt'))
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from app import predictor
 from app.city_rates import get_cost_estimate
 from app.main import _build_cost

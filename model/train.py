@@ -26,6 +26,7 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 from app.quantity_model import QuantityRatioRegressor
+from app.predictor import normalize_city_name as _normalise_city_name
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), "../data/data.csv")
 FALLBACK_DATA_PATH = os.path.join(os.path.dirname(__file__), "../data/data.csv")
@@ -47,13 +48,6 @@ TARGETS = ["cement_bags", "sand_cft", "bricks", "aggregate_cft", "steel_kg"]
 TOTAL_AREA_FEATURE_INDEX = NUMERIC_FEATURES.index("total_area_sqft")
 
 os.makedirs(MODEL_DIR, exist_ok=True)
-
-
-def _normalise_city_name(value: str) -> str:
-    text = str(value or "chennai").strip().lower()
-    if "(" in text:
-        text = text.split("(", 1)[0].strip()
-    return text or "chennai"
 
 
 def load_data(path: str = DATA_PATH):

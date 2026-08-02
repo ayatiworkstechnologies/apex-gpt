@@ -37,7 +37,7 @@ def load_model():
 @lru_cache(maxsize=1)
 def load_meta() -> dict:
     """Load model metadata (R² scores, feature list etc.)."""
-    with open(META_PATH) as f:
+    with open(META_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 

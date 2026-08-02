@@ -1,7 +1,7 @@
 import json
 
 from app.predictor import predict
-from app.city_rates import get_cost_estimate
+from app.city_rates import get_cost_estimate, resolve_city
 
 
 def test_model_metadata_uses_ratio_estimator():
@@ -51,3 +51,9 @@ def test_chennai_aggregate_rate_range_is_available():
 
     assert cost["rates_used"]["aggregate_per_cft"] == 45
     assert cost["rate_ranges"]["aggregate_per_cft"] == "39-51"
+
+
+def test_resolve_city_falls_back_cleanly_for_blank_input():
+    assert resolve_city(None)["city"] == "Chennai (default)"
+    assert resolve_city("")["city"] == "Chennai (default)"
+    assert resolve_city("   ")["city"] == "Chennai (default)"

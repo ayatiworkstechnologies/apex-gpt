@@ -8,6 +8,9 @@ client = TestClient(app)
 
 def test_live_refresh_endpoint_runs_price_update_and_tuning(monkeypatch):
     import app.live_refresh as live_refresh
+    import app.main as main
+
+    monkeypatch.setattr(main, "REFRESH_API_KEY", "test-key")
 
     monkeypatch.setattr(
         live_refresh,
@@ -55,7 +58,11 @@ def test_live_refresh_endpoint_runs_price_update_and_tuning(monkeypatch):
         },
     )
 
-    response = client.post("/api/model/refresh-live", json={"only_verified": True, "version": "2026.05.20"})
+    response = client.post(
+        "/api/model/refresh-live",
+        json={"only_verified": True, "version": "2026.05.20"},
+        headers={"X-API-Key": "test-key"},
+    )
 
     assert response.status_code == 200
     payload = response.json()
@@ -63,6 +70,16 @@ def test_live_refresh_endpoint_runs_price_update_and_tuning(monkeypatch):
     assert payload["summary"]["price_update"]["updated"][0]["city"] == "chennai"
     assert payload["summary"]["model_tuning"]["selected_candidate"] == "balanced"
     assert payload["summary"]["runtime_reload"]["model_loaded"] is True
+
+
+def test_live_refresh_endpoint_rejects_missing_api_key(monkeypatch):
+    import app.main as main
+
+    monkeypatch.setattr(main, "REFRESH_API_KEY", "test-key")
+
+    response = client.post("/api/model/refresh-live", json={"only_verified": True})
+
+    assert response.status_code == 401
 
 
 def test_live_refresh_status_endpoint_returns_last_status():

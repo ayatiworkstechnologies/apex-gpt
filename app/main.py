@@ -13,7 +13,9 @@ Run  : uvicorn app.main:app --reload
 Docs : http://localhost:8000/docs
 """
 
-from fastapi import FastAPI, HTTPException
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -30,9 +32,22 @@ from app.city_rates import resolve_city, get_cost_estimate, get_all_cities, get_
 from app import predictor
 from app.live_refresh import get_refresh_status, run_live_refresh
 
+REFRESH_API_KEY = os.environ.get("REFRESH_API_KEY", "")
+API_ROOT_PATH = os.environ.get("API_ROOT_PATH", "")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    predictor.load_model()
+    predictor.load_meta()
+    print("✅ Model loaded. Apex Estimator v3 is live and blazing fast.")
+    yield
+
+
 app = FastAPI(
     title="Apex Construction Estimator v3",
-    root_path="/stagingapex",
+    root_path=API_ROOT_PATH,
+    lifespan=lifespan,
     description="""
 ## Apex Estimator — v3
 
@@ -68,13 +83,6 @@ app.add_middleware(
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-
-
-@app.on_event("startup")
-async def startup_event():
-    predictor.load_model()
-    predictor.load_meta()
-    print("✅ Model loaded. Apex Estimator v3 is live and blazing fast.")
 
 
 @app.get("/", tags=["Frontend"])
@@ -286,10 +294,16 @@ def model_refresh_status():
 
 
 @app.post("/api/model/refresh-live", response_model=LiveRefreshStatus, tags=["Model"])
-def model_refresh_live(request: LiveRefreshRequest):
+def model_refresh_live(request: LiveRefreshRequest, x_api_key: str = Header(default="")):
     """
     Fetch latest city material rates, retune the model, and reload live runtime data.
+
+    Requires the `X-API-Key` header to match the `REFRESH_API_KEY` environment
+    variable, since this endpoint triggers external fetches and model retraining.
     """
+    if not REFRESH_API_KEY or x_api_key != REFRESH_API_KEY:
+        raise HTTPException(status_code=401, detail="Missing or invalid X-API-Key header")
+
     result = run_live_refresh(
         only_verified=request.only_verified,
         dry_run=request.dry_run,
@@ -300,19 +314,28 @@ def model_refresh_live(request: LiveRefreshRequest):
     return result
 
 
+def _safe_static_path(filename: str) -> str | None:
+    """Resolve `filename` under STATIC_DIR, rejecting any path that escapes it."""
+    candidate = os.path.realpath(os.path.join(STATIC_DIR, filename))
+    static_root = os.path.realpath(STATIC_DIR)
+    if os.path.commonpath([candidate, static_root]) != static_root:
+        return None
+    return candidate
+
+
 @app.get("/{filename}", tags=["Static Fallback"], include_in_schema=False)
 def serve_root_static(filename: str):
-    file_path = os.path.join(STATIC_DIR, filename)
-    if os.path.isfile(file_path):
+    file_path = _safe_static_path(filename)
+    if file_path and os.path.isfile(file_path):
         return FileResponse(file_path)
     # Common alias fallbacks
     if filename == "bricks.svg":
-        alt_path = os.path.join(STATIC_DIR, "briks.svg")
-        if os.path.isfile(alt_path):
+        alt_path = _safe_static_path("briks.svg")
+        if alt_path and os.path.isfile(alt_path):
             return FileResponse(alt_path)
     elif filename == "steel.svg":
-        alt_path = os.path.join(STATIC_DIR, "steels.svg")
-        if os.path.isfile(alt_path):
+        alt_path = _safe_static_path("steels.svg")
+        if alt_path and os.path.isfile(alt_path):
             return FileResponse(alt_path)
     raise HTTPException(status_code=404, detail=f"File {filename} not found")
 

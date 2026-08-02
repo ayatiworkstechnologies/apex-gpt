@@ -1,0 +1,24 @@
+[Unit]
+Description=Apex Construction Estimator API (FastAPI/uvicorn)
+After=network.target
+
+[Service]
+Type=simple
+User=apexapi
+Group=apexapi
+WorkingDirectory=/opt/apex-gpt
+EnvironmentFile=-/etc/apex-estimator.env
+ExecStart=/opt/apex-gpt/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2
+Restart=on-failure
+RestartSec=5
+# Auto-start on boot: enabled via `systemctl enable apex-estimator` (done by setup.sh)
+
+# Basic hardening. ReadWritePaths is required because live-refresh writes to
+# data/city_rates.csv and model/ (retraining/auto-tune updates the .pkl + meta).
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/opt/apex-gpt/data /opt/apex-gpt/model
+
+[Install]
+WantedBy=multi-user.target
